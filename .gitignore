@@ -1,15 +1,16 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# Android / Gradle / Compose 用
+.gradle/
+build/
+captures/
 local.properties
+.idea/
+*.iml
+.DS_Store
+
+# Release keys
+*.jks
+*.keystore
+signing.properties
+
+# Generated files
+app/release/
