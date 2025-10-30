@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="ページ1" id="1Vk5Ksbtq82Z-0z5MjKj">
-        <mxGraphModel dx="1018" dy="634" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1233" dy="767" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -16,7 +16,7 @@
                 <mxCell id="SOKPuT2ljBYKb2xGID9J-8" value="&lt;font&gt;:feature:done&lt;/font&gt;" style="html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="440" y="160" width="110" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="SOKPuT2ljBYKb2xGID9J-9" value="&lt;font&gt;:feature:register&lt;/font&gt;" style="html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#000000;" parent="1" vertex="1">
+                <mxCell id="SOKPuT2ljBYKb2xGID9J-9" value="&lt;font&gt;:feature:items&lt;/font&gt;" style="html=1;whiteSpace=wrap;fillColor=#ffe6cc;strokeColor=#d79b00;fontColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="600" y="160" width="110" height="50" as="geometry"/>
                 </mxCell>
                 <mxCell id="SOKPuT2ljBYKb2xGID9J-10" value="&lt;font&gt;:core:ui&lt;/font&gt;" style="html=1;whiteSpace=wrap;fillColor=#1ba1e2;fontColor=#000000;strokeColor=#006EAF;" parent="1" vertex="1">

@@ -21,4 +21,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "Smart Go"
 include(":app")
- 
+include(":core:ui")
+include(":core:domain")
+include(":core:data")
+include(":feature:home")
+include(":feature:checklist")
+include(":feature:done")
+include(":feature:items")
