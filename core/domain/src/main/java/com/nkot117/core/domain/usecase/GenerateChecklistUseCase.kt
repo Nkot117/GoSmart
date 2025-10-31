@@ -1,6 +1,5 @@
 package com.nkot117.core.domain.usecase
 
-<<<<<<< HEAD
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.repository.ItemRepository
@@ -25,7 +24,4 @@ class GenerateChecklistUseCase(
             }
         }
     }
-=======
-class GenerateChecklistUseCase {
->>>>>>> origin/main
 }
