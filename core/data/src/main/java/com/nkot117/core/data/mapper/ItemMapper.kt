@@ -9,4 +9,4 @@ fun ItemEntity.toDomain(): Item =
     Item(id = id, name = name, category = ItemCategory.valueOf(category))
 
 fun Item.toEntity(): ItemEntity =
-    ItemEntity(id = id, name = name, category = category.name)
+    ItemEntity(name = name, category = category.name)
