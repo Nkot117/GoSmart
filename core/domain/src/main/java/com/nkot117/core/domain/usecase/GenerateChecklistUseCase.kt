@@ -2,11 +2,11 @@ package com.nkot117.core.domain.usecase
 
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
-import com.nkot117.core.domain.repository.ItemRepository
+import com.nkot117.core.domain.repository.ItemsRepository
 import kotlinx.coroutines.flow.first
 
 class GenerateChecklistUseCase(
-    private val repository: ItemRepository
+    private val repository: ItemsRepository
 ) {
     suspend operator fun invoke(
         isWorkday: Boolean,
