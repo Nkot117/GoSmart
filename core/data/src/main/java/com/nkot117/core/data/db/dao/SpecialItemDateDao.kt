@@ -16,9 +16,8 @@ interface SpecialItemDateDao {
     fun getDatesForItem(itemId: Long): Flow<List<String>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(entity: SpecialItemDatesEntity
-    )
+    suspend fun insert(entity: SpecialItemDatesEntity)
 
-    @Query("DELETE FROM special_item_dates WHERE itemId = :itemId AND date = :date")
-    suspend fun deleteByItemAndDate(itemId: Long, date: String)
+    @Query("DELETE FROM special_item_dates WHERE itemId = :itemId")
+    suspend fun clear(itemId: Long)
 }

@@ -28,8 +28,13 @@ class SpecialItemDateRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun deleteDate(itemId: Long, date: LocalDate) {
-        dao.deleteByItemAndDate(itemId = itemId, date = date.toString())
+    override suspend fun replaceDate(itemId: Long, date: LocalDate) {
+        dao.clear(itemId)
+        dao.insert(
+            SpecialItemDatesEntity(
+                itemId = itemId,
+                date = date.toString()
+            )
+        )
     }
-
 }

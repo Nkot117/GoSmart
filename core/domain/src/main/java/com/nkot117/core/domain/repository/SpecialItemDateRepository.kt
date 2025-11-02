@@ -7,5 +7,5 @@ interface SpecialItemDateRepository {
     fun getItemIdsOnDate(date: LocalDate): Flow<List<Long>>
     fun getDatesForItem(itemId: Long): Flow<List<String>>
     suspend fun saveDate(itemId: Long, date: LocalDate)
-    suspend fun deleteDate(itemId: Long, date: LocalDate)
+    suspend fun replaceDate(itemId: Long, date: LocalDate)
 }
