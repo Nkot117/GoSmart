@@ -17,7 +17,7 @@ interface SpecialItemDateDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entity: SpecialItemDatesEntity
-    ): Long
+    )
 
     @Query("DELETE FROM special_item_dates WHERE itemId = :itemId AND date = :date")
     suspend fun deleteByItemAndDate(itemId: Long, date: String)

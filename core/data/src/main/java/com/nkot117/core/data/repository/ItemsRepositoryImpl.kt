@@ -18,9 +18,7 @@ class ItemsRepositoryImpl @Inject constructor(
     override fun getAllItems(): Flow<List<Item>> =
         dao.getAll().map { list -> list.map { it.toDomain() } }
 
-    override suspend fun saveItem(item: Item) {
-        dao.insert(item.toEntity())
-    }
+    override suspend fun saveItem(item: Item): Long =  dao.insert(item.toEntity())
 
     override suspend fun deleteItem(id: String) {
         dao.deleteById(id)
