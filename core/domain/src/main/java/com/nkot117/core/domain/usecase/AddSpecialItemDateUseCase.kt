@@ -8,7 +8,7 @@ class AddSpecialItemDateUseCase(
     private val specialItemDateRepository: SpecialItemDateRepository,
 ) {
     /**
-     * 特定の日付に持ち物を紐付けて保存するユースケース。
+     * 特定の日付に持ち物を紐付けて保存するユースケース
      *
      * 「ある日にだけ持っていきたい物」を登録するために使用する。
      * 例えば「2/14 に渡すプレゼント」や「健康診断の日に必要な書類」など、

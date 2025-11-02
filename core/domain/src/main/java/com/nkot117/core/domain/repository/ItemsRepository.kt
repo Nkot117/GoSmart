@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface ItemsRepository {
     fun getAllItems(): Flow<List<Item>>
     suspend fun saveItem(item: Item): Long
-    suspend fun deleteItem(id: String)
+    suspend fun deleteItem(id: Long)
 }

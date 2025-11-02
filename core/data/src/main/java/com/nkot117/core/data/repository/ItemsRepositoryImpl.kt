@@ -20,7 +20,7 @@ class ItemsRepositoryImpl @Inject constructor(
 
     override suspend fun saveItem(item: Item): Long =  dao.insert(item.toEntity())
 
-    override suspend fun deleteItem(id: String) {
+    override suspend fun deleteItem(id: Long) {
         dao.deleteById(id)
     }
 }

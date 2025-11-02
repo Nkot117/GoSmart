@@ -11,7 +11,7 @@ class SaveItemUseCase(
     private val itemsRepository: ItemsRepository,
 ) {
     /**
-     * アイテムを保存するユースケース。
+     * アイテムを保存するユースケース
      *
      * 新規登録、または既存アイテムの更新に使用する。
      * 保存処理は Room によって行われ、`id` が未設定（null）の場合は
