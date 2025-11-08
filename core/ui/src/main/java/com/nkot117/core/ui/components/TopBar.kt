@@ -16,7 +16,7 @@ fun AppTopBar(
     title: String,
     onBack: (() -> Unit)? = null,
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = {
             Text(
                 title,
