@@ -6,8 +6,9 @@ import com.nkot117.core.domain.repository.ItemsRepository
 import com.nkot117.core.domain.repository.SpecialItemDateRepository
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
+import javax.inject.Inject
 
-class GenerateChecklistUseCase(
+class GenerateChecklistUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository,
     private val specialItemDateRepository: SpecialItemDateRepository
 ) {

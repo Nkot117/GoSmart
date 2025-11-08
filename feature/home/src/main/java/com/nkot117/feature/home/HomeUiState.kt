@@ -4,8 +4,9 @@ import com.nkot117.core.domain.model.Item
 import java.time.LocalDate
 
 data class HomeUiState(
+    val dateLabel: String = LocalDate.now().toString(),
     val isWorkday: Boolean = true,
     val isRain: Boolean = false,
     val date: LocalDate = LocalDate.now(),
-    val checklist: List<Item> = emptyList()
+    val preview: List<Item> = emptyList()
 )
