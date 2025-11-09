@@ -15,7 +15,7 @@
 
 ### 実装方針
 
-#### MainActivity に 1 つだけ Scaffod を置く
+#### MainActivity に 1 つだけ Scaffold を置く
 
 ```kotlin
 class MainActivity : ComponentActivity() {
@@ -48,20 +48,24 @@ class MainActivity : ComponentActivity() {
 ```kotlin
 @Composable
 fun HomeScreenRoute(
-contentPadding: PaddingValues,
-setTopBar: (@Composable () -> Unit) -> Unit,
-setFab: (@Composable () -> Unit) -> Unit,
-viewModel: HomeViewModel = hiltViewModel(),
+    contentPadding: PaddingValues,
+    setTopBar: (@Composable () -> Unit) -> Unit,
+    setFab: (@Composable () -> Unit) -> Unit,
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
-val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     // 初回描画時に画面ごとの TopBar / FAB を差し替える
-    LaunchedEffect(Unit) {
+    DisposableEffect(Unit) {
         setTopBar { AppTopBar(title = "ホーム") }
         setFab {
             FloatingActionButton(onClick = { /* navigate */ }) {
                 Icon(Icons.Default.Add, contentDescription = "追加")
             }
+        }
+        onDispose {
+            setTopBar { }
+            setFab { }
         }
     }
 
@@ -71,9 +75,10 @@ val state by viewModel.uiState.collectAsStateWithLifecycle()
         onClickItem = viewModel::onItemClick,
         contentPadding = contentPadding
     )
-
 }
 ```
+
+TopBar や FAB を他画面へ影響なく切り替えるため、Route では `DisposableEffect` を用いて設定と解除をワンセットで記述する。`setTopBar { }` / `setFab { }` で空ラムダを渡せば非表示状態を明示でき、複数画面を素早く切り替えても前画面の UI が残らない。
 
 #### 各画面の Screen コンポーザブルで 画面のコンテンツを設定する
 
@@ -95,3 +100,9 @@ fun HomeScreen(
     }
 }
 ```
+
+#### 運用ルール
+
+- TopBar のタイトル・ナビゲーションアイコン・アクションは Route でまとめて定義する。
+- FAB が不要な画面では `setFab { }` を呼び出して空の Composable を渡して非表示にする。
+- Edge-to-edge を有効にしているため、Screen コンポーネントでは `contentPadding` を確実に受け取り、`innerPadding` を尊重する。これにより TopBar / FAB とコンテンツの重なりを防ぐ。
