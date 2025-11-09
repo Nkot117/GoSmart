@@ -15,3 +15,9 @@ val TextSub = Color(0xFF666666)
 
 // Border / Divider
 val BorderLine = Color(0xFFE0E7F1)
+
+// Background
+val BgWorkdayTop = Color(0xFFEEF4FF)
+val BgWorkdayBottom = Color(0xFFDCEAFF)
+val BgHolidayTop = Color(0xFFFFF8EC)
+val BgHolidayBottom = Color(0xFFFFECCF)
