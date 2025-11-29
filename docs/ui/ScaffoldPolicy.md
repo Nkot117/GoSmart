@@ -105,4 +105,4 @@ fun HomeScreen(
 
 - TopBar のタイトル・ナビゲーションアイコン・アクションは Route でまとめて定義する。
 - FAB が不要な画面では `setFab { }` を呼び出して空の Composable を渡して非表示にする。
-- Edge-to-edge を有効にしているため、Screen コンポーネントでは `contentPadding` を確実に受け取り、`innerPadding` を尊重する。これにより TopBar / FAB とコンテンツの重なりを防ぐ。
+- Edge-to-edge を有効にしているため、Screen コンポーネントでは `contentPadding` を受け取り、`innerPadding` を指定する。これにより TopBar / FAB とコンテンツの重なりを防ぐ。
