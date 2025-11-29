@@ -7,11 +7,11 @@
 
 ### 全体構成
 
-| レイヤ                         | 役割                                            | 例                                        |
-| ------------------------------ | ----------------------------------------------- | ----------------------------------------- |
-| MainActivity（または AppRoot） | `Scaffold` の定義。TopBar / FAB のスロット管理  | `Scaffold(topBar = { … }, fab = { … })`   |
-| \*Route（XxxScreenRoute）      | ViewModel / DI / 画面単位の設定                 | `LaunchedEffect` で TopBar / FAB 差し替え |
-| Screen（XxxScreen）            | 純粋な UI 描画（状態/イベントを引数で受け取る） | `Column` / `LazyColumn` などの構成のみ    |
+| レイヤ                  | 役割                                                                 |
+| ----------------------- | -------------------------------------------------------------------- |
+| MainActivity            | `Scaffold` の定義。TopBar / FAB のスロット管理。                     |
+| Route（XxxScreenRoute） | ViewModel / DI / 画面単位の初期設定                                  |
+| Screen（XxxScreen）     | 純粋な UI 描画（State/viewModel に定義している関数を引数で受け取る） |
 
 ### 実装方針
 
