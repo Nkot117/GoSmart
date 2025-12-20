@@ -35,10 +35,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nkot117.core.domain.model.DayType
+import com.nkot117.core.domain.model.Item
+import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.ui.components.AppTopBar
-import com.nkot117.core.ui.components.ChecklistRow
+import com.nkot117.core.ui.components.ChecklistPreviewRow
 import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.components.TwoOptionSegment
+import com.nkot117.core.ui.theme.BgHolidayBottom
+import com.nkot117.core.ui.theme.BgHolidayTop
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.SmartGoTheme
@@ -69,16 +74,17 @@ fun HomeScreenRoute(
         setFab { FloatingActionButton(onClick = {}) { Icon(Icons.Default.Add, null) } }
     }
 
-    LaunchedEffect(state.isWorkday, state.isRain, state.date) {
+    LaunchedEffect(state.dayType, state.weatherType, state.date) {
         viewModel.getChecklist()
     }
 
-    HomeScreen(contentPadding)
+    HomeScreen(contentPadding = contentPadding, state = state)
 }
 
 @Composable
 fun HomeScreen(
     contentPadding: PaddingValues,
+    state: HomeUiState,
 ) {
     Box(
         Modifier
@@ -86,9 +92,12 @@ fun HomeScreen(
             .padding(contentPadding)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(
+                    colors = if (state.dayType == DayType.WORKDAY) listOf(
                         BgWorkdayTop,
                         BgWorkdayBottom
+                    ) else listOf(
+                        BgHolidayTop,
+                        BgHolidayBottom
                     )
                 )
             )
@@ -104,13 +113,14 @@ fun HomeScreen(
             // 日付
             item {
                 Text(
-                    "2025/01/15(WEB)",
+                    text = state.date.toString(),
                     style = MaterialTheme.typography.bodyMedium,
                     color = TextSub
                 )
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 
+                // FIXME: 選択した側を有効にするように変更が必要
                 // Work / Holiday 選択
                 TwoOptionSegment(
                     rightLabel = "Holiday",
@@ -122,13 +132,14 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 
+                // FIXME: 選択した側を有効にするように変更が必要
                 // 天気選択カード
                 WeatherSelectorCard()
 
                 Spacer(modifier = Modifier.padding(top = 30.dp))
 
                 // 持ち物プレビュー
-                ItemPreview()
+                ItemPreview(state.preview)
 
                 Spacer(modifier = Modifier.padding(top = 30.dp))
             }
@@ -188,7 +199,9 @@ fun WeatherSelectorCard() {
 }
 
 @Composable
-fun ItemPreview() {
+fun ItemPreview(
+    previewList: List<Item>,
+) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -202,44 +215,13 @@ fun ItemPreview() {
 
             Spacer(modifier = Modifier.padding(top = 5.dp))
 
-            ChecklistRow(
-                title = "財布",
-                checked = false,
-                onCheckedChange = {},
-            )
+            previewList.forEach {
+                ChecklistPreviewRow(
+                    title = it.name
+                )
 
-            Spacer(modifier = Modifier.padding(top = 15.dp))
-
-            ChecklistRow(
-                title = "スマホ",
-                checked = false,
-                onCheckedChange = {},
-                modifier = Modifier
-                    .width(320.dp)
-                    .height(58.dp)
-            )
-            Spacer(modifier = Modifier.padding(top = 15.dp))
-
-            ChecklistRow(
-                title = "家の鍵",
-                checked = false,
-                onCheckedChange = {},
-                modifier = Modifier
-                    .width(320.dp)
-                    .height(58.dp)
-            )
-
-            Spacer(modifier = Modifier.padding(top = 15.dp))
-
-            ChecklistRow(
-                title = "財布",
-                checked = false,
-                onCheckedChange = {},
-                modifier = Modifier
-                    .width(320.dp)
-                    .height(58.dp)
-            )
-            Spacer(modifier = Modifier.padding(top = 15.dp))
+                Spacer(modifier = Modifier.padding(top = 15.dp))
+            }
         }
     }
 }
@@ -261,7 +243,31 @@ private fun HomeScreenPreview() {
             }
         ) { inner ->
             HomeScreen(
-                contentPadding = inner
+                contentPadding = inner,
+                state = HomeUiState(
+                    preview = listOf(
+                        Item(
+                            name = "家の鍵",
+                            category = ItemCategory.ALWAYS
+                        ),
+                        Item(
+                            name = "財布",
+                            category = ItemCategory.ALWAYS
+                        ),
+                        Item(
+                            name = "スマートフォン",
+                            category = ItemCategory.ALWAYS
+                        ),
+                        Item(
+                            name = "社員証",
+                            category = ItemCategory.WORKDAY
+                        ),
+                        Item(
+                            name = "折りたたみ傘",
+                            category = ItemCategory.RAINY
+                        )
+                    )
+                )
             )
         }
     }

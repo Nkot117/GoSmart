@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 data class HomeUiState(
     val date: LocalDate = LocalDate.now(),
-    val dayType: DayType,
-    val weatherType: WeatherType,
+    val dayType: DayType = DayType.WORKDAY,
+    val weatherType: WeatherType = WeatherType.SUNNY,
     val preview: List<Item> = emptyList(),
 )

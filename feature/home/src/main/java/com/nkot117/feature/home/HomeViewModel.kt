@@ -2,6 +2,8 @@ package com.nkot117.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nkot117.core.domain.model.DayType
+import com.nkot117.core.domain.model.WeatherType
 import com.nkot117.core.domain.usecase.GenerateChecklistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val generateChecklistUseCase: GenerateChecklistUseCase
+    private val generateChecklistUseCase: GenerateChecklistUseCase,
 ) : ViewModel() {
     /**
      * UiState
@@ -26,20 +28,20 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val state = uiState.value
             val items = generateChecklistUseCase(
-                isWorkday = state.isWorkday,
-                isRain = state.isRain,
+                dayType = state.dayType,
+                weatherType = state.weatherType,
                 date = state.date
             )
             _uiState.update { it.copy(preview = items) }
         }
     }
 
-    fun setWorkday(isWorkday: Boolean) {
-        _uiState.update { it.copy(isWorkday = isWorkday) }
+    fun setDayType(dayType: DayType) {
+        _uiState.update { it.copy(dayType = dayType) }
     }
 
-    fun setRain(isRain: Boolean) {
-        _uiState.update { it.copy(isRain = isRain) }
+    fun setWeatherType(weatherType: WeatherType) {
+        _uiState.update { it.copy(weatherType = weatherType) }
     }
 
     fun setDate(date: LocalDate) {

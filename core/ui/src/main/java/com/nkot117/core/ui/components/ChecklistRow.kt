@@ -2,7 +2,12 @@ package com.nkot117.core.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -12,6 +17,35 @@ import androidx.compose.ui.unit.dp
 import com.nkot117.core.ui.theme.BorderLine
 import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
+
+
+@Composable
+fun ChecklistPreviewRow(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    val shape = RoundedCornerShape(16.dp)
+    Surface(
+        shape = shape,
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, BorderLine),
+        modifier = modifier
+    ) {
+        ListItem(
+            headlineContent = {
+                Text(
+                    title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextSub
+                )
+            },
+            colors = ListItemDefaults.colors(
+                containerColor = Color.Transparent
+            ),
+            modifier = Modifier.clip(shape)
+        )
+    }
+}
 
 @Composable
 fun ChecklistRow(
@@ -48,6 +82,16 @@ fun ChecklistRow(
 
 @Preview(showBackground = true)
 @Composable
+private fun ChecklistPreviewRowPreview() {
+    SmartGoTheme {
+        ChecklistPreviewRow(
+            title = "家の鍵",
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 private fun ChecklistRowPreview() {
     SmartGoTheme {
         ChecklistRow(
@@ -69,3 +113,4 @@ private fun ChecklistRowPreview_Checked() {
         )
     }
 }
+
