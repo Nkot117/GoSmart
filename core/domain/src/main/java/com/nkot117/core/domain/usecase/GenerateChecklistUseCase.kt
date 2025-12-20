@@ -15,7 +15,7 @@ class GenerateChecklistUseCase @Inject constructor(
     private val specialItemDateRepository: SpecialItemDateRepository,
 ) {
     /**
-     * 持ち物チェックリストを生成するユースケース。
+     * 持ち物チェックリストを生成するユースケース
      *
      * 指定された条件（勤務区分・天気・日付）に基づいて、
      * 登録されているアイテムの中から「持っていくべきもの」を抽出する。
