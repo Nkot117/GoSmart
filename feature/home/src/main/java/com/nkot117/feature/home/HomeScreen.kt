@@ -1,14 +1,17 @@
 package com.nkot117.feature.home
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -28,6 +31,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
@@ -76,23 +83,42 @@ fun HomeScreen(
     state: HomeUiState,
     setDayType: (DayType) -> Unit,
     setWeatherType: (WeatherType) -> Unit,
-) {
+
+    ) {
+    val topColor by animateColorAsState(
+        targetValue = if (state.dayType == DayType.WORKDAY) {
+            BgWorkdayTop
+        } else {
+            BgHolidayTop
+        },
+        label = "bg_top"
+    )
+
+    val bottomColor by animateColorAsState(
+        targetValue = if (state.dayType == DayType.WORKDAY) {
+            BgWorkdayBottom
+        } else {
+            BgHolidayBottom
+        },
+        label = "bg_bottom"
+    )
+
     Box(
         Modifier
             .fillMaxSize()
             .padding(contentPadding)
             .background(
                 brush = Brush.verticalGradient(
-                    colors = if (state.dayType == DayType.WORKDAY) listOf(
-                        BgWorkdayTop,
-                        BgWorkdayBottom
-                    ) else listOf(
-                        BgHolidayTop,
-                        BgHolidayBottom
-                    )
+                    colors = listOf(topColor, bottomColor)
                 )
             )
     ) {
+        val composition by rememberLottieComposition(
+            LottieCompositionSpec.RawRes(
+                if (state.weatherType == WeatherType.SUNNY) com.nkot117.core.ui.R.raw.sunny else com.nkot117.core.ui.R.raw.rainy
+            )
+        )
+
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(
@@ -101,13 +127,27 @@ fun HomeScreen(
             ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 日付
             item {
-                Text(
-                    text = state.date.toString(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = TextSub
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // 日付
+                    Text(
+                        text = state.date.toString(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = TextSub
+                    )
+
+                    Spacer(modifier = Modifier.padding(end = 20.dp))
+
+                    LottieAnimation(
+                        composition = composition,
+                        iterations = LottieConstants.IterateForever,
+                        modifier = Modifier.size(54.dp)
+                    )
+
+
+                }
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 

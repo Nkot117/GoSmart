@@ -11,6 +11,7 @@ lifecycleViewmodelCompose = "2.9.4"
 hiltAndroid = "2.57"
 ksp = "2.0.21-1.0.25"
 hiltNavigationCompose = "1.2.0"
+lottieCompose = "6.7.1"
 room = "2.7.2"
 
 [libraries]
@@ -34,6 +35,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
