@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,15 +13,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
+import com.nkot117.core.domain.model.WeatherType
 import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.core.ui.components.ChecklistPreviewRow
 import com.nkot117.core.ui.components.PrimaryButton
@@ -49,17 +43,6 @@ import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
-
-private enum class WeatherUi(
-    val label: String,
-) {
-    SUNNY(
-        label = "晴れ",
-    ),
-    RAINY(
-        label = "雨"
-    )
-}
 
 @Composable
 fun HomeScreenRoute(
@@ -83,6 +66,7 @@ fun HomeScreenRoute(
         contentPadding = contentPadding,
         state = state,
         setDayType = viewModel::setDayType,
+        setWeatherType = viewModel::setWeatherType
     )
 }
 
@@ -91,6 +75,7 @@ fun HomeScreen(
     contentPadding: PaddingValues,
     state: HomeUiState,
     setDayType: (DayType) -> Unit,
+    setWeatherType: (WeatherType) -> Unit,
 ) {
     Box(
         Modifier
@@ -137,11 +122,16 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 
-                // FIXME: 選択した側を有効にするように変更が必要
-                // 天気選択カード
-                WeatherSelectorCard()
+                // Sunny / Rainy 選択
+                TwoOptionSegment(
+                    left = SegmentOption(WeatherType.SUNNY, "Sunny"),
+                    right = SegmentOption(WeatherType.RAINY, "Rainy"),
+                    selected = state.weatherType,
+                    onSelectedChange = { setWeatherType(it) },
+                    modifier = Modifier.width(300.dp)
+                )
 
-                Spacer(modifier = Modifier.padding(top = 30.dp))
+                Spacer(modifier = Modifier.padding(top = 15.dp))
 
                 // 持ち物プレビュー
                 ItemPreview(state.preview)
@@ -160,46 +150,6 @@ fun HomeScreen(
                 .height(56.dp)
                 .width(260.dp)
         )
-    }
-}
-
-@Composable
-fun WeatherSelectorCard() {
-    Box(modifier = Modifier.fillMaxWidth()) {
-        Column {
-            Text(
-                "今日の天気は？",
-                style = MaterialTheme.typography.titleLarge,
-            )
-
-            Spacer(modifier = Modifier.padding(top = 5.dp))
-
-            ElevatedCard(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.elevatedCardColors(Color.White),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 65.dp, vertical = 15.dp)
-                        .background(color = Color.White),
-                ) {
-                    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
-                        WeatherUi.entries.forEachIndexed { index, weather ->
-                            SegmentedButton(
-                                label = { Text(weather.label) },
-                                selected = false,
-                                onClick = {},
-                                shape = SegmentedButtonDefaults.itemShape(
-                                    index,
-                                    WeatherUi.entries.size
-                                ),
-                            )
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -273,7 +223,8 @@ private fun HomeScreenPreview() {
                         )
                     )
                 ),
-                setDayType = {}
+                setDayType = {},
+                setWeatherType = {}
             )
         }
     }
