@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -60,11 +61,15 @@ fun HomeScreenRoute(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    DisposableEffect(Unit) {
         setTopBar { AppTopBar(title = "ホーム") }
         setFab { FloatingActionButton(onClick = {}) { Icon(Icons.Default.Add, null) } }
-    }
 
+        onDispose {
+            setTopBar { }
+            setFab { }
+        }
+    }
     LaunchedEffect(state.dayType, state.weatherType, state.date) {
         viewModel.getChecklist()
     }
