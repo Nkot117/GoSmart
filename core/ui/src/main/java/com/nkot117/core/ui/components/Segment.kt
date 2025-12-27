@@ -3,15 +3,16 @@ package com.nkot117.core.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,39 +22,43 @@ import androidx.compose.ui.unit.dp
 import com.nkot117.core.ui.theme.BorderLine
 import com.nkot117.core.ui.theme.Primary100
 import com.nkot117.core.ui.theme.Primary500
-import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
 
+data class SegmentOption<T>(
+    val value: T,
+    val label: String,
+)
+
 @Composable
-fun TwoOptionSegment(
-    leftLabel: String,
-    rightLabel: String,
-    selectedLeft: Boolean,
-    onSelect: (Boolean) -> Unit,
+fun <T> TwoOptionSegment(
+    left: SegmentOption<T>,
+    right: SegmentOption<T>,
+    selected: T,
+    onSelectedChange: (T) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val primary500 = Primary500
-    val primary100 = Primary100
-    val border = BorderLine
-    val textSub = TextSub
+    val shape = RoundedCornerShape(12.dp)
 
     Row(
         modifier = modifier
             .height(44.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .border(1.dp, border, RoundedCornerShape(12.dp))
+            .clip(shape)
+            .border(1.dp, BorderLine, shape)
     ) {
+        val leftSelected = selected == left.value
+        val rightSelected = selected == right.value
+
         Box(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .background(if (selectedLeft) primary500 else Color.Transparent)
-                .clickable { onSelect(true) },
+                .background(if (leftSelected) Primary500 else Color.Transparent)
+                .clickable(!leftSelected) { onSelectedChange(left.value) },
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = leftLabel,
-                color = if (selectedLeft) primary100 else textSub,
+                text = left.label,
+                color = if (leftSelected) Primary100 else TextSub,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -62,31 +67,48 @@ fun TwoOptionSegment(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .background(if (!selectedLeft) Primary500 else Color.Transparent)
-                .clickable { onSelect(false) },
+                .background(if (rightSelected) Primary500 else Color.Transparent)
+                .clickable(!rightSelected) { onSelectedChange(right.value) },
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = rightLabel,
-                color = if (!selectedLeft) primary100 else textSub,
+                text = right.label,
+                color = if (rightSelected) Primary100 else TextSub,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun TwoOptionSegmentPreview() {
-    SmartGoTheme {
-        var selected by remember { mutableStateOf(true) }
+private enum class PreviewType {
+    Work,
+    Holiday,
+}
 
-        TwoOptionSegment(
-            leftLabel = "Work",
-            rightLabel = "Holiday",
-            selectedLeft = selected,
-            onSelect = { selected = it },
-            modifier = Modifier.padding(16.dp)
-        )
-    }
+@Preview(showBackground = true, name = "Left Selected")
+@Composable
+private fun TwoOptionSegmentLeftSelectedPreview() {
+    TwoOptionSegment(
+        left = SegmentOption(PreviewType.Work, "Work"),
+        right = SegmentOption(PreviewType.Holiday, "Holiday"),
+        selected = PreviewType.Work,
+        onSelectedChange = {},
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+    )
+}
+
+@Preview(showBackground = true, name = "Right Selected")
+@Composable
+private fun TwoOptionSegmentRightSelectedPreview() {
+    TwoOptionSegment(
+        left = SegmentOption(PreviewType.Work, "Work"),
+        right = SegmentOption(PreviewType.Holiday, "Holiday"),
+        selected = PreviewType.Holiday,
+        onSelectedChange = {},
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+    )
 }
