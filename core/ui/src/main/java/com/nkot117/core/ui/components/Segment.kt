@@ -52,7 +52,7 @@ fun <T> TwoOptionSegment(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .background(if (leftSelected) Primary500 else Color.Transparent)
+                .background(if (leftSelected) Primary500 else Color.White)
                 .clickable(!leftSelected) { onSelectedChange(left.value) },
             contentAlignment = Alignment.Center
         ) {
@@ -67,7 +67,7 @@ fun <T> TwoOptionSegment(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .background(if (rightSelected) Primary500 else Color.Transparent)
+                .background(if (rightSelected) Primary500 else Color.White)
                 .clickable(!rightSelected) { onSelectedChange(right.value) },
             contentAlignment = Alignment.Center
         ) {

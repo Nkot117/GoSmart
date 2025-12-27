@@ -41,6 +41,7 @@ import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.core.ui.components.ChecklistPreviewRow
 import com.nkot117.core.ui.components.PrimaryButton
+import com.nkot117.core.ui.components.SegmentOption
 import com.nkot117.core.ui.components.TwoOptionSegment
 import com.nkot117.core.ui.theme.BgHolidayBottom
 import com.nkot117.core.ui.theme.BgHolidayTop
@@ -78,13 +79,18 @@ fun HomeScreenRoute(
         viewModel.getChecklist()
     }
 
-    HomeScreen(contentPadding = contentPadding, state = state)
+    HomeScreen(
+        contentPadding = contentPadding,
+        state = state,
+        setDayType = viewModel::setDayType,
+    )
 }
 
 @Composable
 fun HomeScreen(
     contentPadding: PaddingValues,
     state: HomeUiState,
+    setDayType: (DayType) -> Unit,
 ) {
     Box(
         Modifier
@@ -120,13 +126,12 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 
-                // FIXME: 選択した側を有効にするように変更が必要
                 // Work / Holiday 選択
                 TwoOptionSegment(
-                    rightLabel = "Holiday",
-                    leftLabel = "Work",
-                    selectedLeft = true,
-                    onSelect = {},
+                    left = SegmentOption(DayType.WORKDAY, "Work"),
+                    right = SegmentOption(DayType.HOLIDAY, "Holiday"),
+                    selected = state.dayType,
+                    onSelectedChange = { setDayType(it) },
                     modifier = Modifier.width(300.dp)
                 )
 
@@ -267,7 +272,8 @@ private fun HomeScreenPreview() {
                             category = ItemCategory.RAINY
                         )
                     )
-                )
+                ),
+                setDayType = {}
             )
         }
     }
