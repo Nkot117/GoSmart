@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -55,21 +54,11 @@ import com.nkot117.core.ui.theme.TextSub
 @Composable
 fun HomeScreenRoute(
     contentPadding: PaddingValues,
-    setTopBar: (@Composable () -> Unit) -> Unit,
-    setFab: (@Composable () -> Unit) -> Unit,
+    onTapCheckList: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DisposableEffect(Unit) {
-        setTopBar { AppTopBar(title = "ホーム") }
-        setFab { FloatingActionButton(onClick = {}) { Icon(Icons.Default.Add, null) } }
-
-        onDispose {
-            setTopBar { }
-            setFab { }
-        }
-    }
     LaunchedEffect(state.dayType, state.weatherType, state.date) {
         viewModel.getChecklist()
     }
@@ -78,7 +67,8 @@ fun HomeScreenRoute(
         contentPadding = contentPadding,
         state = state,
         setDayType = viewModel::setDayType,
-        setWeatherType = viewModel::setWeatherType
+        setWeatherType = viewModel::setWeatherType,
+        onTapCheckList = onTapCheckList
     )
 }
 
@@ -88,8 +78,8 @@ fun HomeScreen(
     state: HomeUiState,
     setDayType: (DayType) -> Unit,
     setWeatherType: (WeatherType) -> Unit,
-
-    ) {
+    onTapCheckList: () -> Unit,
+) {
     val topColor by animateColorAsState(
         targetValue = if (state.dayType == DayType.WORKDAY) {
             BgWorkdayTop
@@ -188,7 +178,7 @@ fun HomeScreen(
         // チェックリスト遷移ボタン
         PrimaryButton(
             text = "チェックリストへ",
-            onClick = {},
+            onClick = onTapCheckList,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
@@ -269,7 +259,8 @@ private fun HomeScreenPreview() {
                     )
                 ),
                 setDayType = {},
-                setWeatherType = {}
+                setWeatherType = {},
+                onTapCheckList = {}
             )
         }
     }
