@@ -24,7 +24,7 @@ data class ScaffoldSpec(
 fun AppScaffold() {
     val navigator = remember { Navigator() }
     val backStack = navigator.backStack
-    val scaffoldSpec = scaffoldSpecForNavKey(navigator.current)
+    val scaffoldSpec = scaffoldSpecForNavKey(navigator.current, { navigator.pop() })
 
     Scaffold(
         topBar = scaffoldSpec.topBar,
@@ -49,7 +49,7 @@ fun AppScaffold() {
     }
 }
 
-private fun scaffoldSpecForNavKey(appNavKey: AppNavKey): ScaffoldSpec {
+private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, onBack: () -> Unit): ScaffoldSpec {
     return when (appNavKey) {
         AppNavKey.Home -> ScaffoldSpec(
             topBar = { AppTopBar(title = "ホーム") },
@@ -64,7 +64,7 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey): ScaffoldSpec {
         )
 
         AppNavKey.Checklist -> ScaffoldSpec(
-            topBar = { AppTopBar(title = "チェックリスト") },
+            topBar = { AppTopBar(title = "チェックリスト", onBack = onBack) }
         )
     }
 }
