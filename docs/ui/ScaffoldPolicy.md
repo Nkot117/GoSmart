@@ -3,82 +3,78 @@
 本アプリにおける Scaffold / TopBar / FAB の扱い方針をまとめ、画面追加時の迷いやコードの肥大化を防ぐことを目的とする。
 
 - Scaffold をアプリ全体で 1 箇所に統一し、TopBar と FAB のレイアウトの位置ズレを防ぐ。
-- TopBar と FAB の内容については、各画面で設定する。
+- TopBar と FAB の内容については、現在の画面（NavKey）から決定する。
 
-### 全体構成
+## 全体構成
 
-| レイヤ                  | 役割                                                                 |
-| ----------------------- | -------------------------------------------------------------------- |
-| MainActivity            | `Scaffold` の定義。TopBar / FAB のスロット管理。                     |
-| Route（XxxScreenRoute） | ViewModel / DI / 画面単位の初期設定                                  |
-| Screen（XxxScreen）     | 純粋な UI 描画（State/viewModel に定義している関数を引数で受け取る） |
+| レイヤ                     | 役割                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| MainActivity / AppScaffold | `Scaffold` の定義。TopBar / FAB の適用。BackStack を保持し NavDisplay に渡す |
+| Route（XxxScreenRoute）    | ViewModel / DI / 画面単位の初期設定                                          |
+| Screen（XxxScreen）        | 純粋な UI 描画（State/ViewModel に定義している関数を引数で受け取る）         |
 
-### 実装方針
+## 実装方針
 
-#### MainActivity に 1 つだけ Scaffold を置く
-
-```kotlin
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            SmartGoTheme {
-                var topBar by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
-                var fab by remember { mutableStateOf<(@Composable () -> Unit)?>(null) }
-
-                Scaffold(
-                    topBar = { topBar?.invoke() },
-                    floatingActionButton = { fab?.invoke() }
-                ) { inner ->
-                    AppNavHost(
-                        contentPadding = inner,
-                        setTopBar = { topBar = it },
-                        setFab = { fab = it }
-                    )
-                }
-            }
-        }
-    }
-}
-```
-
-#### 各画面の Route コンポーザブルで TopBar と FAB の設定を行う
+### 1. Scaffold はアプリで 1 つだけ持つ
 
 ```kotlin
 @Composable
-fun HomeScreenRoute(
-    contentPadding: PaddingValues,
-    setTopBar: (@Composable () -> Unit) -> Unit,
-    setFab: (@Composable () -> Unit) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel(),
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    // 初回描画時に画面ごとの TopBar / FAB を差し替える
-    DisposableEffect(Unit) {
-        setTopBar { AppTopBar(title = "ホーム") }
-        setFab {
-            FloatingActionButton(onClick = { /* navigate */ }) {
-                Icon(Icons.Default.Add, contentDescription = "追加")
-            }
-        }
-        onDispose {
-            setTopBar { }
-            setFab { }
-        }
-    }
-
-    // 画面のメインコンテンツを定義するScreenコンポーザブルを呼び出す
-    HomeScreen(
-        state = state,
-        onClickItem = viewModel::onItemClick,
-        contentPadding = contentPadding
+fun AppScaffold() {
+    val navigator = remember { Navigator() }
+    val scaffoldSpec = scaffoldSpecForNavKey(
+        appNavKey = navigator.current,
+        onBack = { navigator.pop() }
     )
+
+    Scaffold(
+        topBar = scaffoldSpec.topBar,
+        floatingActionButton = scaffoldSpec.fab
+    ) { innerPadding ->
+        NavDisplay(
+            backStack = navigator.backStack,
+            onBack = { navigator.pop() },
+            entryProvider = entryProvider {
+                entry(AppNavKey.Home) {
+                    HomeScreenRoute(
+                        contentPadding = innerPadding,
+                        onTapCheckList = { navigator.push(AppNavKey.Checklist) }
+                    )
+                }
+                entry<AppNavKey.Checklist> {
+                    ChecklistScreenRoute(contentPadding = innerPadding)
+                }
+            }
+        )
+    }
 }
 ```
 
-TopBar や FAB を他画面へ影響なく切り替えるため、Route では `DisposableEffect` を用いて設定と解除をワンセットで記述する。`setTopBar { }` / `setFab { }` で空ラムダを渡せば非表示状態を明示でき、複数画面を素早く切り替えても前画面の UI が残らない。
+### 2. ScaffoldSpec で TopBar / FAB を宣言する
+
+```kotlin
+data class ScaffoldSpec(
+    val topBar: @Composable () -> Unit = {},
+    val fab: @Composable () -> Unit = {},
+)
+
+private fun scaffoldSpecForNavKey(
+    appNavKey: AppNavKey,
+    onBack: () -> Unit,
+): ScaffoldSpec = when (appNavKey) {
+    AppNavKey.Home -> ScaffoldSpec(
+        topBar = { AppTopBar(title = "ホーム") },
+        fab = {
+            FloatingActionButton(onClick = {}) {
+                Icon(Icons.Default.Add, contentDescription = null)
+            }
+        }
+    )
+
+    AppNavKey.Checklist -> ScaffoldSpec(
+        topBar = { AppTopBar(title = "チェックリスト", onBack = onBack) }
+    )
+}
+```
 
 #### 各画面の Screen コンポーザブルで 画面のコンテンツを設定する
 
@@ -103,6 +99,10 @@ fun HomeScreen(
 
 #### 運用ルール
 
-- TopBar のタイトル・ナビゲーションアイコン・アクションは Route でまとめて定義する。
-- FAB が不要な画面では `setFab { }` を呼び出して空の Composable を渡して非表示にする。
-- Edge-to-edge を有効にしているため、Screen コンポーネントでは `contentPadding` を受け取り、`innerPadding` を指定する。これにより TopBar / FAB とコンテンツの重なりを防ぐ。
+- 画面追加時は以下を実施する。
+  1. AppNavKey を追加
+  2. NavDisplay の entryProvider に entry を追加
+  3. scaffoldSpecForNavKey() に TopBar / FAB の定義を追加
+- Scaffold の要素（TopBar / FAB など）は各 Screen では触れない。Screen は画面コンテンツのみを担当する。
+- FAB が不要な画面は ScaffoldSpec(fab = {})（デフォルト）で非表示にする。
+- Scaffold によって確保された TopBar / FAB の占有領域をと各画面の表示要素の重なりを防止するため、Screen コンポーネントは contentPadding を受け取り、それをレイアウトに適用する。
