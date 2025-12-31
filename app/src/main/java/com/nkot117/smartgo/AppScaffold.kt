@@ -37,12 +37,21 @@ fun AppScaffold() {
                 entry(AppNavKey.Home) {
                     HomeScreenRoute(
                         contentPadding = innerPadding,
-                        onTapCheckList = { navigator.push(AppNavKey.Checklist) }
+                        onTapCheckList = { checklistScreenTransitionParams ->
+                            navigator.push(
+                                AppNavKey.Checklist(
+                                    params = checklistScreenTransitionParams
+                                )
+                            )
+                        }
+
                     )
                 }
-                entry<AppNavKey.Checklist> {
+                entry<AppNavKey.Checklist> { key ->
+                    val params = key.params
                     ChecklistScreenRoute(
                         contentPadding = innerPadding,
+                        params = params
                     )
                 }
             })
@@ -63,7 +72,7 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, onBack: () -> Unit): Sca
             }
         )
 
-        AppNavKey.Checklist -> ScaffoldSpec(
+        is AppNavKey.Checklist -> ScaffoldSpec(
             topBar = { AppTopBar(title = "チェックリスト", onBack = onBack) }
         )
     }

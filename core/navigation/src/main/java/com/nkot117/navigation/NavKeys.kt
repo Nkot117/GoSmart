@@ -8,5 +8,20 @@ sealed interface AppNavKey : NavKey {
     data object Home : AppNavKey
 
     @Serializable
-    data object Checklist : AppNavKey
+    data class Checklist(
+        val params: ChecklistScreenTransitionParams,
+    ) : AppNavKey
 }
+
+@Serializable
+data class ChecklistScreenTransitionParams(
+    val dayType: NavDayType,
+    val weatherType: NavWeatherType,
+    val date: String,
+)
+
+@Serializable
+enum class NavWeatherType { SUNNY, RAINY }
+
+@Serializable
+enum class NavDayType { WORKDAY, HOLIDAY }

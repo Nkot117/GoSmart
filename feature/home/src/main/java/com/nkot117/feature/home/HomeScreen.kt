@@ -50,11 +50,13 @@ import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
+import com.nkot117.navigation.ChecklistScreenTransitionParams
+import com.nkot117.navigation.toNav
 
 @Composable
 fun HomeScreenRoute(
     contentPadding: PaddingValues,
-    onTapCheckList: () -> Unit,
+    onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -78,7 +80,7 @@ fun HomeScreen(
     state: HomeUiState,
     setDayType: (DayType) -> Unit,
     setWeatherType: (WeatherType) -> Unit,
-    onTapCheckList: () -> Unit,
+    onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
 ) {
     val topColor by animateColorAsState(
         targetValue = if (state.dayType == DayType.WORKDAY) {
@@ -178,7 +180,16 @@ fun HomeScreen(
         // チェックリスト遷移ボタン
         PrimaryButton(
             text = "チェックリストへ",
-            onClick = onTapCheckList,
+            onClick = {
+                val params = ChecklistScreenTransitionParams(
+                    dayType = state.dayType.toNav(),
+                    weatherType = state.weatherType.toNav(),
+                    date = state.date.toString()
+                )
+                onTapCheckList(
+                    params
+                )
+            },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
