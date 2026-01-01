@@ -21,3 +21,8 @@ val BgWorkdayTop = Color(0xFFEEF4FF)
 val BgWorkdayBottom = Color(0xFFDCEAFF)
 val BgHolidayTop = Color(0xFFFFF8EC)
 val BgHolidayBottom = Color(0xFFFFECCF)
+
+// Progress
+val ProgressTrack = Color(0xFFE6ECF5)
+val ProgressActive = Primary500
+val ProgressComplete = Color(0xFF4CAF50)
