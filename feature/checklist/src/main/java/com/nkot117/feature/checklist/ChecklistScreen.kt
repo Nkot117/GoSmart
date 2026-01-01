@@ -46,13 +46,16 @@ import com.nkot117.core.ui.theme.ProgressTrack
 import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
 import com.nkot117.navigation.ChecklistScreenTransitionParams
+import com.nkot117.navigation.DoneScreenTransitionParams
 import com.nkot117.navigation.toDomain
+import com.nkot117.navigation.toNav
 import java.time.LocalDate
 
 @Composable
 fun ChecklistScreenRoute(
     contentPadding: PaddingValues,
     params: ChecklistScreenTransitionParams,
+    onTapDone: (params: DoneScreenTransitionParams) -> Unit,
     viewModel: ChecklistViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -72,7 +75,8 @@ fun ChecklistScreenRoute(
         checklist = state.checklist,
         toggleChecklistItem = viewModel::toggleChecklistItem,
         onCheckAll = viewModel::checkAllItems,
-        isAllChecked = isAllChecked
+        isAllChecked = isAllChecked,
+        onTapDone = onTapDone
     )
 }
 
@@ -84,6 +88,7 @@ fun ChecklistScreen(
     toggleChecklistItem: (id: Long, checked: Boolean) -> Unit,
     onCheckAll: () -> Unit,
     isAllChecked: Boolean,
+    onTapDone: (params: DoneScreenTransitionParams) -> Unit,
 ) {
     val topColor = if (dayType == DayType.WORKDAY) {
         BgWorkdayTop
@@ -159,7 +164,12 @@ fun ChecklistScreen(
         // 遷移ボタン
         PrimaryButton(
             text = "出発する",
-            onClick = {},
+            onClick = {
+                val params = DoneScreenTransitionParams(
+                    dayType = dayType.toNav()
+                )
+                onTapDone(params)
+            },
             enabled = isAllChecked,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -264,7 +274,8 @@ private fun ChecklistScreenPreview_Workday() {
                 ),
                 toggleChecklistItem = { _, _ -> },
                 onCheckAll = {},
-                isAllChecked = false
+                isAllChecked = false,
+                onTapDone = {}
             )
         }
     }
@@ -287,7 +298,8 @@ private fun ChecklistScreenPreview_Holiday() {
                 ),
                 toggleChecklistItem = { _, _ -> },
                 onCheckAll = {},
-                isAllChecked = true
+                isAllChecked = true,
+                onTapDone = {}
             )
         }
     }

@@ -11,6 +11,11 @@ sealed interface AppNavKey : NavKey {
     data class Checklist(
         val params: ChecklistScreenTransitionParams,
     ) : AppNavKey
+
+    @Serializable
+    data class Done(
+        val params: DoneScreenTransitionParams,
+    ) : AppNavKey
 }
 
 @Serializable
@@ -18,6 +23,11 @@ data class ChecklistScreenTransitionParams(
     val dayType: NavDayType,
     val weatherType: NavWeatherType,
     val date: String,
+)
+
+@Serializable
+data class DoneScreenTransitionParams(
+    val dayType: NavDayType,
 )
 
 @Serializable
