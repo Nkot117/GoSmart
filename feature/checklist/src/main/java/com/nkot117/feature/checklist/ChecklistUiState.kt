@@ -5,6 +5,7 @@ data class ChecklistUiState(
 )
 
 data class ChecklistItem(
+    val id: Long,
     val title: String,
     val checked: Boolean = false,
 )

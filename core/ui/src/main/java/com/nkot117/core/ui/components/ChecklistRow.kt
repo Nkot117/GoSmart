@@ -1,6 +1,7 @@
 package com.nkot117.core.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ListItem
@@ -51,7 +52,7 @@ fun ChecklistPreviewRow(
 fun ChecklistRow(
     title: String,
     checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
+    onToggle: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val shape = RoundedCornerShape(16.dp)
@@ -59,7 +60,7 @@ fun ChecklistRow(
         shape = shape,
         color = MaterialTheme.colorScheme.surface,
         border = BorderStroke(1.dp, color = BorderLine),
-        modifier = modifier
+        modifier = modifier.clickable { onToggle() }
     ) {
         ListItem(
             headlineContent = {
@@ -70,7 +71,7 @@ fun ChecklistRow(
                 )
             },
             trailingContent = {
-                Checkbox(checked = checked, onCheckedChange = onCheckedChange)
+                Checkbox(checked = checked, onCheckedChange = null)
             },
             colors = ListItemDefaults.colors(
                 containerColor = Color.Transparent
@@ -97,7 +98,7 @@ private fun ChecklistRowPreview() {
         ChecklistRow(
             title = "家の鍵",
             checked = false,
-            onCheckedChange = {}
+            onToggle = {}
         )
     }
 }
@@ -109,7 +110,7 @@ private fun ChecklistRowPreview_Checked() {
         ChecklistRow(
             title = "財布",
             checked = true,
-            onCheckedChange = {}
+            onToggle = {}
         )
     }
 }

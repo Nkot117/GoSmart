@@ -25,6 +25,9 @@ class ChecklistViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ChecklistUiState())
     val uiState: StateFlow<ChecklistUiState> = _uiState.asStateFlow()
 
+    val isAllChecked: Boolean
+        get() = uiState.value.checklist.all { it.checked }
+    
     fun getChecklist(dayType: DayType, weatherType: WeatherType, date: LocalDate) {
         viewModelScope.launch {
             val items = generateChecklistUseCase(
@@ -35,6 +38,7 @@ class ChecklistViewModel @Inject constructor(
 
             val checklist = items.map {
                 ChecklistItem(
+                    id = it.id ?: 0,
                     title = it.name,
                     checked = false
                 )
@@ -44,4 +48,29 @@ class ChecklistViewModel @Inject constructor(
         }
     }
 
+    fun toggleChecklistItem(id: Long, checked: Boolean) {
+        _uiState.update { state ->
+            state.copy(
+                checklist = state.checklist.map { item ->
+                    if (item.id == id) {
+                        item.copy(checked = checked)
+                    } else {
+                        item
+                    }
+                }
+            )
+        }
+    }
+
+    fun checkAllItems() {
+        _uiState.update { state ->
+            if (state.checklist.all { it.checked }) {
+                state
+            } else {
+                state.copy(
+                    checklist = state.checklist.map { it.copy(checked = true) }
+                )
+            }
+        }
+    }
 }

@@ -25,10 +25,12 @@ import com.nkot117.core.ui.theme.SmartGoTheme
 fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
             .height(56.dp),
         shape = RoundedCornerShape(12.dp),
@@ -47,9 +49,11 @@ fun SecondaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     OutlinedButton(
         onClick = onClick,
+        enabled = enabled,
         modifier = modifier
             .height(56.dp),
         shape = RoundedCornerShape(12.dp),
@@ -64,7 +68,6 @@ fun SecondaryButton(
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 private fun PreviewButtons() {
@@ -77,9 +80,13 @@ private fun PreviewButtons() {
         ) {
             PrimaryButton(text = "プライマリー", onClick = {})
 
+            PrimaryButton(text = "プライマリー", onClick = {}, enabled = false)
+
             Divider()
 
             SecondaryButton(text = "セカンダリー", onClick = {})
+
+            SecondaryButton(text = "セカンダリー", onClick = {}, enabled = false)
         }
     }
 }
