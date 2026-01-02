@@ -69,7 +69,10 @@ fun AppScaffold() {
                     val params = key.params
                     DoneScreenRoute(
                         contentPadding = innerPadding,
-                        params = params
+                        params = params,
+                        onTapHome = {
+                            navigator.resetToHome()
+                        }
                     )
                 }
             })
@@ -95,7 +98,7 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, onBack: () -> Unit): Sca
         )
 
         is AppNavKey.Done -> ScaffoldSpec(
-            topBar = { AppTopBar(title = "出発準備完了！", onBack = onBack) }
+            topBar = { AppTopBar(title = "完了") }
         )
     }
 }

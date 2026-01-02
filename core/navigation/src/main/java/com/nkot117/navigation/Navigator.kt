@@ -30,4 +30,13 @@ class Navigator(
     fun popTo(navKey: AppNavKey) {
         backStack.dropLastWhile { it != navKey }
     }
+
+    /**
+     * スタックをリセットしてHOME画面まで戻る
+     *
+     */
+    fun resetToHome() {
+        backStack.clear()
+        backStack.add(AppNavKey.Home)
+    }
 }
