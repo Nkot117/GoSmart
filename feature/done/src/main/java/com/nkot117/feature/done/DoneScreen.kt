@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,11 +43,12 @@ fun DoneScreenRoute(
     contentPadding: PaddingValues,
     params: DoneScreenTransitionParams,
     onTapHome: () -> Unit,
-    viewModel: DoneViewModel = hiltViewModel(),
 ) {
     DoneScreen(
         contentPadding = contentPadding,
         dayType = params.dayType.toDomain(),
+        checkedCount = params.checkedCount,
+        totalCount = params.totalCount,
         onTapHome = onTapHome
     )
 }
@@ -54,6 +57,8 @@ fun DoneScreenRoute(
 fun DoneScreen(
     contentPadding: PaddingValues,
     dayType: DayType,
+    checkedCount: Int,
+    totalCount: Int,
     onTapHome: () -> Unit,
 ) {
     val topColor = if (dayType == DayType.WORKDAY) BgWorkdayTop else BgHolidayTop
@@ -102,7 +107,20 @@ fun DoneScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(Modifier.height(80.dp)) // 下のボタンと視覚的に競合しない余白
+            Spacer(Modifier.height(8.dp))
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+            ) {
+                Text(
+                    text = "今日のチェック完了：$checkedCount/$totalCount",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(Modifier.height(80.dp))
         }
 
         PrimaryButton(
@@ -124,7 +142,9 @@ fun DoneScreenPreview_Workday() {
         DoneScreen(
             contentPadding = PaddingValues(0.dp),
             dayType = DayType.WORKDAY,
-            onTapHome = {}
+            onTapHome = {},
+            checkedCount = 10,
+            totalCount = 10
         )
     }
 }
@@ -136,7 +156,9 @@ fun DoneScreenPreview_Holiday() {
         DoneScreen(
             contentPadding = PaddingValues(0.dp),
             dayType = DayType.HOLIDAY,
-            onTapHome = {}
+            onTapHome = {},
+            checkedCount = 10,
+            totalCount = 10
         )
     }
 }

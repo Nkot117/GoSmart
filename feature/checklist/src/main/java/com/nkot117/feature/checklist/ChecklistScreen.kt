@@ -166,7 +166,11 @@ fun ChecklistScreen(
             text = "出発する",
             onClick = {
                 val params = DoneScreenTransitionParams(
-                    dayType = dayType.toNav()
+                    dayType = dayType.toNav(),
+                    checkedCount = checklist.size,
+                    totalCount = checklist.filter {
+                        it.checked
+                    }.size,
                 )
                 onTapDone(params)
             },

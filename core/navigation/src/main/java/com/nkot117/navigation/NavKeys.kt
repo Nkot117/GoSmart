@@ -28,6 +28,8 @@ data class ChecklistScreenTransitionParams(
 @Serializable
 data class DoneScreenTransitionParams(
     val dayType: NavDayType,
+    val checkedCount: Int,
+    val totalCount: Int,
 )
 
 @Serializable
