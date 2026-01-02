@@ -16,6 +16,9 @@ sealed interface AppNavKey : NavKey {
     data class Done(
         val params: DoneScreenTransitionParams,
     ) : AppNavKey
+
+    @Serializable
+    data object Items : AppNavKey
 }
 
 @Serializable

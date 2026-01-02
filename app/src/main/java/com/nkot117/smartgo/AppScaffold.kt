@@ -13,6 +13,7 @@ import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.feature.checklist.ChecklistScreenRoute
 import com.nkot117.feature.done.DoneScreenRoute
 import com.nkot117.feature.home.HomeScreenRoute
+import com.nkot117.feature.item.ItemsScreenRoute
 import com.nkot117.navigation.AppNavKey
 import com.nkot117.navigation.Navigator
 
@@ -25,7 +26,7 @@ data class ScaffoldSpec(
 fun AppScaffold() {
     val navigator = remember { Navigator() }
     val backStack = navigator.backStack
-    val scaffoldSpec = scaffoldSpecForNavKey(navigator.current, { navigator.pop() })
+    val scaffoldSpec = scaffoldSpecForNavKey(navigator.current, navigator = navigator)
 
     Scaffold(
         topBar = scaffoldSpec.topBar,
@@ -75,16 +76,24 @@ fun AppScaffold() {
                         }
                     )
                 }
+
+                entry<AppNavKey.Items> { key ->
+                    ItemsScreenRoute(
+                        contentPadding = innerPadding,
+                    )
+                }
             })
     }
 }
 
-private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, onBack: () -> Unit): ScaffoldSpec {
+private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): ScaffoldSpec {
     return when (appNavKey) {
         AppNavKey.Home -> ScaffoldSpec(
             topBar = { AppTopBar(title = "ホーム") },
             fab = {
-                FloatingActionButton(onClick = {}) {
+                FloatingActionButton(onClick = {
+                    navigator.push(AppNavKey.Items)
+                }) {
                     Icon(
                         Icons.Default.Add,
                         null
@@ -94,11 +103,15 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, onBack: () -> Unit): Sca
         )
 
         is AppNavKey.Checklist -> ScaffoldSpec(
-            topBar = { AppTopBar(title = "チェックリスト", onBack = onBack) }
+            topBar = { AppTopBar(title = "チェックリスト", onBack = { navigator.pop() }) }
         )
 
         is AppNavKey.Done -> ScaffoldSpec(
             topBar = { AppTopBar(title = "完了") }
+        )
+
+        AppNavKey.Items -> ScaffoldSpec(
+            topBar = { AppTopBar(title = "持ち物の登録", onBack = { navigator.pop() }) }
         )
     }
 }
