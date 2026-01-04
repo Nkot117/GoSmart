@@ -2,8 +2,13 @@ package com.nkot117.core.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -27,11 +33,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nkot117.core.common.toDisplayYmdSlash
 import com.nkot117.core.common.toLocalDate
 import com.nkot117.core.ui.theme.SmartGoTheme
+import com.nkot117.core.ui.theme.TextSub
 import java.time.LocalDate
 import java.time.ZoneId
 
@@ -39,7 +48,7 @@ import java.time.ZoneId
 @Composable
 fun DatePickerField(
     selectedDateMillis: Long?,
-    onDateChange: (Long?) -> Unit,
+    onDateChange: (Long) -> Unit,
     confirmButtonLabel: String,
     cancelButtonLabel: String,
     modifier: Modifier = Modifier,
@@ -68,6 +77,7 @@ fun DatePickerField(
         confirmButtonLabel = confirmButtonLabel,
         cancelButtonLabel = cancelButtonLabel,
         onConfirm = { pickedMillis ->
+            if (pickedMillis == null) return@DatePickerModal
             onDateChange(pickedMillis)
             visibleDialog = false
         },
@@ -84,28 +94,43 @@ private fun DatePickerTextField(
     formLabel: String?,
     placeholder: String?,
 ) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = {},
-        readOnly = true,
-        singleLine = true,
-        label = formLabel?.let { labelText ->
-            { Text(text = labelText, style = MaterialTheme.typography.labelSmall) }
-        },
-        placeholder = placeholder?.let { placeholderText ->
-            { Text(text = placeholderText, style = MaterialTheme.typography.labelSmall) }
-        },
-        trailingIcon = {
-            IconButton(onClick = onOpenDialog) {
-                Icon(Icons.Default.DateRange, contentDescription = null)
-            }
-        },
-        shape = shape,
+    Column(
         modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White, shape)
-            .clickable { onOpenDialog() },
-    )
+    ) {
+        if (formLabel != null) {
+            Text(
+                text = formLabel,
+                style = MaterialTheme.typography.labelSmall,
+                color = TextSub
+            )
+        }
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = {},
+            readOnly = true,
+            singleLine = true,
+            placeholder = placeholder?.let { placeholderText ->
+                { Text(text = placeholderText, style = MaterialTheme.typography.labelSmall) }
+            },
+            trailingIcon = {
+                IconButton(onClick = onOpenDialog) {
+                    Icon(Icons.Filled.DateRange, contentDescription = null)
+                }
+            },
+            shape = shape,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White, shape)
+                .pointerInput(Unit) {
+                    awaitEachGesture {
+                        awaitFirstDown(pass = PointerEventPass.Initial)
+                        val up = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                        if (up != null) onOpenDialog()
+                    }
+                }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
