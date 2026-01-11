@@ -5,6 +5,7 @@ import com.nkot117.core.data.di.IODispatcher
 import com.nkot117.core.data.mapper.toDomain
 import com.nkot117.core.data.mapper.toEntity
 import com.nkot117.core.domain.model.Item
+import com.nkot117.core.domain.model.RegisteredItemsQuery
 import com.nkot117.core.domain.repository.ItemsRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -32,5 +33,11 @@ class ItemsRepositoryImpl @Inject constructor(
         withContext(io) {
             dao.deleteById(id)
         }
+    }
+
+    override fun getRegisteredItemsByCategory(query: RegisteredItemsQuery.ByCategory): Flow<List<Item>> {
+        val result = dao.getByCategory(category = query.category.name)
+            .map { list -> list.map { it.toDomain() } }.flowOn(io)
+        return result
     }
 }

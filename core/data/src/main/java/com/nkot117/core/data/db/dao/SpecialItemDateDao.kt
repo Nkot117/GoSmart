@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.nkot117.core.data.db.entity.ItemEntity
 import com.nkot117.core.data.db.entity.SpecialItemDatesEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +21,14 @@ interface SpecialItemDateDao {
 
     @Query("DELETE FROM special_item_dates WHERE itemId = :itemId")
     suspend fun clear(itemId: Long)
+
+    @Query(
+        """
+        SELECT i.* FROM items i
+        INNER JOIN special_item_dates s ON s.itemId = i.id
+        WHERE s.date = :date
+        ORDER BY i.id DESC
+    """
+    )
+    fun getItemsByDate(date: String): Flow<List<ItemEntity>>
 }

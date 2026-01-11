@@ -5,7 +5,7 @@ import com.nkot117.core.domain.model.ItemCategory
 import java.time.LocalDate
 
 data class ItemsUiState(
-    val date: LocalDate?,
-    val category: ItemCategory?,
+    val date: LocalDate = LocalDate.now(),
+    val category: ItemCategory = ItemCategory.ALWAYS,
     val itemList: List<Item> = emptyList(),
 )

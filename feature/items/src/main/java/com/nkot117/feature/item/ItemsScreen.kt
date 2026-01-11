@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,9 +35,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nkot117.core.common.toEpochMillis
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.ui.components.ChecklistPreviewRow
+import com.nkot117.core.ui.components.DatePickerField
 import com.nkot117.core.ui.components.SecondaryButton
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
@@ -44,27 +48,33 @@ import com.nkot117.core.ui.theme.BorderLine
 import com.nkot117.core.ui.theme.Primary100
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextSub
+import java.time.LocalDate
 
 @Composable
 fun ItemsScreenRoute(
     contentPadding: PaddingValues,
     viewModel: ItemsViewModel = hiltViewModel(),
 ) {
-    ItemsScreen(contentPadding = contentPadding,
-        registeredItems = listOf(
-            Item(id = 1L, name = "財布", category = ItemCategory.WORKDAY),
-            Item(id = 2L, name = "家の鍵", category = ItemCategory.ALWAYS),
-            Item(id = 3L, name = "スマホ", category = ItemCategory.RAINY),
-            Item(id = 4L, name = "ハンカチ", category = ItemCategory.SUNNY),
-            Item(id = 5L, name = "ティッシュ", category = ItemCategory.DATE_SPECIFIC),
-        )
-        )
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    ItemsScreen(
+        contentPadding = contentPadding,
+        state = state,
+        setDate = viewModel::setDate,
+        setCategory = viewModel::setCategory
+    )
+
+    LaunchedEffect(state.category) {
+        viewModel.getRegisteredItemList()
+    }
 }
 
 @Composable
 fun ItemsScreen(
     contentPadding: PaddingValues,
-    registeredItems: List<Item>,
+    state: ItemsUiState,
+    setDate: (Long) -> Unit,
+    setCategory: (ItemCategory) -> Unit,
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
@@ -99,14 +109,16 @@ fun ItemsScreen(
                     .border(1.dp, BorderLine, shape)
             ) {
                 ItemCategory.entries.forEachIndexed { index, tag ->
-                    val isSelected = tag == ItemCategory.WORKDAY
+                    val isSelected = tag == state.category
                     val bg =
                         if (isSelected) Primary500 else Color.White
                     val fg =
                         if (isSelected) Primary100 else TextSub
 
                     TextButton(
-                        onClick = { },
+                        onClick = {
+                            setCategory(tag)
+                        },
                         modifier = Modifier
                             .background(bg)
                             .border(0.5.dp, BorderLine)
@@ -117,6 +129,20 @@ fun ItemsScreen(
             }
 
             Spacer(Modifier.height(20.dp))
+
+            if (state.category == ItemCategory.DATE_SPECIFIC) {
+                DatePickerField(
+                    selectedDateMillis = state.date.toEpochMillis(),
+                    onDateChange = {
+                        setDate(it)
+                    },
+                    confirmButtonLabel = "OK",
+                    cancelButtonLabel = "キャンセル",
+                    formLabel = "日付",
+                )
+
+                Spacer(Modifier.height(20.dp))
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -154,7 +180,7 @@ fun ItemsScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                items(registeredItems) { item ->
+                items(state.itemList) { item ->
                     var expanded by remember { mutableStateOf(false) }
 
                     ChecklistPreviewRow(title = item.name)
@@ -174,7 +200,13 @@ fun ItemsScreen(
 fun ItemsScreenPreview() {
     ItemsScreen(
         contentPadding = PaddingValues(0.dp),
-        registeredItems = previewRegisteredItems()
+        state = ItemsUiState(
+            date = LocalDate.now(),
+            category = ItemCategory.ALWAYS,
+            itemList = previewRegisteredItems()
+        ),
+        setDate = {},
+        setCategory = {}
     )
 }
 
