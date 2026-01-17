@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -82,6 +83,7 @@ fun ItemsScreen(
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
+    val focusManager = LocalFocusManager.current
 
     Box(
         Modifier
@@ -168,7 +170,11 @@ fun ItemsScreen(
 
                 SecondaryButton(
                     text = "＋ 追加",
-                    onClick = { registerItem() },
+                    onClick = {
+                        focusManager.clearFocus()
+                        registerItem()
+
+                    },
                     modifier = Modifier.height(56.dp),
                     enabled = state.form.canSubmit
                 )
