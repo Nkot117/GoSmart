@@ -3,9 +3,12 @@ package com.nkot117.feature.item
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.core.common.toLocalDate
+import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.model.RegisteredItemsQuery
 import com.nkot117.core.domain.usecase.GetRegisteredItemListUseCase
+import com.nkot117.core.domain.usecase.SaveItemUseCase
+import com.nkot117.core.domain.usecase.SaveItemWithSpecialDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ItemsViewModel @Inject constructor(
     private val getRegisteredItemListUseCase: GetRegisteredItemListUseCase,
+    private val saveItemUseCase: SaveItemUseCase,
+    private val saveItemWithSpecialDateUseCase: SaveItemWithSpecialDateUseCase,
 ) : ViewModel() {
     /**
      * UiState
@@ -54,6 +59,20 @@ class ItemsViewModel @Inject constructor(
             }
             val items = getRegisteredItemListUseCase(query)
             _uiState.update { it.copy(itemList = items) }
+        }
+    }
+
+    fun registerItem() {
+        viewModelScope.launch {
+            val state = uiState.value
+            val item = Item(
+                name = state.form.name,
+                category = state.category
+            )
+            when (state.category) {
+                ItemCategory.DATE_SPECIFIC -> saveItemWithSpecialDateUseCase(item, state.date)
+                else -> saveItemUseCase(item)
+            }
         }
     }
 }

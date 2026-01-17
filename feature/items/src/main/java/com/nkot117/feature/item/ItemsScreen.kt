@@ -62,7 +62,8 @@ fun ItemsScreenRoute(
         state = state,
         setDate = viewModel::setDate,
         setCategory = viewModel::setCategory,
-        setRegisterItemName = viewModel::setRegisterItemName
+        setRegisterItemName = viewModel::setRegisterItemName,
+        registerItem = viewModel::registerItem
     )
 
     LaunchedEffect(state.category) {
@@ -77,6 +78,7 @@ fun ItemsScreen(
     setDate: (Long) -> Unit,
     setCategory: (ItemCategory) -> Unit,
     setRegisterItemName: (String) -> Unit,
+    registerItem: () -> Unit,
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
@@ -166,7 +168,7 @@ fun ItemsScreen(
 
                 SecondaryButton(
                     text = "＋ 追加",
-                    onClick = {},
+                    onClick = { registerItem() },
                     modifier = Modifier.height(56.dp),
                     enabled = state.form.canSubmit
                 )
@@ -212,7 +214,8 @@ fun ItemsScreenPreview() {
         ),
         setDate = {},
         setCategory = {},
-        setRegisterItemName = {}
+        setRegisterItemName = {},
+        registerItem = {}
     )
 }
 
