@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 class ItemsRepositoryImpl @Inject constructor(
     private val dao: ItemsDao,
-    @IODispatcher private val io: CoroutineDispatcher,
+    @param:IODispatcher private val io: CoroutineDispatcher,
 ) : ItemsRepository {
 
     override fun getAllItems(): Flow<List<Item>> {

@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class SpecialItemDateRepositoryImpl @Inject constructor(
     private val dao: SpecialItemDateDao,
-    @IODispatcher private val io: CoroutineDispatcher,
+    @param:IODispatcher private val io: CoroutineDispatcher,
 ) : SpecialItemDateRepository {
     override fun getItemIdsOnDate(date: LocalDate): Flow<List<Long>> {
         return dao.getItemIdsOnDate(date.toString()).flowOn(io)
