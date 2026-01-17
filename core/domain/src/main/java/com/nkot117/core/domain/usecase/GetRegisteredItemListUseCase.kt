@@ -4,7 +4,7 @@ import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.RegisteredItemsQuery
 import com.nkot117.core.domain.repository.ItemsRepository
 import com.nkot117.core.domain.repository.SpecialItemDateRepository
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetRegisteredItemListUseCase @Inject constructor(
@@ -29,17 +29,17 @@ class GetRegisteredItemListUseCase @Inject constructor(
      * @param query アイテム取得条件を表すクエリ
      * @return 条件に一致するItemの一覧
      */
-    suspend operator fun invoke(
+    operator fun invoke(
         query: RegisteredItemsQuery,
-    ): List<Item> {
+    ): Flow<List<Item>> {
         return when (query) {
             is RegisteredItemsQuery.ByCategory ->
                 itemsRepository.getRegisteredItemsByCategory(query)
-                    .first()
+
 
             is RegisteredItemsQuery.BySpecificDate -> specialItemDateRepository.getRegisteredItemsByDate(
                 query
-            ).first()
+            )
         }
     }
 }

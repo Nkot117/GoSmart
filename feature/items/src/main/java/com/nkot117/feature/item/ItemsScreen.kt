@@ -66,8 +66,8 @@ fun ItemsScreenRoute(
         registerItem = viewModel::registerItem
     )
 
-    LaunchedEffect(state.category) {
-        viewModel.getRegisteredItemList()
+    LaunchedEffect(Unit) {
+        viewModel.observeRegisteredItemList()
     }
 }
 

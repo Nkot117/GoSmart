@@ -10,9 +10,13 @@ import com.nkot117.core.domain.usecase.GetRegisteredItemListUseCase
 import com.nkot117.core.domain.usecase.SaveItemUseCase
 import com.nkot117.core.domain.usecase.SaveItemWithSpecialDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -49,16 +53,24 @@ class ItemsViewModel @Inject constructor(
         }
     }
 
-    fun getRegisteredItemList() {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun observeRegisteredItemList() {
         viewModelScope.launch {
-            val state = uiState.value
-            val query = if (state.category == ItemCategory.DATE_SPECIFIC) {
-                RegisteredItemsQuery.BySpecificDate(date = state.date)
-            } else {
-                RegisteredItemsQuery.ByCategory(category = state.category)
-            }
-            val items = getRegisteredItemListUseCase(query)
-            _uiState.update { it.copy(itemList = items) }
+            uiState
+                .map { state ->
+                    if (state.category == ItemCategory.DATE_SPECIFIC) {
+                        RegisteredItemsQuery.BySpecificDate(state.date)
+                    } else {
+                        RegisteredItemsQuery.ByCategory(state.category)
+                    }
+                }
+                .distinctUntilChanged()
+                .flatMapLatest { query ->
+                    getRegisteredItemListUseCase(query) // Flow<List<Item>>
+                }
+                .collect { items ->
+                    _uiState.update { it.copy(itemList = items) }
+                }
         }
     }
 
