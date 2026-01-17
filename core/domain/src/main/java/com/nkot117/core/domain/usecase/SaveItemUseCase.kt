@@ -1,13 +1,10 @@
 package com.nkot117.core.domain.usecase
 
 import com.nkot117.core.domain.model.Item
-import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.repository.ItemsRepository
-import com.nkot117.core.domain.repository.SpecialItemDateRepository
-import kotlinx.coroutines.flow.first
-import java.time.LocalDate
+import javax.inject.Inject
 
-class SaveItemUseCase(
+class SaveItemUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository,
 ) {
     /**

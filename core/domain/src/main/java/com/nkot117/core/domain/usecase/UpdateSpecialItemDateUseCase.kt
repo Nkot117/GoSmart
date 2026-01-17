@@ -2,8 +2,9 @@ package com.nkot117.core.domain.usecase
 
 import com.nkot117.core.domain.repository.SpecialItemDateRepository
 import java.time.LocalDate
+import javax.inject.Inject
 
-class UpdateSpecialItemDateUseCase(
+class UpdateSpecialItemDateUseCase @Inject constructor(
     private val specialItemDateRepository: SpecialItemDateRepository,
 ) {
     /**

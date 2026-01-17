@@ -2,8 +2,9 @@ package com.nkot117.core.domain.usecase
 
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.repository.ItemsRepository
+import javax.inject.Inject
 
-class UpdateItemNameUseCase(
+class UpdateItemNameUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository,
 ) {
     /**
@@ -20,7 +21,7 @@ class UpdateItemNameUseCase(
      */
     suspend operator fun invoke(
         item: Item,
-        newName: String
+        newName: String,
     ) {
         val updatedItem = item.copy(name = newName)
         itemsRepository.saveItem(updatedItem)
