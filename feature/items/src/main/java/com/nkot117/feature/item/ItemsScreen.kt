@@ -61,7 +61,8 @@ fun ItemsScreenRoute(
         contentPadding = contentPadding,
         state = state,
         setDate = viewModel::setDate,
-        setCategory = viewModel::setCategory
+        setCategory = viewModel::setCategory,
+        setRegisterItemName = viewModel::setRegisterItemName
     )
 
     LaunchedEffect(state.category) {
@@ -75,6 +76,7 @@ fun ItemsScreen(
     state: ItemsUiState,
     setDate: (Long) -> Unit,
     setCategory: (ItemCategory) -> Unit,
+    setRegisterItemName: (String) -> Unit,
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
@@ -150,8 +152,10 @@ fun ItemsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = state.form.name,
+                    onValueChange = { it ->
+                        setRegisterItemName(it)
+                    },
                     placeholder = { Text("追加する持ち物") },
                     singleLine = true,
                     modifier = Modifier
@@ -164,6 +168,7 @@ fun ItemsScreen(
                     text = "＋ 追加",
                     onClick = {},
                     modifier = Modifier.height(56.dp),
+                    enabled = state.form.canSubmit
                 )
             }
 
@@ -206,7 +211,8 @@ fun ItemsScreenPreview() {
             itemList = previewRegisteredItems()
         ),
         setDate = {},
-        setCategory = {}
+        setCategory = {},
+        setRegisterItemName = {}
     )
 }
 

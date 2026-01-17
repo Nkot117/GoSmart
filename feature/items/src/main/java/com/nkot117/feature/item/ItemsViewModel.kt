@@ -33,6 +33,17 @@ class ItemsViewModel @Inject constructor(
         _uiState.update { it.copy(category = category) }
     }
 
+    fun setRegisterItemName(name: String) {
+        _uiState.update {
+            it.copy(
+                form = ItemFormState(
+                    name = name,
+                    canSubmit = name.trim().isNotEmpty()
+                )
+            )
+        }
+    }
+
     fun getRegisteredItemList() {
         viewModelScope.launch {
             val state = uiState.value
