@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -179,7 +180,9 @@ fun ChecklistScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
                 .height(56.dp)
-                .width(260.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 41.dp)
+                .widthIn(max = 360.dp)
         )
     }
 }
