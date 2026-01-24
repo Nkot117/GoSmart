@@ -28,4 +28,4 @@ val ProgressActive = Primary500
 val ProgressComplete = Color(0xFF4CAF50)
 
 // Destructive / Error
-val Error500 = Color(0xFFE53935)
+val Error300 = Color(0xFFC62828)
