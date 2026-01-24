@@ -26,3 +26,6 @@ val BgHolidayBottom = Color(0xFFFFECCF)
 val ProgressTrack = Color(0xFFE6ECF5)
 val ProgressActive = Primary500
 val ProgressComplete = Color(0xFF4CAF50)
+
+// Destructive / Error
+val Error500 = Color(0xFFE53935)
