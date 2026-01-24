@@ -1,5 +1,6 @@
 package com.nkot117.smartgo
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -7,9 +8,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.nkot117.core.ui.components.AppTopBar
+import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.feature.checklist.ChecklistScreenRoute
 import com.nkot117.feature.done.DoneScreenRoute
 import com.nkot117.feature.home.HomeScreenRoute
@@ -91,12 +95,16 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): S
         AppNavKey.Home -> ScaffoldSpec(
             topBar = { AppTopBar(title = "ホーム") },
             fab = {
-                FloatingActionButton(onClick = {
-                    navigator.push(AppNavKey.Items)
-                }) {
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(end = 16.dp, bottom = 96.dp),
+                    containerColor = Primary500,
+                    onClick = {
+                        navigator.push(AppNavKey.Items)
+                    }) {
                     Icon(
-                        Icons.Default.Add,
-                        null
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
                     )
                 }
             }
