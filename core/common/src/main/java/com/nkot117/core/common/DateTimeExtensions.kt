@@ -3,6 +3,7 @@ package com.nkot117.core.common
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset
 
 /**
  * epoch millis(UTC基準)を端末のタイムゾーンでLocalDateに変換する
@@ -17,10 +18,8 @@ fun Long.toLocalDate(
 /**
  * LocalDateをepoch millisに変換する（その日の00:00で変換する）
  */
-fun LocalDate.toEpochMillis(
-    zoneId: ZoneId = ZoneId.systemDefault(),
-): Long =
-    atStartOfDay(zoneId)
+fun LocalDate.toEpochMillis(): Long =
+    atStartOfDay(ZoneOffset.UTC)
         .toInstant()
         .toEpochMilli()
 
