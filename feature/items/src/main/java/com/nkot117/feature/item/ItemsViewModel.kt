@@ -6,6 +6,7 @@ import com.nkot117.core.common.toLocalDate
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.model.RegisteredItemsQuery
+import com.nkot117.core.domain.usecase.DeleteItemUseCase
 import com.nkot117.core.domain.usecase.GetRegisteredItemListUseCase
 import com.nkot117.core.domain.usecase.SaveItemUseCase
 import com.nkot117.core.domain.usecase.SaveItemWithSpecialDateUseCase
@@ -26,6 +27,7 @@ class ItemsViewModel @Inject constructor(
     private val getRegisteredItemListUseCase: GetRegisteredItemListUseCase,
     private val saveItemUseCase: SaveItemUseCase,
     private val saveItemWithSpecialDateUseCase: SaveItemWithSpecialDateUseCase,
+    private val deleteItemUseCase: DeleteItemUseCase,
 ) : ViewModel() {
     /**
      * UiState
@@ -85,6 +87,12 @@ class ItemsViewModel @Inject constructor(
                 ItemCategory.DATE_SPECIFIC -> saveItemWithSpecialDateUseCase(item, state.date)
                 else -> saveItemUseCase(item)
             }
+        }
+    }
+
+    fun deleteItem(itemId: Long) {
+        viewModelScope.launch {
+            deleteItemUseCase(itemId)
         }
     }
 }

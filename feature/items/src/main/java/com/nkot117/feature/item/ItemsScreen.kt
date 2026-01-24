@@ -17,6 +17,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -37,12 +39,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.common.toEpochMillis
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
-import com.nkot117.core.ui.components.ChecklistPreviewRow
+import com.nkot117.core.ui.components.ChecklistActionRow
 import com.nkot117.core.ui.components.DatePickerField
 import com.nkot117.core.ui.components.SecondaryButton
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.BorderLine
+import com.nkot117.core.ui.theme.Error300
 import com.nkot117.core.ui.theme.Primary100
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextSub
@@ -61,7 +64,8 @@ fun ItemsScreenRoute(
         setDate = viewModel::setDate,
         setCategory = viewModel::setCategory,
         setRegisterItemName = viewModel::setRegisterItemName,
-        registerItem = viewModel::registerItem
+        registerItem = viewModel::registerItem,
+        deleteItem = viewModel::deleteItem
     )
 
     LaunchedEffect(Unit) {
@@ -77,6 +81,7 @@ fun ItemsScreen(
     setCategory: (ItemCategory) -> Unit,
     setRegisterItemName: (String) -> Unit,
     registerItem: () -> Unit,
+    deleteItem: (Long) -> Unit,
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
@@ -191,7 +196,16 @@ fun ItemsScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 items(state.itemList) { item ->
-                    ChecklistPreviewRow(title = item.name)
+                    ChecklistActionRow(
+                        title = item.name,
+                        icon = Icons.Default.Delete,
+                        iconColor = Error300,
+                        onClick = {
+                            item.id?.let {
+                                deleteItem(it)
+                            }
+                        },
+                    )
 
                     Spacer(modifier = Modifier.padding(top = 15.dp))
                 }
@@ -216,7 +230,8 @@ fun ItemsScreenPreview() {
         setDate = {},
         setCategory = {},
         setRegisterItemName = {},
-        registerItem = {}
+        registerItem = {},
+        deleteItem = {}
     )
 }
 
