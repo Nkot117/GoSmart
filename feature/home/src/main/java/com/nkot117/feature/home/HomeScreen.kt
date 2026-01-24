@@ -35,12 +35,14 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.nkot117.core.common.toEpochMillis
 import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.model.WeatherType
 import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.core.ui.components.ChecklistPreviewRow
+import com.nkot117.core.ui.components.DatePickerField
 import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.components.SegmentOption
 import com.nkot117.core.ui.components.TwoOptionSegment
@@ -49,7 +51,6 @@ import com.nkot117.core.ui.theme.BgHolidayTop
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.SmartGoTheme
-import com.nkot117.core.ui.theme.TextSub
 import com.nkot117.navigation.ChecklistScreenTransitionParams
 import com.nkot117.navigation.toNav
 
@@ -70,6 +71,7 @@ fun HomeScreenRoute(
         state = state,
         setDayType = viewModel::setDayType,
         setWeatherType = viewModel::setWeatherType,
+        setDate = viewModel::setDate,
         onTapCheckList = onTapCheckList
     )
 }
@@ -80,6 +82,7 @@ fun HomeScreen(
     state: HomeUiState,
     setDayType: (DayType) -> Unit,
     setWeatherType: (WeatherType) -> Unit,
+    setDate: (Long) -> Unit,
     onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
 ) {
     val topColor by animateColorAsState(
@@ -129,10 +132,14 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // 日付
-                    Text(
-                        text = state.date.toString(),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = TextSub
+                    DatePickerField(
+                        selectedDateMillis = state.date.toEpochMillis(),
+                        onDateChange = {
+                            setDate(it)
+                        },
+                        confirmButtonLabel = "OK",
+                        cancelButtonLabel = "キャンセル",
+                        modifier = Modifier.weight(1f)
                     )
 
                     Spacer(modifier = Modifier.padding(end = 20.dp))
@@ -150,8 +157,8 @@ fun HomeScreen(
 
                 // Work / Holiday 選択
                 TwoOptionSegment(
-                    left = SegmentOption(DayType.WORKDAY, "Work"),
-                    right = SegmentOption(DayType.HOLIDAY, "Holiday"),
+                    left = SegmentOption(DayType.WORKDAY, "平日"),
+                    right = SegmentOption(DayType.HOLIDAY, "お休み"),
                     selected = state.dayType,
                     onSelectedChange = { setDayType(it) },
                     modifier = Modifier.width(300.dp)
@@ -161,8 +168,8 @@ fun HomeScreen(
 
                 // Sunny / Rainy 選択
                 TwoOptionSegment(
-                    left = SegmentOption(WeatherType.SUNNY, "Sunny"),
-                    right = SegmentOption(WeatherType.RAINY, "Rainy"),
+                    left = SegmentOption(WeatherType.SUNNY, "晴れ"),
+                    right = SegmentOption(WeatherType.RAINY, "雨"),
                     selected = state.weatherType,
                     onSelectedChange = { setWeatherType(it) },
                     modifier = Modifier.width(300.dp)
@@ -271,6 +278,7 @@ private fun HomeScreenPreview() {
                 ),
                 setDayType = {},
                 setWeatherType = {},
+                setDate = {},
                 onTapCheckList = {}
             )
         }

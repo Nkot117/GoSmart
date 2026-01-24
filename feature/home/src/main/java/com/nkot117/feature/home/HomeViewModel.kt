@@ -2,6 +2,7 @@ package com.nkot117.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nkot117.core.common.toLocalDate
 import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.WeatherType
 import com.nkot117.core.domain.usecase.GenerateChecklistUseCase
@@ -11,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,11 +40,12 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(dayType = dayType) }
     }
 
-    fun setWeatherType(weatherType: WeatherType) {
-        _uiState.update { it.copy(weatherType = weatherType) }
+    fun setDate(selectedDate: Long) {
+        val localDate = selectedDate.toLocalDate()
+        _uiState.update { it.copy(date = localDate) }
     }
 
-    fun setDate(date: LocalDate) {
-        _uiState.update { it.copy(date = date) }
+    fun setWeatherType(weatherType: WeatherType) {
+        _uiState.update { it.copy(weatherType = weatherType) }
     }
 }
