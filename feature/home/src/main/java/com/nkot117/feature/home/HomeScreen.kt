@@ -157,8 +157,8 @@ fun HomeScreen(
 
                 // Work / Holiday 選択
                 TwoOptionSegment(
-                    left = SegmentOption(DayType.WORKDAY, "平日"),
-                    right = SegmentOption(DayType.HOLIDAY, "お休み"),
+                    left = SegmentOption(DayType.WORKDAY, "仕事の日"),
+                    right = SegmentOption(DayType.HOLIDAY, "休みの日"),
                     selected = state.dayType,
                     onSelectedChange = { setDayType(it) },
                     modifier = Modifier.width(300.dp)
@@ -168,8 +168,8 @@ fun HomeScreen(
 
                 // Sunny / Rainy 選択
                 TwoOptionSegment(
-                    left = SegmentOption(WeatherType.SUNNY, "晴れ"),
-                    right = SegmentOption(WeatherType.RAINY, "雨"),
+                    left = SegmentOption(WeatherType.SUNNY, "晴れの日"),
+                    right = SegmentOption(WeatherType.RAINY, "雨の日"),
                     selected = state.weatherType,
                     onSelectedChange = { setWeatherType(it) },
                     modifier = Modifier.width(300.dp)

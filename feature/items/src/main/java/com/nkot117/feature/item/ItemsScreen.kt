@@ -42,6 +42,7 @@ import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.ui.components.ChecklistActionRow
 import com.nkot117.core.ui.components.DatePickerField
 import com.nkot117.core.ui.components.SecondaryButton
+import com.nkot117.core.ui.mapper.label
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.BorderLine
@@ -131,7 +132,7 @@ fun ItemsScreen(
                             .background(bg)
                             .border(0.5.dp, BorderLine)
                     ) {
-                        Text(tag.name, color = fg, style = MaterialTheme.typography.labelSmall)
+                        Text(tag.label(), color = fg, style = MaterialTheme.typography.labelSmall)
                     }
                 }
             }
