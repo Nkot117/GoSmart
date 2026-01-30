@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,6 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.domain.model.DayType
+import com.nkot117.core.navigation.ChecklistScreenTransitionParams
+import com.nkot117.core.navigation.DoneScreenTransitionParams
+import com.nkot117.core.navigation.toDomain
+import com.nkot117.core.navigation.toNav
 import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.core.ui.components.ChecklistRow
 import com.nkot117.core.ui.components.PrimaryButton
@@ -46,10 +49,6 @@ import com.nkot117.core.ui.theme.ProgressComplete
 import com.nkot117.core.ui.theme.ProgressTrack
 import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
-import com.nkot117.navigation.ChecklistScreenTransitionParams
-import com.nkot117.navigation.DoneScreenTransitionParams
-import com.nkot117.navigation.toDomain
-import com.nkot117.navigation.toNav
 import java.time.LocalDate
 
 @Composable

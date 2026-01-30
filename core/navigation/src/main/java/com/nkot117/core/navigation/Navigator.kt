@@ -1,4 +1,4 @@
-package com.nkot117.navigation
+package com.nkot117.core.navigation
 
 import androidx.compose.runtime.mutableStateListOf
 

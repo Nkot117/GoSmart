@@ -1,4 +1,4 @@
-package com.nkot117.feature.item
+package com.nkot117.feature.items
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

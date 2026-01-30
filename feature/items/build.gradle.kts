@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nkot117.feature.item"
+    namespace = "com.nkot117.feature.items"
     compileSdk = 36
 
     defaultConfig {

@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nkot117.navigation"
+    namespace = "com.nkot117.core.navigation"
     compileSdk = 36
 
     defaultConfig {

@@ -1,4 +1,4 @@
-package com.nkot117.feature.item
+package com.nkot117.feature.items
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

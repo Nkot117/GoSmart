@@ -1,4 +1,4 @@
-package com.nkot117.navigation
+package com.nkot117.core.navigation
 
 import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.WeatherType

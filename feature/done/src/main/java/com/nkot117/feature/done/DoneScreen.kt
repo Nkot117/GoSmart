@@ -28,14 +28,14 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.nkot117.core.domain.model.DayType
+import com.nkot117.core.navigation.DoneScreenTransitionParams
+import com.nkot117.core.navigation.toDomain
 import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.theme.BgHolidayBottom
 import com.nkot117.core.ui.theme.BgHolidayTop
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.SmartGoTheme
-import com.nkot117.navigation.DoneScreenTransitionParams
-import com.nkot117.navigation.toDomain
 
 @Composable
 fun DoneScreenRoute(
