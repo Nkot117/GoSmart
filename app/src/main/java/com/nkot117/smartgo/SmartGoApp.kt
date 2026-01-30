@@ -14,5 +14,4 @@ class SmartGoApp : Application() {
         super.onCreate()
         initializer.createNotificationChannel()
     }
-
 }
