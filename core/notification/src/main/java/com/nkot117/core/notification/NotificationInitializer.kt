@@ -1,4 +1,4 @@
-package com.nkot117.notification
+package com.nkot117.core.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
