@@ -9,11 +9,11 @@ import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class NotificationPublisher @Inject constructor(
+class ReminderNotifier @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
-    fun showNotification() {
+    fun showReminder() {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_dialog_info)
             .setContentTitle("title")

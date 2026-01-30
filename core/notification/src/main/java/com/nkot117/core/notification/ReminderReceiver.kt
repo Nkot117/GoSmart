@@ -11,10 +11,10 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ReminderReceiver : BroadcastReceiver() {
     @Inject
-    lateinit var publisher: NotificationPublisher
+    lateinit var reminderNotifier: ReminderNotifier
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onReceive(context: Context, intent: Intent) {
-        publisher.showNotification()
+        reminderNotifier.showReminder()
     }
 }

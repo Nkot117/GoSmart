@@ -7,13 +7,13 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 
-class NotificationInitializer @Inject constructor(
+class ReminderChannelInitializer @Inject constructor(
     @param:ApplicationContext private val context: Context,
 ) {
-    fun createNotificationChannel() {
+    fun createReminderChannel() {
         val channel =
             NotificationChannel(
-                NotificationPublisher.CHANNEL_ID,
+                ReminderNotifier.CHANNEL_ID,
                 "Daily Reminder",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
