@@ -13,13 +13,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.nkot117.core.navigation.AppNavKey
+import com.nkot117.core.navigation.Navigator
 import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.feature.checklist.ChecklistScreenRoute
 import com.nkot117.feature.done.DoneScreenRoute
 import com.nkot117.feature.home.HomeScreenRoute
-import com.nkot117.feature.item.ItemsScreenRoute
-import com.nkot117.navigation.Navigator
+import com.nkot117.feature.items.ItemsScreenRoute
 
 data class ScaffoldSpec(
     val topBar: @Composable () -> Unit = {},
