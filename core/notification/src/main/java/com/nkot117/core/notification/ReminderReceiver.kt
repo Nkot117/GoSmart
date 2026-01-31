@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.RequiresPermission
+import com.nkot117.core.domain.usecase.ScheduleNextReminderUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -12,7 +13,9 @@ import javax.inject.Inject
 class ReminderReceiver : BroadcastReceiver() {
     @Inject
     lateinit var reminderNotifier: ReminderNotifier
-    lateinit var reminderScheduler: ReminderScheduler
+
+    @Inject
+    lateinit var scheduleNextReminderUseCase: ScheduleNextReminderUseCase
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onReceive(context: Context, intent: Intent) {
@@ -20,6 +23,6 @@ class ReminderReceiver : BroadcastReceiver() {
         reminderNotifier.showReminder()
 
         // 次リマインダースケジュールを設定
-        reminderScheduler.scheduleNextReminder(8, 0)
+        scheduleNextReminderUseCase
     }
 }
