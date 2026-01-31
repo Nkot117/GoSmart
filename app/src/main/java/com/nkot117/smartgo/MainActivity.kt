@@ -7,9 +7,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.nkot117.core.notification.ReminderScheduler
 import com.nkot117.core.ui.theme.SmartGoTheme
@@ -34,10 +37,10 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppContent()
-
             // TODO: 検証が終わり次第削除
             Button(
-                onClick = { scheduler.scheduleNextReminder(0, 1) }
+                onClick = { scheduler.scheduleNextReminder(0, 1) },
+                modifier = Modifier.padding(40.dp)
             ) {
                 Text("1分後に通知")
             }
