@@ -37,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
             // TODO: 検証が終わり次第削除
             Button(
-                onClick = { scheduler.schedule() }
+                onClick = { scheduler.scheduleNextReminder(0, 1) }
             ) {
                 Text("1分後に通知")
             }
