@@ -1,8 +1,10 @@
 package com.nkot117.core.data.di
 
 import com.nkot117.core.data.repository.ItemsRepositoryImpl
+import com.nkot117.core.data.repository.ReminderSettingsRepositoryImpl
 import com.nkot117.core.data.repository.SpecialItemDateRepositoryImpl
 import com.nkot117.core.domain.repository.ItemsRepository
+import com.nkot117.core.domain.repository.ReminderSettingsRepository
 import com.nkot117.core.domain.repository.SpecialItemDateRepository
 import dagger.Binds
 import dagger.Module
@@ -16,12 +18,18 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindItemsRepository(
-        impl: ItemsRepositoryImpl
+        impl: ItemsRepositoryImpl,
     ): ItemsRepository
 
     @Binds
     @Singleton
     abstract fun bindSpecialDatesRepository(
-        impl: SpecialItemDateRepositoryImpl
+        impl: SpecialItemDateRepositoryImpl,
     ): SpecialItemDateRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindReminderSettingRepository(
+        impl: ReminderSettingsRepositoryImpl,
+    ): ReminderSettingsRepository
 }

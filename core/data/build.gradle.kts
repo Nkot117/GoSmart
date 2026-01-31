@@ -54,4 +54,6 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
 
+    // Data Store
+    implementation(libs.androidx.datastore.preferences)
 }
