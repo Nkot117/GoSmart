@@ -12,9 +12,14 @@ import javax.inject.Inject
 class ReminderReceiver : BroadcastReceiver() {
     @Inject
     lateinit var reminderNotifier: ReminderNotifier
+    lateinit var reminderScheduler: ReminderScheduler
 
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     override fun onReceive(context: Context, intent: Intent) {
+        // 通知を実施
         reminderNotifier.showReminder()
+
+        // 次リマインダースケジュールを設定
+        reminderScheduler.scheduleNextReminder(8, 0)
     }
 }
