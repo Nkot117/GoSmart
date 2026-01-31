@@ -54,6 +54,7 @@ import com.nkot117.core.ui.theme.BgHolidayTop
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.SmartGoTheme
+import java.time.ZoneOffset
 
 @Composable
 fun HomeScreenRoute(
@@ -134,7 +135,7 @@ fun HomeScreen(
                 ) {
                     // 日付
                     DatePickerField(
-                        selectedDateMillis = state.date.toEpochMillis(),
+                        selectedDateMillis = state.date.toEpochMillis(ZoneOffset.UTC),
                         onDateChange = {
                             setDate(it)
                         },

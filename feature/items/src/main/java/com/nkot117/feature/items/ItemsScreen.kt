@@ -51,6 +51,7 @@ import com.nkot117.core.ui.theme.Primary100
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextSub
 import java.time.LocalDate
+import java.time.ZoneOffset
 
 @Composable
 fun ItemsScreenRoute(
@@ -141,7 +142,7 @@ fun ItemsScreen(
 
             if (state.category == ItemCategory.DATE_SPECIFIC) {
                 DatePickerField(
-                    selectedDateMillis = state.date.toEpochMillis(),
+                    selectedDateMillis = state.date.toEpochMillis(ZoneOffset.UTC),
                     onDateChange = {
                         setDate(it)
                     },
