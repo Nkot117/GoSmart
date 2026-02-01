@@ -2,6 +2,7 @@ package com.nkot117.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nkot117.core.domain.usecase.CancelReminderUseCase
 import com.nkot117.core.domain.usecase.GetReminderTimeUseCase
 import com.nkot117.core.domain.usecase.UpdateReminderTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +17,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val getReminderTimeUseCase: GetReminderTimeUseCase,
     private val updateReminderTimeUseCase: UpdateReminderTimeUseCase,
+    private val cancelReminderUseCase: CancelReminderUseCase,
 ) : ViewModel() {
 
     /**
@@ -23,7 +25,7 @@ class SettingsViewModel @Inject constructor(
      */
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
-    
+
     fun fetchReminderSettings() {
         viewModelScope.launch {
             val reminder = getReminderTimeUseCase()
@@ -64,6 +66,10 @@ class SettingsViewModel @Inject constructor(
                 minute = state.reminder.minute,
                 enabled = state.reminder.enabled
             )
+
+            if (!state.reminder.enabled) {
+                cancelReminderUseCase()
+            }
         }
     }
 }
