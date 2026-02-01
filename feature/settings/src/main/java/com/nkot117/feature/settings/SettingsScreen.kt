@@ -51,6 +51,7 @@ import com.nkot117.core.ui.theme.TextSub
 @Composable
 fun SettingScreenRoute(
     contentPadding: PaddingValues,
+    onBack: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -63,7 +64,8 @@ fun SettingScreenRoute(
         contentPadding, state,
         viewModel::setReminderEnabled,
         viewModel::setReminderTime,
-        viewModel::saveSettings
+        viewModel::saveSettings,
+        onBack
     )
 }
 
@@ -75,6 +77,7 @@ fun SettingsScreen(
     setEnabled: (Boolean) -> Unit,
     setReminderTime: (Int, Int) -> Unit,
     saveSettings: () -> Unit,
+    onBack: () -> Unit,
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
@@ -116,6 +119,7 @@ fun SettingsScreen(
                 },
                 onSave = {
                     saveSettings()
+                    onBack()
                 }
             )
         }
@@ -221,7 +225,7 @@ private fun NotificationTimeRow(
         }
 
         Spacer(Modifier.height(5.dp))
-        
+
         Text(
             "毎日この時刻に通知します",
             style = MaterialTheme.typography.bodySmall,
@@ -264,7 +268,8 @@ fun SettingsScreenPreview() {
             state = SettingsUiState(),
             setEnabled = {},
             setReminderTime = { _, _ -> },
-            saveSettings = {}
+            saveSettings = {},
+            onBack = {},
         )
     }
 }

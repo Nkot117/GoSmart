@@ -94,6 +94,7 @@ fun AppScaffold() {
                 entry(AppNavKey.Setting) { key ->
                     SettingScreenRoute(
                         contentPadding = innerPadding,
+                        onBack = { navigator.pop() }
                     )
                 }
 
