@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":feature:checklist"))
     implementation(project(":feature:items"))
     implementation(project(":feature:done"))
+    implementation(project(":feature:settings"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

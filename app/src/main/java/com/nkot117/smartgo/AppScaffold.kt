@@ -3,6 +3,7 @@ package com.nkot117.smartgo
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -20,6 +21,7 @@ import com.nkot117.feature.checklist.ChecklistScreenRoute
 import com.nkot117.feature.done.DoneScreenRoute
 import com.nkot117.feature.home.HomeScreenRoute
 import com.nkot117.feature.items.ItemsScreenRoute
+import com.nkot117.feature.settings.SettingScreenRoute
 
 data class ScaffoldSpec(
     val topBar: @Composable () -> Unit = {},
@@ -81,11 +83,20 @@ fun AppScaffold() {
                     )
                 }
 
+                // 持ち物登録画面
                 entry<AppNavKey.Items> { key ->
                     ItemsScreenRoute(
                         contentPadding = innerPadding,
                     )
                 }
+
+                // 設定画面
+                entry(AppNavKey.Setting) { key ->
+                    SettingScreenRoute(
+                        contentPadding = innerPadding,
+                    )
+                }
+
             })
     }
 }
@@ -93,7 +104,12 @@ fun AppScaffold() {
 private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): ScaffoldSpec {
     return when (appNavKey) {
         AppNavKey.Home -> ScaffoldSpec(
-            topBar = { AppTopBar(title = "ホーム") },
+            topBar = {
+                AppTopBar(
+                    title = "ホーム", onAction = { navigator.push(AppNavKey.Setting) },
+                    actionIcon = Icons.Default.Settings
+                )
+            },
             fab = {
                 FloatingActionButton(
                     modifier = Modifier
@@ -120,6 +136,15 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): S
 
         AppNavKey.Items -> ScaffoldSpec(
             topBar = { AppTopBar(title = "持ち物の登録", onBack = { navigator.pop() }) }
+        )
+
+        AppNavKey.Setting -> ScaffoldSpec(
+            topBar = {
+                AppTopBar(
+                    title = "設定画面",
+                    onBack = { navigator.pop() },
+                )
+            }
         )
     }
 }

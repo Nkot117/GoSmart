@@ -3,9 +3,11 @@ package com.nkot117.core.ui.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.nkot117.core.ui.theme.SmartGoTheme
@@ -15,6 +17,8 @@ import com.nkot117.core.ui.theme.SmartGoTheme
 fun AppTopBar(
     title: String,
     onBack: (() -> Unit)? = null,
+    onAction: (() -> Unit)? = null,
+    actionIcon: ImageVector? = null,
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -32,6 +36,13 @@ fun AppTopBar(
                 }
             }
         },
+        actions = {
+            if (onAction != null && actionIcon != null) {
+                IconButton(onClick = onAction) {
+                    Icon(actionIcon, contentDescription = "アクション")
+                }
+            }
+        }
     )
 }
 
@@ -48,5 +59,18 @@ private fun AppTopBarPreview_NoBack() {
 private fun AppTopBarPreview_WithBack() {
     SmartGoTheme {
         AppTopBar(title = "チェックリスト", onBack = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AppTopBarPreview_WithAction() {
+    SmartGoTheme {
+        AppTopBar(
+            title = "チェックリスト",
+            onBack = {},
+            onAction = {},
+            actionIcon = Icons.Default.Settings
+        )
     }
 }
