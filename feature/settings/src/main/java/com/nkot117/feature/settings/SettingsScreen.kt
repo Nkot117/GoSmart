@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.nkot117.core.domain.model.Reminder
 import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
@@ -78,7 +79,6 @@ fun SettingsScreen(
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
     var showTimePicker by rememberSaveable { mutableStateOf(false) }
-
     val timePickerState = rememberTimePickerState(
         initialHour = state.reminder.hour,
         initialMinute = state.reminder.minute
@@ -107,9 +107,7 @@ fun SettingsScreen(
             Spacer(Modifier.height(8.dp))
 
             ReminderSettingsCard(
-                isPushNotificationEnabled = state.reminder.enabled,
-                hour = state.reminder.hour,
-                minute = state.reminder.minute,
+                reminderSettings = state.reminder,
                 onToggle = { isEnabled ->
                     setEnabled(isEnabled)
                 },
@@ -137,9 +135,7 @@ fun SettingsScreen(
 
 @Composable
 private fun ReminderSettingsCard(
-    isPushNotificationEnabled: Boolean,
-    hour: Int,
-    minute: Int,
+    reminderSettings: Reminder,
     onToggle: (Boolean) -> Unit,
     onTimeClick: () -> Unit,
     onSave: () -> Unit,
@@ -149,9 +145,8 @@ private fun ReminderSettingsCard(
         colors = cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            ReminderToggleRow(isPushNotificationEnabled, onToggle)
-
-            if (isPushNotificationEnabled) {
+            ReminderToggleRow(reminderSettings.enabled, onToggle)
+            if (reminderSettings.enabled) {
                 Spacer(Modifier.height(16.dp))
                 Box(
                     modifier = Modifier
@@ -160,10 +155,9 @@ private fun ReminderSettingsCard(
                         .background(Color.LightGray)
                 )
                 Spacer(Modifier.height(16.dp))
-                NotificationTimeRow(onTimeClick, hour, minute)
-                Spacer(Modifier.height(8.dp))
+                NotificationTimeRow(onTimeClick, reminderSettings.hour, reminderSettings.minute)
             }
-
+            Spacer(Modifier.height(16.dp))
             PrimaryButton(
                 onClick = onSave,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -202,8 +196,8 @@ private fun ReminderToggleRow(
 @Composable
 private fun NotificationTimeRow(
     onTimeClick: () -> Unit,
-    hour: Int,
-    minute: Int,
+    settingHour: Int,
+    settingMinute: Int,
 ) {
     Column {
         Row(
@@ -220,15 +214,14 @@ private fun NotificationTimeRow(
                 color = TextMain
             )
             Text(
-                "${String.format("%02d", hour)}:${String.format("%02d", minute)}",
+                "${String.format("%02d", settingHour)}:${String.format("%02d", settingMinute)}",
                 style = MaterialTheme.typography.bodyLarge,
                 color = TextMain
             )
-
-            Spacer(Modifier.height(5.dp))
-
-
         }
+
+        Spacer(Modifier.height(5.dp))
+        
         Text(
             "毎日この時刻に通知します",
             style = MaterialTheme.typography.bodySmall,
