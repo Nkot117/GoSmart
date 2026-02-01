@@ -22,6 +22,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -89,111 +90,152 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(), colors = cardColors(
-                    containerColor = Color.White
-                )
-            ) {
-                Column(modifier = Modifier.padding(8.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            "外出前リマインダー",
-                            modifier = Modifier.weight(1f),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = TextMain
-                        )
-                        Switch(
-                            checked = isPushNotificationEnabled,
-                            onCheckedChange = { isPushNotificationEnabled = it },
-                            colors = SwitchDefaults.colors(
-                                checkedTrackColor = Primary500
-                            )
-                        )
-                    }
-
-                    if (isPushNotificationEnabled) {
-                        Spacer(Modifier.height(8.dp))
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(1.dp)
-                                .background(Color.LightGray)
-                        )
-
-                        Spacer(Modifier.height(8.dp))
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { showTimePicker = true },
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                "通知時刻",
-                                modifier = Modifier.weight(1f),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = TextMain
-                            )
-                            Text(
-                                "8:00",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = TextMain
-                            )
-                        }
-
-                        Spacer(Modifier.height(5.dp))
-
-                        Text(
-                            "毎日この時刻に通知します",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = TextSub,
-                            modifier = Modifier.padding(start = 0.dp)
-                        )
-
-                        Spacer(Modifier.height(16.dp))
-
-                        PrimaryButton(
-                            onClick = { },
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally),
-                            text = "保存する"
-                        )
-                    }
+            ReminderSettingsCard(
+                isPushNotificationEnabled = isPushNotificationEnabled,
+                onToggle = { isEnabled ->
+                    isPushNotificationEnabled = isEnabled
+                },
+                onTimeClick = {
+                    showTimePicker = true
+                },
+                onSave = {
+                    // 保存処理をここに追加
                 }
-            }
+            )
         }
     }
 
     if (showTimePicker) {
-        AlertDialog(
-            onDismissRequest = { showTimePicker = false },
-            title = { Text("通知時刻を選択") },
-            text = {
-                TimePicker(state = timePickerState)
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
-                        showTimePicker = false
-                    }
-                ) {
-                    Text("確定")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { showTimePicker = false }) {
-                    Text("キャンセル")
-                }
-            }
+        NotificationTimePickerDialog(
+            timePickerState = timePickerState,
+            onConfirm = {
+                selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
+                showTimePicker = false },
+            onDismiss = { showTimePicker = false }
         )
     }
+}
+
+@Composable
+private fun ReminderSettingsCard(
+    isPushNotificationEnabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+    onTimeClick: () -> Unit,
+    onSave: () -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = cardColors(containerColor = Color.White)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            ReminderToggleRow(isPushNotificationEnabled, onToggle)
+
+            if (isPushNotificationEnabled) {
+                Spacer(Modifier.height(16.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(Color.LightGray)
+                )
+                Spacer(Modifier.height(16.dp))
+                NotificationTimeRow(onTimeClick)
+                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(16.dp))
+                PrimaryButton(
+                    onClick = onSave,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    text = "保存する"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReminderToggleRow(
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            "外出前リマインダー",
+            modifier = Modifier.weight(1f),
+            style = MaterialTheme.typography.labelLarge,
+            color = TextMain
+        )
+        Switch(
+            checked = isEnabled,
+            onCheckedChange = onToggle,
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = Primary500
+            )
+        )
+    }
+}
+
+@Composable
+private fun NotificationTimeRow(
+    onTimeClick: () -> Unit,
+) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onTimeClick() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text(
+                "通知時刻",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.labelLarge,
+                color = TextMain
+            )
+            Text(
+                "8:00",
+                style = MaterialTheme.typography.bodyLarge,
+                color = TextMain
+            )
+
+            Spacer(Modifier.height(5.dp))
+
+
+        }
+        Text(
+            "毎日この時刻に通知します",
+            style = MaterialTheme.typography.bodySmall,
+            color = TextSub,
+            modifier = Modifier.padding(start = 0.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NotificationTimePickerDialog(
+    timePickerState: TimePickerState,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("通知時刻を選択") },
+        text = { TimePicker(state = timePickerState) },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text("確定")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("キャンセル")
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)
