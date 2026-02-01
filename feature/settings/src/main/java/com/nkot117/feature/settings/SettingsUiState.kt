@@ -1,11 +1,7 @@
 package com.nkot117.feature.settings
 
-data class ChecklistUiState(
-    val checklist: List<ChecklistItem> = emptyList(),
-)
+import com.nkot117.core.domain.model.Reminder
 
-data class ChecklistItem(
-    val id: Long,
-    val title: String,
-    val checked: Boolean = false,
+data class SettingsUiState(
+    val reminder: Reminder = Reminder(9, 0, false),
 )

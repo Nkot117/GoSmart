@@ -43,6 +43,7 @@ class ReminderSettingsDataSource @Inject constructor(
         context.reminderDataStore.edit { pref ->
             pref[Keys.HOUR] = time.hour
             pref[Keys.MINUTE] = time.minute
+            pref[Keys.ENABLED] = time.enabled
         }
     }
 

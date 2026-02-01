@@ -2,75 +2,69 @@ package com.nkot117.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nkot117.core.domain.model.DayType
-import com.nkot117.core.domain.model.WeatherType
-import com.nkot117.core.domain.usecase.GenerateChecklistUseCase
+import com.nkot117.core.domain.usecase.GetReminderTimeUseCase
+import com.nkot117.core.domain.usecase.UpdateReminderTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val generateChecklistUseCase: GenerateChecklistUseCase,
+    private val getReminderTimeUseCase: GetReminderTimeUseCase,
+    private val updateReminderTimeUseCase: UpdateReminderTimeUseCase,
 ) : ViewModel() {
 
     /**
      * UiState
      */
-    private val _uiState = MutableStateFlow(ChecklistUiState())
-    val uiState: StateFlow<ChecklistUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(SettingsUiState())
+    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
-    val isAllChecked: Boolean
-        get() = uiState.value.checklist.all { it.checked }
 
-    fun getChecklist(dayType: DayType, weatherType: WeatherType, date: LocalDate) {
+    fun fetchReminderSettings() {
         viewModelScope.launch {
-            val items = generateChecklistUseCase(
-                dayType = dayType,
-                weatherType = weatherType,
-                date = date
-            )
-
-            val checklist = items.map {
-                ChecklistItem(
-                    id = it.id ?: 0,
-                    title = it.name,
-                    checked = false
+            val reminder = getReminderTimeUseCase()
+            _uiState.update {
+                it.copy(
+                    reminder = reminder
                 )
             }
-
-            _uiState.update { it.copy(checklist = checklist) }
         }
     }
 
-    fun toggleChecklistItem(id: Long, checked: Boolean) {
-        _uiState.update { state ->
-            state.copy(
-                checklist = state.checklist.map { item ->
-                    if (item.id == id) {
-                        item.copy(checked = checked)
-                    } else {
-                        item
-                    }
-                }
+    fun setReminderEnabled(enabled: Boolean) {
+        _uiState.update {
+            it.copy(
+                reminder = it.reminder.copy(
+                    enabled = enabled
+                )
             )
         }
     }
 
-    fun checkAllItems() {
-        _uiState.update { state ->
-            if (state.checklist.all { it.checked }) {
-                state
-            } else {
-                state.copy(
-                    checklist = state.checklist.map { it.copy(checked = true) }
+    fun setReminderTime(hour: Int, minute: Int) {
+        _uiState.update {
+            it.copy(
+                reminder = it.reminder.copy(
+                    hour = hour,
+                    minute = minute
                 )
-            }
+            )
+        }
+    }
+
+    fun saveSettings() {
+        val state = uiState.value
+        viewModelScope.launch {
+            updateReminderTimeUseCase(
+                hour = state.reminder.hour,
+                minute = state.reminder.minute,
+                enabled = state.reminder.enabled
+            )
         }
     }
 }

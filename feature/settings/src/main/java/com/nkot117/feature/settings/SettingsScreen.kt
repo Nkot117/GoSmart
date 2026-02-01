@@ -1,5 +1,6 @@
 package com.nkot117.feature.settings
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,9 +26,10 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,37 +37,51 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextMain
 import com.nkot117.core.ui.theme.TextSub
-import java.time.LocalTime
 
 
 @Composable
 fun SettingScreenRoute(
     contentPadding: PaddingValues,
+    viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
 ) {
-    SettingsScreen(contentPadding)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchReminderSettings()
+    }
+
+    SettingsScreen(
+        contentPadding, state,
+        viewModel::setReminderEnabled,
+        viewModel::setReminderTime,
+        viewModel::saveSettings
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     contentPadding: PaddingValues,
+    state: SettingsUiState,
+    setEnabled: (Boolean) -> Unit,
+    setReminderTime: (Int, Int) -> Unit,
+    saveSettings: () -> Unit,
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
-
-    var isPushNotificationEnabled by remember { mutableStateOf(true) }
-    var selectedTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
-    var showTimePicker by remember { mutableStateOf(false) }
+    var showTimePicker by rememberSaveable { mutableStateOf(false) }
 
     val timePickerState = rememberTimePickerState(
-        initialHour = selectedTime.hour,
-        initialMinute = selectedTime.minute
+        initialHour = state.reminder.hour,
+        initialMinute = state.reminder.minute
     )
 
     Box(
@@ -91,15 +107,17 @@ fun SettingsScreen(
             Spacer(Modifier.height(8.dp))
 
             ReminderSettingsCard(
-                isPushNotificationEnabled = isPushNotificationEnabled,
+                isPushNotificationEnabled = state.reminder.enabled,
+                hour = state.reminder.hour,
+                minute = state.reminder.minute,
                 onToggle = { isEnabled ->
-                    isPushNotificationEnabled = isEnabled
+                    setEnabled(isEnabled)
                 },
                 onTimeClick = {
                     showTimePicker = true
                 },
                 onSave = {
-                    // 保存処理をここに追加
+                    saveSettings()
                 }
             )
         }
@@ -109,8 +127,9 @@ fun SettingsScreen(
         NotificationTimePickerDialog(
             timePickerState = timePickerState,
             onConfirm = {
-                selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
-                showTimePicker = false },
+                setReminderTime(timePickerState.hour, timePickerState.minute)
+                showTimePicker = false
+            },
             onDismiss = { showTimePicker = false }
         )
     }
@@ -119,6 +138,8 @@ fun SettingsScreen(
 @Composable
 private fun ReminderSettingsCard(
     isPushNotificationEnabled: Boolean,
+    hour: Int,
+    minute: Int,
     onToggle: (Boolean) -> Unit,
     onTimeClick: () -> Unit,
     onSave: () -> Unit,
@@ -139,15 +160,15 @@ private fun ReminderSettingsCard(
                         .background(Color.LightGray)
                 )
                 Spacer(Modifier.height(16.dp))
-                NotificationTimeRow(onTimeClick)
+                NotificationTimeRow(onTimeClick, hour, minute)
                 Spacer(Modifier.height(8.dp))
-                Spacer(Modifier.height(16.dp))
-                PrimaryButton(
-                    onClick = onSave,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    text = "保存する"
-                )
             }
+
+            PrimaryButton(
+                onClick = onSave,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                text = "保存する"
+            )
         }
     }
 }
@@ -177,9 +198,12 @@ private fun ReminderToggleRow(
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 private fun NotificationTimeRow(
     onTimeClick: () -> Unit,
+    hour: Int,
+    minute: Int,
 ) {
     Column {
         Row(
@@ -196,7 +220,7 @@ private fun NotificationTimeRow(
                 color = TextMain
             )
             Text(
-                "8:00",
+                "${String.format("%02d", hour)}:${String.format("%02d", minute)}",
                 style = MaterialTheme.typography.bodyLarge,
                 color = TextMain
             )
@@ -243,7 +267,11 @@ fun NotificationTimePickerDialog(
 fun SettingsScreenPreview() {
     Surface {
         SettingsScreen(
-            contentPadding = PaddingValues(0.dp)
+            contentPadding = PaddingValues(0.dp),
+            state = SettingsUiState(),
+            setEnabled = {},
+            setReminderTime = { _, _ -> },
+            saveSettings = {}
         )
     }
 }
