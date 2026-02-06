@@ -1,6 +1,12 @@
 package com.nkot117.feature.settings
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -35,8 +41,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.domain.model.Reminder
@@ -137,6 +145,7 @@ fun SettingsScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 private fun ReminderSettingsCard(
     reminderSettings: Reminder,
@@ -144,6 +153,17 @@ private fun ReminderSettingsCard(
     onTimeClick: () -> Unit,
     onSave: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val requestPermission = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            onSave()
+        } else {
+            // 拒否された時のUI
+        }
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = cardColors(containerColor = Color.White)
@@ -163,7 +183,19 @@ private fun ReminderSettingsCard(
             }
             Spacer(Modifier.height(16.dp))
             PrimaryButton(
-                onClick = onSave,
+                onClick = {
+                    val hasPermission =
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        ) == PackageManager.PERMISSION_GRANTED
+
+                    if (hasPermission) {
+                        onSave()
+                    } else {
+                        requestPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = "保存する"
             )
