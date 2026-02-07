@@ -1,15 +1,27 @@
 package com.nkot117.smartgo
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import com.nkot117.core.domain.usecase.SyncReminderPermissionOnAppStartUseCase
 import com.nkot117.core.ui.theme.SmartGoTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var syncReminderPermissionOnAppStartUseCase: SyncReminderPermissionOnAppStartUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +30,27 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppContent()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val permissionGranted = isNotificationPermissionGranted(this)
+
+        lifecycleScope.launch {
+            syncReminderPermissionOnAppStartUseCase(permissionGranted)
+        }
+    }
+}
+
+fun isNotificationPermissionGranted(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    } else {
+        true
     }
 }
 
