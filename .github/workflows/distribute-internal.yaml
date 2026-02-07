@@ -21,12 +21,17 @@ jobs:
 
             - name: Set version
               run: |
-                  echo "INTERNAL_VERSION_CODE=$(date -u +'%y%m%d%H%M')" >> $GITHUB_ENV
+                  YEAR=$(date -u +%Y)
+                  YEAR_LAST=${YEAR: -1}
+                  REST=$(date -u +%m%d%H%M)
+                  INTERNAL_VC="${YEAR_LAST}${REST}"
+                  echo "INTERNAL_VERSION_CODE=$INTERNAL_VC" >> $GITHUB_ENV
 
             - name: Build internal APK
               run: |
                   ./gradlew assembleInternal \
                     -PINTERNAL_VERSION_CODE=$INTERNAL_VERSION_CODE
+
             - name: Upload to Firebase App Distribution
               uses: wzieba/Firebase-Distribution-Github-Action@v1
               with:
