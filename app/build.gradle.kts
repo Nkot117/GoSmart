@@ -23,8 +23,26 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
+            applicationIdSuffix = ".debug"
+            resValue("string", "app_name", "SmartGo (Debug)")
+            isDebuggable = true
+        }
+
+        create("internal") {
+            initWith(getByName("debug"))
+            matchingFallbacks += listOf("debug")
+            resValue("string", "app_name", "SmartGo (Internal)")
+            applicationIdSuffix = ".internal"
+            versionNameSuffix = "-internal"
+
+            isDebuggable = true
             isMinifyEnabled = false
+        }
+
+        release {
+            resValue("string", "app_name", "SmartGo")
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:621144802202:android:942f86350b0731a9f1b023",
+        "mobilesdk_app_id": "1:621144802202:android:3bb2a820791656b9f1b023",
         "android_client_info": {
-          "package_name": "com.nkot117.smartgo"
+          "package_name": "com.nkot117.smartgo.internal"
         }
       },
       "oauth_client": [],
