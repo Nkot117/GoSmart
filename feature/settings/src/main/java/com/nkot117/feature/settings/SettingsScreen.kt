@@ -2,8 +2,11 @@ package com.nkot117.feature.settings
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -35,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -49,6 +53,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.domain.model.Reminder
 import com.nkot117.core.ui.components.PrimaryButton
+import com.nkot117.core.ui.components.SecondaryButton
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.Primary500
@@ -89,13 +94,15 @@ fun SettingsScreen(
     saveSettings: () -> Unit,
     onBack: () -> Unit,
 ) {
+    val context = LocalContext.current
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
-    var showTimePicker by rememberSaveable { mutableStateOf(false) }
     val timePickerState = rememberTimePickerState(
         initialHour = state.reminder.hour,
         initialMinute = state.reminder.minute
     )
+    var showTimePicker by rememberSaveable { mutableStateOf(false) }
+    var showPermissionDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -130,6 +137,9 @@ fun SettingsScreen(
                 onSave = {
                     saveSettings()
                     onBack()
+                },
+                onShowPermissionDialogChange = { show ->
+                    showPermissionDialog = show
                 }
             )
         }
@@ -145,6 +155,34 @@ fun SettingsScreen(
             onDismiss = { showTimePicker = false }
         )
     }
+
+    if (showPermissionDialog) {
+        AlertDialog(
+            onDismissRequest = { showPermissionDialog = false },
+            title = {
+                Text("通知の許可が必要です")
+            },
+            text = {
+                Text("リマインダー通知を受け取るには、設定画面で通知を許可してください。")
+            },
+            confirmButton = {
+                PrimaryButton(
+                    onClick = {
+                        openNotificationSettings(context)
+                        showPermissionDialog = false
+                    },
+                    text = "設定を開く"
+                )
+            },
+            dismissButton = {
+                SecondaryButton(
+                    onClick = { showPermissionDialog = false },
+                    text = "キャンセル"
+                )
+
+            }
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -154,6 +192,7 @@ private fun ReminderSettingsCard(
     onToggle: (Boolean) -> Unit,
     onTimeClick: () -> Unit,
     onSave: () -> Unit,
+    onShowPermissionDialogChange: (Boolean) -> Unit,
 ) {
     val context = LocalContext.current
     val requestPermission = rememberLauncherForActivityResult(
@@ -162,7 +201,7 @@ private fun ReminderSettingsCard(
         if (granted) {
             onSave()
         } else {
-            // 拒否された時のUI
+            onShowPermissionDialogChange(true)
         }
     }
 
@@ -186,16 +225,20 @@ private fun ReminderSettingsCard(
             Spacer(Modifier.height(16.dp))
             PrimaryButton(
                 onClick = {
-                    val hasPermission =
-                        ContextCompat.checkSelfPermission(
-                            context,
-                            Manifest.permission.POST_NOTIFICATIONS
-                        ) == PackageManager.PERMISSION_GRANTED
+                    if (reminderSettings.enabled) {
+                        val hasPermission =
+                            ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            ) == PackageManager.PERMISSION_GRANTED
 
-                    if (hasPermission) {
-                        onSave()
+                        if (hasPermission) {
+                            onSave()
+                        } else {
+                            requestPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
                     } else {
-                        requestPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        onSave()
                     }
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -291,6 +334,13 @@ fun NotificationTimePickerDialog(
             }
         }
     )
+}
+
+fun openNotificationSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    }
+    context.startActivity(intent)
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
