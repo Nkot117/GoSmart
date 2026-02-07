@@ -1,0 +1,36 @@
+name: Distribute Internal App
+
+on:
+    workflow_dispatch:
+        inputs:
+            release_notes:
+                description: "リリースノート(optional)"
+                required: false
+
+jobs:
+    distribute:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 17
+
+            - name: Set version
+              run: |
+                  echo "INTERNAL_VERSION_CODE=$(date -u +'%y%m%d%H%M')" >> $GITHUB_ENV
+
+            - name: Build internal APK
+              run: |
+                  ./gradlew assembleInternal \
+                    -PINTERNAL_VERSION_CODE=$INTERNAL_VERSION_CODE
+            - name: Upload to Firebase App Distribution
+              uses: wzieba/Firebase-Distribution-Github-Action@v1
+              with:
+                  appId: ${{ secrets.FIREBASE_APP_ID_INTERNAL }}
+                  serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+                  groups: internal
+                  file: app/build/outputs/apk/internal/app-internal.apk

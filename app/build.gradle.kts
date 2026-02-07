@@ -16,8 +16,8 @@ android {
         applicationId = "com.nkot117.smartgo"
         minSdk = 28
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 100
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -58,6 +58,18 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+}
+
+androidComponents {
+    // CIから内部向けビルドのバージョンコードを設定する
+    onVariants(selector().withBuildType("internal")) { variant ->
+        val vc = project.findProperty("INTERNAL_VERSION_CODE") as String?
+        if (vc != null) {
+            variant.outputs.forEach { output ->
+                output.versionCode.set(vc.toInt())
+            }
+        }
     }
 }
 
