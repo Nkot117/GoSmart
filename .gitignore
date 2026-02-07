@@ -14,3 +14,6 @@ signing.properties
 
 # Generated files
 app/release/
+
+# Google Services
+app/google-services.json
