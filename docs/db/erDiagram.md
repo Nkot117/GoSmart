@@ -13,4 +13,9 @@ erDiagram
         string itemId FK
         string date
     }
+
+    DAILY_NOTES {
+        string date PK
+        string text
+    }
 ```
