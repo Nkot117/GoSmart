@@ -6,10 +6,16 @@ import com.nkot117.core.common.toLocalDate
 import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.WeatherType
 import com.nkot117.core.domain.usecase.GenerateChecklistUseCase
+import com.nkot117.core.domain.usecase.GetDailyNoteUseCase
+import com.nkot117.core.domain.usecase.SaveDailyNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,6 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val generateChecklistUseCase: GenerateChecklistUseCase,
+    private val getDailyNoteUseCase: GetDailyNoteUseCase,
+    private val saveDailyNoteUseCase: SaveDailyNoteUseCase,
 ) : ViewModel() {
     /**
      * UiState
@@ -36,6 +44,19 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun observeDailyNote() {
+        viewModelScope.launch {
+            uiState
+                .map { it.date }
+                .distinctUntilChanged()
+                .flatMapLatest { date -> getDailyNoteUseCase(date) }
+                .collect { note ->
+                    _uiState.update { it.copy(dailyNote = note?.text.orEmpty()) }
+                }
+        }
+    }
+
     fun setDayType(dayType: DayType) {
         _uiState.update { it.copy(dayType = dayType) }
     }
@@ -47,5 +68,13 @@ class HomeViewModel @Inject constructor(
 
     fun setWeatherType(weatherType: WeatherType) {
         _uiState.update { it.copy(weatherType = weatherType) }
+    }
+
+    fun saveDailyNote(note: String) {
+        viewModelScope.launch {
+            val date = _uiState.value.date
+            saveDailyNoteUseCase(date, note)
+            _uiState.update { it.copy(dailyNote = note) }
+        }
     }
 }

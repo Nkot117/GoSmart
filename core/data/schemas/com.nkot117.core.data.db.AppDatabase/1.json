@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "2fff2af6f655994e8eb3f3d2f85a4beb",
+    "identityHash": "3f5731d09a0c461d5b44fea1c5f12654",
     "entities": [
       {
         "tableName": "items",
@@ -88,11 +88,35 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "daily_notes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` TEXT NOT NULL, `text` TEXT NOT NULL, PRIMARY KEY(`date`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "text",
+            "columnName": "text",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "date"
+          ]
+        }
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2fff2af6f655994e8eb3f3d2f85a4beb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3f5731d09a0c461d5b44fea1c5f12654')"
     ]
   }
 }

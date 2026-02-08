@@ -27,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -80,13 +81,18 @@ fun HomeScreenRoute(
         viewModel.getChecklist()
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.observeDailyNote()
+    }
+
     HomeScreen(
         contentPadding = contentPadding,
         state = state,
         setDayType = viewModel::setDayType,
         setWeatherType = viewModel::setWeatherType,
         setDate = viewModel::setDate,
-        onTapCheckList = onTapCheckList
+        onTapCheckList = onTapCheckList,
+        saveDailyNote = viewModel::saveDailyNote
     )
 }
 
@@ -99,6 +105,7 @@ fun HomeScreen(
     setWeatherType: (WeatherType) -> Unit,
     setDate: (Long) -> Unit,
     onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
+    saveDailyNote: (String) -> Unit,
 ) {
     val topColor by animateColorAsState(
         targetValue = if (state.dayType == DayType.WORKDAY) {
@@ -118,7 +125,6 @@ fun HomeScreen(
         label = "bg_bottom"
     )
 
-    var noteText by rememberSaveable { mutableStateOf("") }
     var showEditNoteModal by remember { mutableStateOf(false) }
     var draftNoteText by rememberSaveable { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -198,9 +204,9 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 
                 DailyNoteCard(
-                    text = noteText,
+                    text = state.dailyNote,
                     onClick = {
-                        draftNoteText = noteText
+                        draftNoteText = state.dailyNote
                         showEditNoteModal = true
                     }
                 )
@@ -256,14 +262,14 @@ fun HomeScreen(
 
                         Button(
                             onClick = {
-                                noteText = draftNoteText
+                                saveDailyNote(draftNoteText)
                                 showEditNoteModal = false
                             }
                         ) {
                             Text("保存")
                         }
                     }
-                    
+
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }
@@ -328,14 +334,13 @@ private fun DailyNoteCard(
 ) {
     val displayText = text.ifBlank { "タップして今日のメモを追加" }
 
-    androidx.compose.material3.Surface(
+    Surface(
         shape = MaterialTheme.shapes.large,
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.large)
     ) {
         Column(
             modifier = Modifier
@@ -402,7 +407,8 @@ private fun HomeScreenPreview() {
                 setDayType = {},
                 setWeatherType = {},
                 setDate = {},
-                onTapCheckList = {}
+                onTapCheckList = {},
+                saveDailyNote = {}
             )
         }
     }
