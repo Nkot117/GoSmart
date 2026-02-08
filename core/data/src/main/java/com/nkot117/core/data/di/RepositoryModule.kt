@@ -1,8 +1,10 @@
 package com.nkot117.core.data.di
 
+import com.nkot117.core.data.repository.DailyNoteRepositoryImpl
 import com.nkot117.core.data.repository.ItemsRepositoryImpl
 import com.nkot117.core.data.repository.ReminderSettingsRepositoryImpl
 import com.nkot117.core.data.repository.SpecialItemDateRepositoryImpl
+import com.nkot117.core.domain.repository.DailyNoteRepository
 import com.nkot117.core.domain.repository.ItemsRepository
 import com.nkot117.core.domain.repository.ReminderSettingsRepository
 import com.nkot117.core.domain.repository.SpecialItemDateRepository
@@ -32,4 +34,10 @@ abstract class RepositoryModule {
     abstract fun bindReminderSettingRepository(
         impl: ReminderSettingsRepositoryImpl,
     ): ReminderSettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindDailyNoteRepository(
+        impl: DailyNoteRepositoryImpl,
+    ): DailyNoteRepository
 }

@@ -26,4 +26,7 @@ object DatabaseModule {
 
     @Provides
     fun provideSpecialItemDatesDao(db: AppDatabase): SpecialItemDateDao = db.specialItemDateDao()
+
+    @Provides
+    fun provideDailyNoteDao(db: AppDatabase) = db.dailyNoteDao()
 }
