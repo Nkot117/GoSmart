@@ -2,6 +2,8 @@ package com.nkot117.feature.home
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,14 +19,24 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -78,6 +90,7 @@ fun HomeScreenRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     contentPadding: PaddingValues,
@@ -104,6 +117,11 @@ fun HomeScreen(
         },
         label = "bg_bottom"
     )
+
+    var noteText by rememberSaveable { mutableStateOf("") }
+    var showEditNoteModal by remember { mutableStateOf(false) }
+    var draftNoteText by rememberSaveable { mutableStateOf("") }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Box(
         Modifier
@@ -179,10 +197,75 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 
+                DailyNoteCard(
+                    text = noteText,
+                    onClick = {
+                        draftNoteText = noteText
+                        showEditNoteModal = true
+                    }
+                )
+
+                Spacer(modifier = Modifier.padding(top = 15.dp))
+
                 // 持ち物プレビュー
                 ItemPreview(state.preview)
 
                 Spacer(modifier = Modifier.padding(top = 30.dp))
+            }
+        }
+
+        if (showEditNoteModal) {
+            ModalBottomSheet(
+                onDismissRequest = { showEditNoteModal = false },
+                sheetState = sheetState,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                ) {
+                    Text(
+                        text = "今日のノート",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    OutlinedTextField(
+                        value = draftNoteText,
+                        onValueChange = { draftNoteText = it },
+                        minLines = 4,
+                        placeholder = {
+                            Text("例：ティッシュ切れてるので帰りに買う")
+                        }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(
+                            onClick = { showEditNoteModal = false }
+                        ) {
+                            Text("キャンセル")
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Button(
+                            onClick = {
+                                noteText = draftNoteText
+                                showEditNoteModal = false
+                            }
+                        ) {
+                            Text("保存")
+                        }
+                    }
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
             }
         }
 
@@ -234,6 +317,42 @@ fun ItemPreview(
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
             }
+        }
+    }
+}
+
+@Composable
+private fun DailyNoteCard(
+    text: String,
+    onClick: () -> Unit,
+) {
+    val displayText = text.ifBlank { "タップして今日のメモを追加" }
+
+    androidx.compose.material3.Surface(
+        shape = MaterialTheme.shapes.large,
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.large)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.large)
+        ) {
+            Text(
+                text = "今日のノート",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = displayText,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 4
+            )
         }
     }
 }
