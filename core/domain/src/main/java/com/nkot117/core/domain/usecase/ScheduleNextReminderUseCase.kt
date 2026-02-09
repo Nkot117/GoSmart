@@ -8,6 +8,12 @@ class ScheduleNextReminderUseCase @Inject constructor(
     private val settingsRepository: ReminderSettingsRepository,
     private val alarmScheduler: ReminderAlarmScheduler,
 ) {
+    /**
+     * 次回のリマインダーをスケジュールするユースケース
+     *
+     * 保存されているリマインダーの時間設定を取得し、
+     * その時間に基づいて次回のリマインダーをスケジュールする。
+     */
     suspend operator fun invoke() {
         val reminderTime = settingsRepository.getTime()
         alarmScheduler.scheduleAt(reminderTime.hour, reminderTime.minute)
