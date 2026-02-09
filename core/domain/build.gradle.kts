@@ -33,13 +33,20 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+    }
 }
 
 dependencies {
     implementation(libs.kotlinx.coroutines.android)
 
     // Hilt
-    // Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+
+    // Unit Test
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.assertions.core)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
