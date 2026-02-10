@@ -22,6 +22,18 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("internal") {
+            val storeFilePath =
+                System.getenv("SIGNING_STORE_FILE") ?: "keystore/smartgo-internal.jks"
+
+            storeFile = file(storeFilePath)
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
@@ -35,6 +47,7 @@ android {
             resValue("string", "app_name", "SmartGo (Internal)")
             applicationIdSuffix = ".internal"
             versionNameSuffix = "-internal"
+            signingConfig = signingConfigs.getByName("internal")
 
             isDebuggable = true
             isMinifyEnabled = false
