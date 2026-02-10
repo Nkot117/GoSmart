@@ -87,6 +87,12 @@ class ItemsViewModel @Inject constructor(
                 ItemCategory.DATE_SPECIFIC -> saveItemWithSpecialDateUseCase(item, state.date)
                 else -> saveItemUseCase(item)
             }
+
+            _uiState.update {
+                it.copy(
+                    form = ItemFormState()
+                )
+            }
         }
     }
 
