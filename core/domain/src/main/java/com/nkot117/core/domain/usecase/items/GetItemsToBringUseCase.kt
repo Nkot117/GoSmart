@@ -1,4 +1,4 @@
-package com.nkot117.core.domain.usecase
+package com.nkot117.core.domain.usecase.items
 
 import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.Item
@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import javax.inject.Inject
 
-class GenerateChecklistUseCase @Inject constructor(
+class GetItemsToBringUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository,
     private val specialItemDateRepository: SpecialItemDateRepository,
 ) {
@@ -19,15 +19,6 @@ class GenerateChecklistUseCase @Inject constructor(
      *
      * 指定された条件（勤務区分・天気・日付）に基づいて、
      * 登録されているアイテムの中から「持っていくべきもの」を抽出する。
-     *
-     * 抽出ルールは以下の通り：
-     * - [ItemCategory.ALWAYS] : 常に含める
-     * - [ItemCategory.WORKDAY] : 勤務日（[DayType.WORKDAY]）の場合に含める
-     * - [ItemCategory.HOLIDAY] : 休日（[DayType.HOLIDAY]）の場合に含める
-     * - [ItemCategory.RAINY] : 天気が雨（[WeatherType.RAINY]）の場合に含める
-     * - [ItemCategory.SUNNY] : 天気が晴れ（[WeatherType.SUNNY]）の場合に含める
-     * - [ItemCategory.DATE_SPECIFIC] : 指定された日付に紐づけられている場合のみ含める
-     *
      *
      * @param dayType チェック対象日の勤務区分（勤務日 / 休日）
      * @param weatherType チェック対象日の天気（晴れ / 雨）

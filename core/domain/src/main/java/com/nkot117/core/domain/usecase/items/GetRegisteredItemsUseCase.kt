@@ -1,4 +1,4 @@
-package com.nkot117.core.domain.usecase
+package com.nkot117.core.domain.usecase.items
 
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.RegisteredItemsQuery
@@ -7,7 +7,7 @@ import com.nkot117.core.domain.repository.SpecialItemDateRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetRegisteredItemListUseCase @Inject constructor(
+class GetRegisteredItemsUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository,
     private val specialItemDateRepository: SpecialItemDateRepository,
 ) {
@@ -35,7 +35,6 @@ class GetRegisteredItemListUseCase @Inject constructor(
         return when (query) {
             is RegisteredItemsQuery.ByCategory ->
                 itemsRepository.getRegisteredItemsByCategory(query)
-
 
             is RegisteredItemsQuery.BySpecificDate -> specialItemDateRepository.getRegisteredItemsByDate(
                 query

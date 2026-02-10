@@ -1,4 +1,4 @@
-package com.nkot117.core.domain.usecase
+package com.nkot117.core.domain.usecase.items
 
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.repository.ItemsRepository

@@ -1,4 +1,4 @@
-package com.nkot117.core.domain.usecase
+package com.nkot117.core.domain.usecase.reminder
 
 import com.nkot117.core.domain.repository.ReminderAlarmScheduler
 import com.nkot117.core.domain.repository.ReminderSettingsRepository
