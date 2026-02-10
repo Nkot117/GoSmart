@@ -1,21 +1,21 @@
 # Scaffold 設計ポリシー
 
-本アプリにおける Scaffold / TopBar / FAB の扱い方針をまとめ、画面追加時の迷いやコードの肥大化を防ぐことを目的とする。
+本アプリにおけるScaffold / TopBar / FABの扱い方針をまとめ、画面追加時の迷いやコードの肥大化を防ぐことを目的とする。
 
-- Scaffold をアプリ全体で 1 箇所に統一し、TopBar と FAB のレイアウトの位置ズレを防ぐ。
-- TopBar と FAB の内容については、現在の画面（NavKey）から決定する。
+- Scaffoldをアプリ全体で1箇所に統一しTopBarとFABのレイアウトの位置ズレを防ぐ。
+- TopBarとFABの内容については、現在の画面（NavKey）から決定する。
 
 ## 全体構成
 
-| レイヤ                     | 役割                                                                         |
-| -------------------------- | ---------------------------------------------------------------------------- |
-| MainActivity / AppScaffold | `Scaffold` の定義。TopBar / FAB の適用。BackStack を保持し NavDisplay に渡す |
-| Route（XxxScreenRoute）    | ViewModel / DI / 画面単位の初期設定                                          |
-| Screen（XxxScreen）        | 純粋な UI 描画（State/ViewModel に定義している関数を引数で受け取る）         |
+| レイヤ                     | 役割                                                                        |
+| -------------------------- | --------------------------------------------------------------------------- |
+| MainActivity / AppScaffold | `Scaffold`の定義。TopBar / FAB の適用。BackStack を保持し NavDisplay に渡す |
+| Route（XxxScreenRoute）    | ViewModel / DI / 画面単位の初期設定                                         |
+| Screen（XxxScreen）        | 純粋なUI描画（State/ViewModelに定義している関数を引数で受け取る）           |
 
 ## 実装方針
 
-### 1. Scaffold はアプリで 1 つだけ持つ
+### 1. Scaffoldはアプリで1つだけ持つ
 
 ```kotlin
 @Composable
@@ -49,7 +49,7 @@ fun AppScaffold() {
 }
 ```
 
-### 2. ScaffoldSpec で TopBar / FAB を宣言する
+### 2. ScaffoldSpecでTopBar / FABを宣言する
 
 ```kotlin
 data class ScaffoldSpec(
@@ -76,7 +76,7 @@ private fun scaffoldSpecForNavKey(
 }
 ```
 
-#### 各画面の Screen コンポーザブルで 画面のコンテンツを設定する
+#### 各画面のScreenコンポーザブルで画面のコンテンツを設定する
 
 ```kotlin
 @Composable
@@ -101,8 +101,8 @@ fun HomeScreen(
 
 - 画面追加時は以下を実施する。
   1. AppNavKey を追加
-  2. NavDisplay の entryProvider に entry を追加
-  3. scaffoldSpecForNavKey() に TopBar / FAB の定義を追加
-- Scaffold の要素（TopBar / FAB など）は各 Screen では触れない。Screen は画面コンテンツのみを担当する。
-- FAB が不要な画面は ScaffoldSpec(fab = {})（デフォルト）で非表示にする。
-- Scaffold によって確保された TopBar / FAB の占有領域をと各画面の表示要素の重なりを防止するため、Screen コンポーネントは contentPadding を受け取り、それをレイアウトに適用する。
+  2. NavDisplayのentryProviderにentryを追加
+  3. scaffoldSpecForNavKey()にTopBar/FABの定義を追加
+- Scaffoldの要素（TopBar/FAB など）は各Screenでは触れない。Screenは画面コンテンツのみを担当する。
+- FABが不要な画面は ScaffoldSpec(fab = {})（デフォルト）で非表示にする。
+- Scaffold によって確保されたTopBar/FABの占有領域をと各画面の表示要素の重なりを防止するため、Screen コンポーネントは contentPadding を受け取り、それをレイアウトに適用する。
