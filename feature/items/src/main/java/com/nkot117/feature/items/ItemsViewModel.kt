@@ -6,10 +6,10 @@ import com.nkot117.core.common.toLocalDate
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.model.RegisteredItemsQuery
-import com.nkot117.core.domain.usecase.DeleteItemUseCase
-import com.nkot117.core.domain.usecase.GetRegisteredItemListUseCase
-import com.nkot117.core.domain.usecase.SaveItemUseCase
-import com.nkot117.core.domain.usecase.SaveItemWithSpecialDateUseCase
+import com.nkot117.core.domain.usecase.items.DeleteItemUseCase
+import com.nkot117.core.domain.usecase.items.GetRegisteredItemsUseCase
+import com.nkot117.core.domain.usecase.items.SaveItemUseCase
+import com.nkot117.core.domain.usecase.items.SaveItemWithSpecialDateUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ItemsViewModel @Inject constructor(
-    private val getRegisteredItemListUseCase: GetRegisteredItemListUseCase,
+    private val getRegisteredItemsUseCase: GetRegisteredItemsUseCase,
     private val saveItemUseCase: SaveItemUseCase,
     private val saveItemWithSpecialDateUseCase: SaveItemWithSpecialDateUseCase,
     private val deleteItemUseCase: DeleteItemUseCase,
@@ -68,7 +68,7 @@ class ItemsViewModel @Inject constructor(
                 }
                 .distinctUntilChanged()
                 .flatMapLatest { query ->
-                    getRegisteredItemListUseCase(query) // Flow<List<Item>>
+                    getRegisteredItemsUseCase(query) // Flow<List<Item>>
                 }
                 .collect { items ->
                     _uiState.update { it.copy(itemList = items) }

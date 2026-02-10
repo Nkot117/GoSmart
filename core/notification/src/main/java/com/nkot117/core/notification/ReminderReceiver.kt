@@ -5,7 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.annotation.RequiresPermission
-import com.nkot117.core.domain.usecase.ScheduleNextReminderUseCase
+import com.nkot117.core.domain.usecase.reminder.ScheduleNextReminderUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

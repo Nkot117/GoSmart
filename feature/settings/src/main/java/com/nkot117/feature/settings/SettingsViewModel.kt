@@ -2,9 +2,9 @@ package com.nkot117.feature.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nkot117.core.domain.usecase.CancelReminderUseCase
-import com.nkot117.core.domain.usecase.GetReminderTimeUseCase
-import com.nkot117.core.domain.usecase.UpdateReminderTimeUseCase
+import com.nkot117.core.domain.usecase.reminder.CancelReminderAlarmUseCase
+import com.nkot117.core.domain.usecase.reminder.GetReminderTimeUseCase
+import com.nkot117.core.domain.usecase.reminder.UpdateReminderTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val getReminderTimeUseCase: GetReminderTimeUseCase,
     private val updateReminderTimeUseCase: UpdateReminderTimeUseCase,
-    private val cancelReminderUseCase: CancelReminderUseCase,
+    private val cancelReminderAlarmUseCase: CancelReminderAlarmUseCase,
 ) : ViewModel() {
 
     /**
@@ -68,7 +68,7 @@ class SettingsViewModel @Inject constructor(
             )
 
             if (!state.reminder.enabled) {
-                cancelReminderUseCase()
+                cancelReminderAlarmUseCase()
             }
         }
     }

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.WeatherType
-import com.nkot117.core.domain.usecase.GenerateChecklistUseCase
+import com.nkot117.core.domain.usecase.items.GetItemsToBringUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChecklistViewModel @Inject constructor(
-    private val generateChecklistUseCase: GenerateChecklistUseCase,
+    private val getItemsToBringUseCase: GetItemsToBringUseCase,
 ) : ViewModel() {
 
     /**
@@ -27,10 +27,10 @@ class ChecklistViewModel @Inject constructor(
 
     val isAllChecked: Boolean
         get() = uiState.value.checklist.all { it.checked }
-    
+
     fun getChecklist(dayType: DayType, weatherType: WeatherType, date: LocalDate) {
         viewModelScope.launch {
-            val items = generateChecklistUseCase(
+            val items = getItemsToBringUseCase(
                 dayType = dayType,
                 weatherType = weatherType,
                 date = date

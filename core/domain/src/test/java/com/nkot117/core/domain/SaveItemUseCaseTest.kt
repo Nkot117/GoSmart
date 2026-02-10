@@ -2,7 +2,7 @@ package com.nkot117.core.domain
 
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
-import com.nkot117.core.domain.usecase.SaveItemUseCase
+import com.nkot117.core.domain.usecase.items.SaveItemUseCase
 import com.nkot117.core.test.fake.FakeItemsRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
