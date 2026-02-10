@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    testImplementation(project(":core:test"))
     implementation(libs.kotlinx.coroutines.android)
 
     // Hilt
