@@ -27,7 +27,7 @@ android {
             val storeFilePath =
                 System.getenv("SIGNING_STORE_FILE") ?: "keystore/smartgo-internal.jks"
 
-            storeFile = file(storeFilePath)
+            storeFile = rootProject.file(storeFilePath)
             storePassword = System.getenv("SIGNING_STORE_PASSWORD")
             keyAlias = System.getenv("SIGNING_KEY_ALIAS")
             keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
