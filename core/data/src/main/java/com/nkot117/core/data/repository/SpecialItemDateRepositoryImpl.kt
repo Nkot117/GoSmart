@@ -23,24 +23,8 @@ class SpecialItemDateRepositoryImpl @Inject constructor(
         return dao.getItemIdsOnDate(date.toString()).flowOn(io)
     }
 
-    override fun getDatesForItem(itemId: Long): Flow<List<String>> {
-        return dao.getDatesForItem(itemId).flowOn(io)
-    }
-
     override suspend fun saveDate(itemId: Long, date: LocalDate) {
         withContext(io) {
-            dao.insert(
-                SpecialItemDatesEntity(
-                    itemId = itemId,
-                    date = date.toString()
-                )
-            )
-        }
-    }
-
-    override suspend fun replaceDate(itemId: Long, date: LocalDate) {
-        withContext(io) {
-            dao.clear(itemId)
             dao.insert(
                 SpecialItemDatesEntity(
                     itemId = itemId,

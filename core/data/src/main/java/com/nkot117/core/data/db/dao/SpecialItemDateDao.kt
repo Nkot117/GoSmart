@@ -13,14 +13,8 @@ interface SpecialItemDateDao {
     @Query("SELECT itemId FROM special_item_dates WHERE date = :date")
     fun getItemIdsOnDate(date: String): Flow<List<Long>>
 
-    @Query("SELECT date FROM special_item_dates WHERE itemId = :itemId ORDER BY date")
-    fun getDatesForItem(itemId: Long): Flow<List<String>>
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(entity: SpecialItemDatesEntity)
-
-    @Query("DELETE FROM special_item_dates WHERE itemId = :itemId")
-    suspend fun clear(itemId: Long)
 
     @Query(
         """
