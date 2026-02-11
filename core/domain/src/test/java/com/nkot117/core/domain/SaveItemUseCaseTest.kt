@@ -16,6 +16,7 @@ class SaveItemUseCaseTest : FunSpec({
             val itemsRepository = FakeItemsRepository().apply {
                 nextId = 1L
             }
+            
             val useCase = SaveItemUseCase(itemsRepository)
 
             val newItem = Item(
