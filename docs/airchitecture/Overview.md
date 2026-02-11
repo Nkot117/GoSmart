@@ -1,14 +1,44 @@
-## Overview
+## Architecture Overview
 
-本アプリでは UI Layer / Domain Layer / Data Layer の 3 層アーキテクチャを採用しています。
-アプリの中核となるビジネスロジックは Domain Layer に定義し、UI とデータ取得処理は Domain に依存する形で構成しています。
-UI Layer や Data Layer は変更されやすい領域であるため、それらに依存しない不変なビジネスロジック（Domain 層）を中心におくことで、変更に強い構造となっています。
+本アプリはMVVMをベースに、UI、ビジネスロジック、データ取得の責務を分離するためにUI / Domain / Data の3レイヤで構成しています。
+アプリの中核となるビジネスロジックやユースケースはDomainに集約し、UIはViewModelを介してビジネスロジックを使用します。
+データ取得はRepositoryに集約し、外部I/Oの詳細をUIから隠蔽しています。
+クリーンアーキテクチャの考え方（依存を内側へ）を参考に、変更に強い構造となっています。
 
-## Module Structure
+```mermaid
+flowchart TB
 
-本アプリでは、3 層アーキテクチャを明確に保ち、機能ごとに責務を分離するため、マルチモジュール構成を採用しています。
-依存方向はビジネスロジックを定義する:core:domain を中心とした一方向となっています。
-います。
+subgraph UIレイヤー
+  View["View(Jetpack Compose)"]
+  VM["ViewModel"]
+  View -->|Events| VM
+  VM -->|UiState| View
+end
+
+VM -->|invoke| UC
+
+subgraph Domainレイヤー
+  UC["UseCase"]
+  RepoIF["Repository Interface"]
+end
+
+UC -->|dependsOn| RepoIF
+
+subgraph Dataレイヤー
+  RepoImpl["RepositoryImpl"]
+  DS["DataSource"]
+end
+
+RepoImpl -->|implements| RepoIF
+RepoImpl -->|fetch| DS
+
+
+```
+
+## Module Dependency Structure
+
+本アプリでは、機能ごとの責務分離とビルド影響範囲の限定を目的に、マルチモジュール構成を採用しています。
+設計方針としては Domain（:core:domain）を中心に依存を内側へ寄せることを目指し、UI / Dataから Domainを利用する形で整理しています。
 モジュール間の依存関係の全体像は、以下のドキュメントにまとめています。
 
 ```

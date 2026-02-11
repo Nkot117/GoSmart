@@ -1,54 +1,65 @@
 name: Distribute Internal App
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
-    distribute:
-        runs-on: ubuntu-latest
+  distribute:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-            - uses: actions/setup-java@v4
-              with:
-                  distribution: temurin
-                  java-version: 17
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
 
-            - name: Restore google-services.json
-              shell: bash
-              run: |
-                  if [ -z "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" ]; then
-                    echo "ERROR: GOOGLE_SERVICES_JSON_BASE64 is missing in GitHub Secrets."
-                    exit 1
-                  fi
-                  echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
-                  test -s app/google-services.json
+      - name: Restore google-services.json
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" ]; then
+            echo "ERROR: GOOGLE_SERVICES_JSON_BASE64 is missing in GitHub Secrets."
+            exit 1
+          fi
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
+          test -s app/google-services.json
 
-            - name: Set version
-              shell: bash
-              run: |
-                  YEAR=$(date -u +%Y)
-                  YEAR_LAST=${YEAR: -1}
-                  REST=$(date -u +%m%d%H%M)
-                  INTERNAL_VC="${YEAR_LAST}${REST}"
-                  echo "INTERNAL_VERSION_CODE=$INTERNAL_VC" >> $GITHUB_ENV
-                  echo "INTERNAL_VERSION_CODE=$INTERNAL_VC"
+      - name: Set version
+        shell: bash
+        run: |
+          YEAR=$(date -u +%Y)
+          YEAR_LAST=${YEAR: -1}
+          REST=$(date -u +%m%d%H%M)
+          INTERNAL_VC="${YEAR_LAST}${REST}"
+          echo "INTERNAL_VERSION_CODE=$INTERNAL_VC" >> $GITHUB_ENV
+          echo "INTERNAL_VERSION_CODE=$INTERNAL_VC"
 
-            - name: Build internal APK
-              shell: bash
-              run: |
-                  ./gradlew :app:assembleInternal \
-                    -PINTERNAL_VERSION_CODE=${INTERNAL_VERSION_CODE}
+      - name: Restore internal keystore
+        shell: bash
+        run: |
+          mkdir -p keystore
+          echo "${{ secrets.ANDROID_INTERNAL_KEYSTORE_BASE64 }}" | base64 --decode > keystore/smartgo-internal.jks
+          ls -la keystore
 
-            - name: Upload to Firebase App Distribution
-              uses: wzieba/Firebase-Distribution-Github-Action@v1
-              with:
-                  appId: ${{ secrets.FIREBASE_APP_ID_INTERNAL }}
-                  serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-                  groups: internal
-                  file: app/build/outputs/apk/internal/app-internal.apk
-                  releaseNotes: |
-                      Branch: ${{ github.ref_name }}
-                      Commit: ${{ github.sha }}
-                      Build: internal
+      - name: Build internal APK
+        shell: bash
+        env:
+          SIGNING_STORE_FILE: keystore/smartgo-internal.jks
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          ./gradlew :app:assembleInternal -PINTERNAL_VERSION_CODE="$INTERNAL_VERSION_CODE"
+
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_INTERNAL }}
+          serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          groups: internal
+          file: app/build/outputs/apk/internal/app-internal.apk
+          releaseNotes: |
+            Branch: ${{ github.ref_name }}
+            Commit: ${{ github.sha }}
+            Build: internal

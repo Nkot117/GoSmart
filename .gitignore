@@ -17,3 +17,7 @@ app/release/
 
 # Google Services
 app/google-services.json
+
+# keystore
+keystore/
+*.jks
