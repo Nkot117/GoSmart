@@ -1,4 +1,4 @@
-package com.nkot117.core.domain
+package com.nkot117.core.domain.items
 
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
