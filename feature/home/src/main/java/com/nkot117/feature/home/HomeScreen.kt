@@ -187,7 +187,7 @@ fun HomeScreen(
                     right = SegmentOption(DayType.HOLIDAY, "休みの日"),
                     selected = state.dayType,
                     onSelectedChange = { setDayType(it) },
-                    modifier = Modifier.width(300.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
@@ -198,7 +198,7 @@ fun HomeScreen(
                     right = SegmentOption(WeatherType.RAINY, "雨の日"),
                     selected = state.weatherType,
                     onSelectedChange = { setWeatherType(it) },
-                    modifier = Modifier.width(300.dp)
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
