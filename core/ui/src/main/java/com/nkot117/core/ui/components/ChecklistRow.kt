@@ -167,7 +167,7 @@ private fun ChecklistActionRowPreview_NoIcon() {
     SmartGoTheme {
         ChecklistActionRow(
             title = "財布",
-            icon = Icons.Default.Delete,
+            icon = Icons.Filled.Delete,
             iconColor = Color.Red,
             onClick = {}
         )

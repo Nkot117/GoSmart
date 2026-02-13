@@ -1,6 +1,14 @@
 package com.nkot117.feature.home
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +27,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -27,13 +34,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -60,6 +68,7 @@ import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.core.ui.components.ChecklistPreviewRow
 import com.nkot117.core.ui.components.DatePickerField
 import com.nkot117.core.ui.components.PrimaryButton
+import com.nkot117.core.ui.components.SecondaryButton
 import com.nkot117.core.ui.components.SegmentOption
 import com.nkot117.core.ui.components.TwoOptionSegment
 import com.nkot117.core.ui.theme.BgHolidayBottom
@@ -99,7 +108,7 @@ fun HomeScreenRoute(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+private fun HomeScreen(
     contentPadding: PaddingValues,
     state: HomeUiState,
     setDayType: (DayType) -> Unit,
@@ -108,24 +117,7 @@ fun HomeScreen(
     onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
     saveDailyNote: (String) -> Unit,
 ) {
-    val topColor by animateColorAsState(
-        targetValue = if (state.dayType == DayType.WORKDAY) {
-            BgWorkdayTop
-        } else {
-            BgHolidayTop
-        },
-        label = "bg_top"
-    )
-
-    val bottomColor by animateColorAsState(
-        targetValue = if (state.dayType == DayType.WORKDAY) {
-            BgWorkdayBottom
-        } else {
-            BgHolidayBottom
-        },
-        label = "bg_bottom"
-    )
-
+    val backgroundBrush = rememberDayTypeGradient(state.dayType)
     var showEditNoteModal by remember { mutableStateOf(false) }
     var draftNoteText by rememberSaveable { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -135,18 +127,11 @@ fun HomeScreen(
             .fillMaxSize()
             .padding(contentPadding)
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(topColor, bottomColor)
-                )
+                brush = backgroundBrush
             )
     ) {
-        val composition by rememberLottieComposition(
-            LottieCompositionSpec.RawRes(
-                if (state.weatherType == WeatherType.SUNNY) com.nkot117.core.ui.R.raw.sunny else com.nkot117.core.ui.R.raw.rainy
-            )
-        )
-
         LazyColumn(
+
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(
                 start = 41.dp, end = 41.dp, top = 16.dp,
@@ -158,7 +143,7 @@ fun HomeScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // 日付
+                    // 日付選択
                     DatePickerField(
                         selectedDateMillis = state.date.toEpochMillis(ZoneOffset.UTC),
                         onDateChange = {
@@ -169,15 +154,10 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f)
                     )
 
-                    Spacer(modifier = Modifier.padding(end = 20.dp))
+                    Spacer(modifier = Modifier.width(20.dp))
 
-                    LottieAnimation(
-                        composition = composition,
-                        iterations = LottieConstants.IterateForever,
-                        modifier = Modifier.size(54.dp)
-                    )
-
-
+                    // 天気アイコン
+                    WeatherIcon(weatherType = state.weatherType)
                 }
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
@@ -204,6 +184,7 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 
+                // 今日のノート
                 DailyNoteCard(
                     text = state.dailyNote,
                     onClick = {
@@ -218,62 +199,6 @@ fun HomeScreen(
                 ItemPreview(state.preview)
 
                 Spacer(modifier = Modifier.padding(top = 30.dp))
-            }
-        }
-
-        if (showEditNoteModal) {
-            ModalBottomSheet(
-                onDismissRequest = { showEditNoteModal = false },
-                sheetState = sheetState,
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
-                ) {
-                    Text(
-                        text = "今日のノート",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    OutlinedTextField(
-                        value = draftNoteText,
-                        onValueChange = { draftNoteText = it },
-                        minLines = 4,
-                        placeholder = {
-                            Text("例：ティッシュ切れてるので帰りに買う")
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(
-                            onClick = { showEditNoteModal = false }
-                        ) {
-                            Text("キャンセル")
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Button(
-                            onClick = {
-                                saveDailyNote(draftNoteText)
-                                showEditNoteModal = false
-                            }
-                        ) {
-                            Text("保存")
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
             }
         }
 
@@ -293,17 +218,28 @@ fun HomeScreen(
             enabled = state.preview.isNotEmpty(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 40.dp)
-                .height(56.dp)
                 .fillMaxWidth()
+                .padding(bottom = 40.dp)
                 .padding(horizontal = 41.dp)
+                .height(56.dp)
                 .widthIn(max = 360.dp)
+        )
+    }
+
+    // 今日のノート編集モーダル
+    if (showEditNoteModal) {
+        DailyNoteEditModal(
+            sheetState = sheetState,
+            draftNoteText = draftNoteText,
+            editNoteText = { draftNoteText = it },
+            saveDailyNote = saveDailyNote,
+            onDismissRequest = { showEditNoteModal = it }
         )
     }
 }
 
 @Composable
-fun ItemPreview(
+private fun ItemPreview(
     previewList: List<Item>,
 ) {
     Box(modifier = Modifier.fillMaxWidth()) {
@@ -342,7 +278,6 @@ fun ItemPreview(
                     Spacer(modifier = Modifier.padding(top = 15.dp))
                 }
             }
-
         }
     }
 }
@@ -382,6 +317,146 @@ private fun DailyNoteCard(
     }
 }
 
+@Composable
+private fun rememberDayTypeGradient(
+    dayType: DayType,
+): Brush {
+    val topColor by animateColorAsState(
+        targetValue = if (dayType == DayType.WORKDAY) {
+            BgWorkdayTop
+        } else {
+            BgHolidayTop
+        },
+        animationSpec = tween(
+            durationMillis = 600,
+            easing = FastOutSlowInEasing
+        ),
+        label = "bg_top"
+    )
+
+    val bottomColor by animateColorAsState(
+        targetValue = if (dayType == DayType.WORKDAY) {
+            BgWorkdayBottom
+        } else {
+            BgHolidayBottom
+        },
+        animationSpec = tween(
+            durationMillis = 600,
+            easing = FastOutSlowInEasing
+        ),
+        label = "bg_bottom"
+    )
+
+    return remember(topColor, bottomColor) {
+        Brush.verticalGradient(listOf(topColor, bottomColor))
+    }
+}
+
+@Composable
+private fun WeatherIcon(
+    weatherType: WeatherType,
+) {
+    AnimatedContent(
+        targetState = weatherType,
+        transitionSpec = {
+            val direction = if (targetState == WeatherType.RAINY) 1 else -1
+            val slideIn = slideInHorizontally(
+                animationSpec = tween(320, easing = FastOutSlowInEasing),
+                initialOffsetX = { fullWidth -> fullWidth * direction }
+            )
+            val slideOut = slideOutHorizontally(
+                animationSpec = tween(260, easing = FastOutSlowInEasing),
+                targetOffsetX = { fullWidth -> -fullWidth * direction }
+            )
+
+            (slideIn + fadeIn(tween(320))) togetherWith
+                    (slideOut + fadeOut(tween(200)))
+        },
+        label = "weather_lottie_switch"
+    ) { type ->
+        val resId = if (type == WeatherType.SUNNY) {
+            com.nkot117.core.ui.R.raw.sunny
+        } else {
+            com.nkot117.core.ui.R.raw.rainy
+        }
+
+        val composition by rememberLottieComposition(
+            LottieCompositionSpec.RawRes(
+                resId
+            )
+        )
+
+        key(type) {
+            LottieAnimation(
+                composition = composition,
+                iterations = LottieConstants.IterateForever,
+                modifier = Modifier.size(54.dp)
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DailyNoteEditModal(
+    sheetState: SheetState,
+    draftNoteText: String,
+    editNoteText: (String) -> Unit,
+    saveDailyNote: (String) -> Unit,
+    onDismissRequest: (Boolean) -> Unit,
+) {
+    ModalBottomSheet(
+        onDismissRequest = { onDismissRequest(false) },
+        sheetState = sheetState,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+        ) {
+            Text(
+                text = "今日のノート",
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = draftNoteText,
+                onValueChange = { editNoteText(it) },
+                minLines = 4,
+                placeholder = {
+                    Text("例：ティッシュ切れてるので帰りに買う")
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                SecondaryButton(
+                    text = "キャンセル",
+                    onClick = { onDismissRequest(false) }
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                PrimaryButton(
+                    text = "保存",
+                    onClick = {
+                        saveDailyNote(draftNoteText)
+                        onDismissRequest(false)
+                    },
+                    enabled = draftNoteText.isNotBlank()
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

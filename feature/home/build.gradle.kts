@@ -65,4 +65,7 @@ dependencies {
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
 
+    // Icons
+    implementation(libs.material.icons.core)
+
 }

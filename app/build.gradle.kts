@@ -120,4 +120,7 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+
+    // Icons
+    implementation(libs.material.icons.core)
 }

@@ -177,10 +177,10 @@ fun ChecklistScreen(
             enabled = isAllChecked,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 40.dp)
-                .height(56.dp)
                 .fillMaxWidth()
+                .padding(bottom = 40.dp)
                 .padding(horizontal = 41.dp)
+                .height(56.dp)
                 .widthIn(max = 360.dp)
         )
     }
