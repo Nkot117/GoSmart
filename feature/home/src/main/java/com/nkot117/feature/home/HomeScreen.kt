@@ -67,6 +67,7 @@ import com.nkot117.core.ui.theme.BgHolidayTop
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.SmartGoTheme
+import com.nkot117.core.ui.theme.TextSub
 import java.time.ZoneOffset
 
 @Composable
@@ -243,7 +244,8 @@ fun HomeScreen(
                         minLines = 4,
                         placeholder = {
                             Text("例：ティッシュ切れてるので帰りに買う")
-                        }
+                        },
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -288,6 +290,7 @@ fun HomeScreen(
                     params
                 )
             },
+            enabled = state.preview.isNotEmpty(),
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 40.dp)
@@ -316,13 +319,30 @@ fun ItemPreview(
 
             Spacer(modifier = Modifier.padding(top = 5.dp))
 
-            previewList.forEach {
-                ChecklistPreviewRow(
-                    title = it.name
+            if (previewList.isEmpty()) {
+                Text(
+                    "プレビューできる持ち物がありません。",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextSub,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                Spacer(modifier = Modifier.padding(top = 15.dp))
+                Text(
+                    "持ち物は＋ボタンから追加できます。",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextSub,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            } else {
+                previewList.forEach {
+                    ChecklistPreviewRow(
+                        title = it.name
+                    )
+
+                    Spacer(modifier = Modifier.padding(top = 15.dp))
+                }
             }
+
         }
     }
 }

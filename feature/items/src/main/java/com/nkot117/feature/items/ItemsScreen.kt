@@ -49,6 +49,7 @@ import com.nkot117.core.ui.theme.BorderLine
 import com.nkot117.core.ui.theme.Error300
 import com.nkot117.core.ui.theme.Primary100
 import com.nkot117.core.ui.theme.Primary500
+import com.nkot117.core.ui.theme.TextMain
 import com.nkot117.core.ui.theme.TextSub
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -189,31 +190,38 @@ fun ItemsScreen(
             Text(
                 text = "登録されている持ち物リスト",
                 style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = TextMain
             )
 
             Spacer(Modifier.height(8.dp))
 
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                items(state.itemList) { item ->
-                    ChecklistActionRow(
-                        title = item.name,
-                        icon = Icons.Default.Delete,
-                        iconColor = Error300,
-                        onClick = {
-                            item.id?.let {
-                                deleteItem(it)
-                            }
-                        },
-                    )
+            if (state.itemList.isEmpty()) {
+                Text(
+                    text = "持ち物が登録されていません。",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = TextSub
+                )
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    items(state.itemList) { item ->
+                        ChecklistActionRow(
+                            title = item.name,
+                            icon = Icons.Default.Delete,
+                            iconColor = Error300,
+                            onClick = {
+                                item.id?.let {
+                                    deleteItem(it)
+                                }
+                            },
+                        )
 
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+                    }
                 }
-
-
             }
+
 
         }
     }
