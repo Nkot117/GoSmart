@@ -15,7 +15,7 @@ class GetDailyNoteUseCaseTest : FunSpec({
             // Arrange
             val dailyNoteRepository = FakeDailyNoteRepository()
             val useCase = GetDailyNoteUseCase(dailyNoteRepository)
-            dailyNoteRepository.setInitialData(
+            dailyNoteRepository.seedDailyNotes(
                 DailyNote(
                     date = LocalDate.of(2026, 1, 1),
                     text = "今日は晴れでした。"
@@ -40,7 +40,7 @@ class GetDailyNoteUseCaseTest : FunSpec({
             // Arrange
             val dailyNoteRepository = FakeDailyNoteRepository()
             val useCase = GetDailyNoteUseCase(dailyNoteRepository)
-            dailyNoteRepository.setInitialData(
+            dailyNoteRepository.seedDailyNotes(
                 DailyNote(
                     date = LocalDate.of(2026, 1, 1),
                     text = "今日は晴れでした。"

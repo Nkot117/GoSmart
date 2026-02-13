@@ -21,7 +21,7 @@ class FakeDailyNoteRepository : DailyNoteRepository {
     /**
      * テスト用の初期データ投入ヘルパー
      */
-    fun setInitialData(vararg dailyNote: DailyNote) {
+    fun seedDailyNotes(vararg dailyNote: DailyNote) {
         state.value = dailyNote.toList()
     }
 
