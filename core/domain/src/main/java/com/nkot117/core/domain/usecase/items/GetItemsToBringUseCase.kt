@@ -4,15 +4,15 @@ import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.model.WeatherType
+import com.nkot117.core.domain.repository.ItemDateRepository
 import com.nkot117.core.domain.repository.ItemsRepository
-import com.nkot117.core.domain.repository.SpecialItemDateRepository
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import javax.inject.Inject
 
 class GetItemsToBringUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository,
-    private val specialItemDateRepository: SpecialItemDateRepository,
+    private val itemDateRepository: ItemDateRepository,
 ) {
     /**
      * 持ち物チェックリストを生成するユースケース
@@ -31,7 +31,7 @@ class GetItemsToBringUseCase @Inject constructor(
         date: LocalDate,
     ): List<Item> {
         val all = itemsRepository.getAllItems().first()
-        val specialItemIds = specialItemDateRepository.getItemIdsOnDate(date).first()
+        val specialItemIds = itemDateRepository.getItemIdsOnDate(date).first()
         return all.filter { item ->
             when (item.category) {
                 ItemCategory.ALWAYS -> true

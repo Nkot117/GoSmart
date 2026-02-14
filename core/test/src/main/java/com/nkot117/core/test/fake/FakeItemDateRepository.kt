@@ -2,14 +2,14 @@ package com.nkot117.core.test.fake
 
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.RegisteredItemsQuery
-import com.nkot117.core.domain.repository.SpecialItemDateRepository
+import com.nkot117.core.domain.repository.ItemDateRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 
-class FakeSpecialItemDateRepository : SpecialItemDateRepository {
+class FakeItemDateRepository : ItemDateRepository {
     /**
      * 日付ごとにアイテムIDのリストを管理する内部状態
      */

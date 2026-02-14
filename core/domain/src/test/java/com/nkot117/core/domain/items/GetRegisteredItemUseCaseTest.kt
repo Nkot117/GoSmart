@@ -4,8 +4,8 @@ import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.model.RegisteredItemsQuery
 import com.nkot117.core.domain.usecase.items.GetRegisteredItemsUseCase
+import com.nkot117.core.test.fake.FakeItemDateRepository
 import com.nkot117.core.test.fake.FakeItemsRepository
-import com.nkot117.core.test.fake.FakeSpecialItemDateRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -15,15 +15,15 @@ import java.time.LocalDate
 
 class GetRegisteredItemUseCaseTest : FunSpec({
     lateinit var itemsRepository: FakeItemsRepository
-    lateinit var specialItemDateRepository: FakeSpecialItemDateRepository
+    lateinit var specialItemDateRepository: FakeItemDateRepository
     lateinit var useCase: GetRegisteredItemsUseCase
 
     beforeTest {
         itemsRepository = FakeItemsRepository()
-        specialItemDateRepository = FakeSpecialItemDateRepository()
+        specialItemDateRepository = FakeItemDateRepository()
         useCase = GetRegisteredItemsUseCase(
             itemsRepository = itemsRepository,
-            specialItemDateRepository = specialItemDateRepository,
+            itemDateRepository = specialItemDateRepository,
         )
     }
 
@@ -116,7 +116,7 @@ class GetRegisteredItemUseCaseTest : FunSpec({
         runTest {
             // Arrange
             // NOP
-            
+
             // Act
             val result =
                 useCase(RegisteredItemsQuery.BySpecificDate(LocalDate.of(2026, 3, 1))).first()

@@ -3,8 +3,8 @@ package com.nkot117.core.domain.items
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.usecase.items.SaveItemUseCase
+import com.nkot117.core.test.fake.FakeItemDateRepository
 import com.nkot117.core.test.fake.FakeItemsRepository
-import com.nkot117.core.test.fake.FakeSpecialItemDateRepository
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -14,15 +14,15 @@ import java.time.LocalDate
 
 class SaveItemUseCaseTest : FunSpec({
     lateinit var itemsRepository: FakeItemsRepository
-    lateinit var specialItemDateRepository: FakeSpecialItemDateRepository
+    lateinit var specialItemDateRepository: FakeItemDateRepository
     lateinit var useCase: SaveItemUseCase
 
     beforeTest {
         itemsRepository = FakeItemsRepository()
-        specialItemDateRepository = FakeSpecialItemDateRepository()
+        specialItemDateRepository = FakeItemDateRepository()
         useCase = SaveItemUseCase(
             itemsRepository = itemsRepository,
-            specialItemDateRepository = specialItemDateRepository,
+            itemDateRepository = specialItemDateRepository,
         )
     }
 
