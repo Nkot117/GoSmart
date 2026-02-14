@@ -1,27 +1,38 @@
 package com.nkot117.core.domain.usecase.items
 
 import com.nkot117.core.domain.model.Item
+import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.repository.ItemsRepository
+import com.nkot117.core.domain.repository.SpecialItemDateRepository
+import java.time.LocalDate
 import javax.inject.Inject
 
 class SaveItemUseCase @Inject constructor(
     private val itemsRepository: ItemsRepository,
+    private val specialItemDateRepository: SpecialItemDateRepository,
 ) {
     /**
-     * アイテムを保存するユースケース
+     * アイテムを登録する
      *
-     * 新規登録、または既存アイテムの更新に使用する。
-     * 保存処理は Room によって行われ、`id` が未設定（null）の場合は
-     * 自動的に採番される。
-     *
-     * 本ユースケースはアイテム本体のみを保存し、特定日との紐付けは行わない。
-     * 特定日も同時に保存したい場合は、
-     * SaveItemWithSpecialDateUseCase などの複合ユースケースを使用する。
-     *
-     * @param item 保存対象のアイテム（id が null の場合は新規作成として扱われる）
-     * @return 保存後に確定したアイテムの ID（自動採番された値）
+     * @param item 登録するアイテム
+     * @param date 特定日（DATE_SPECIFICカテゴリの場合に使用）
+     * @return 登録されたアイテムのID
      */
     suspend operator fun invoke(
         item: Item,
-    ): Long = itemsRepository.saveItem(item)
+        date: LocalDate? = null,
+    ): Long {
+        return when (item.category) {
+            ItemCategory.DATE_SPECIFIC -> {
+                requireNotNull(date) { "DATE_SPECIFICカテゴリの場合は日付が必要です" }
+                val itemId = itemsRepository.saveItem(item)
+                specialItemDateRepository.saveDate(itemId, date)
+                itemId
+            }
+
+            else -> {
+                itemsRepository.saveItem(item)
+            }
+        }
+    }
 }

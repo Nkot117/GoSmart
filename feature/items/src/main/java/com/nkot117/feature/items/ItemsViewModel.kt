@@ -8,7 +8,7 @@ import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.model.RegisteredItemsQuery
 import com.nkot117.core.domain.usecase.items.DeleteItemUseCase
 import com.nkot117.core.domain.usecase.items.GetRegisteredItemsUseCase
-import com.nkot117.core.domain.usecase.items.RegisterItemUseCase
+import com.nkot117.core.domain.usecase.items.SaveItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ItemsViewModel @Inject constructor(
     private val getRegisteredItemsUseCase: GetRegisteredItemsUseCase,
-    private val registerItemUseCase: RegisterItemUseCase,
+    private val saveItemUseCase: SaveItemUseCase,
     private val deleteItemUseCase: DeleteItemUseCase,
 ) : ViewModel() {
     /**
@@ -82,7 +82,7 @@ class ItemsViewModel @Inject constructor(
                 category = state.category
             )
 
-            registerItemUseCase(
+            saveItemUseCase(
                 item = item,
                 date = if (state.category == ItemCategory.DATE_SPECIFIC) state.date else null
             )
