@@ -8,8 +8,7 @@ import com.nkot117.core.domain.model.ItemCategory
 import com.nkot117.core.domain.model.RegisteredItemsQuery
 import com.nkot117.core.domain.usecase.items.DeleteItemUseCase
 import com.nkot117.core.domain.usecase.items.GetRegisteredItemsUseCase
-import com.nkot117.core.domain.usecase.items.SaveItemUseCase
-import com.nkot117.core.domain.usecase.items.SaveItemWithSpecialDateUseCase
+import com.nkot117.core.domain.usecase.items.RegisterItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ItemsViewModel @Inject constructor(
     private val getRegisteredItemsUseCase: GetRegisteredItemsUseCase,
-    private val saveItemUseCase: SaveItemUseCase,
-    private val saveItemWithSpecialDateUseCase: SaveItemWithSpecialDateUseCase,
+    private val registerItemUseCase: RegisterItemUseCase,
     private val deleteItemUseCase: DeleteItemUseCase,
 ) : ViewModel() {
     /**
@@ -83,10 +81,11 @@ class ItemsViewModel @Inject constructor(
                 name = state.form.name,
                 category = state.category
             )
-            when (state.category) {
-                ItemCategory.DATE_SPECIFIC -> saveItemWithSpecialDateUseCase(item, state.date)
-                else -> saveItemUseCase(item)
-            }
+
+            registerItemUseCase(
+                item = item,
+                date = if (state.category == ItemCategory.DATE_SPECIFIC) state.date else null
+            )
 
             _uiState.update {
                 it.copy(

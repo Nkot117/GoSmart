@@ -13,12 +13,14 @@ class SaveItemWithSpecialDateUseCase @Inject constructor(
      *
      * @param item 保存対象
      * @param specialDate 紐付ける特定日
+     * @return 保存されたアイテムのID
      */
     suspend operator fun invoke(
         item: Item,
         specialDate: LocalDate,
-    ) {
+    ): Long {
         val itemId = saveItem(item)
         addSpecialItemDate(itemId, specialDate)
+        return itemId
     }
 }

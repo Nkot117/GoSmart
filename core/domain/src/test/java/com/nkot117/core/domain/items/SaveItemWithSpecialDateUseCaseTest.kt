@@ -33,7 +33,7 @@ class SaveItemWithSpecialDateUseCaseTest : FunSpec({
             itemsRepository.nextId = 5L
 
             // Act
-            useCase(
+            val resultId = useCase(
                 Item(
                     name = "借りていた傘",
                     category = ItemCategory.DATE_SPECIFIC,
@@ -42,6 +42,9 @@ class SaveItemWithSpecialDateUseCaseTest : FunSpec({
             )
 
             // Assert
+            // 戻り値としてIDが返されること
+            resultId shouldBe 5L
+
             // アイテムが保存されていること
             itemsRepository.savedItems shouldHaveSize 1
             itemsRepository.savedItems.first() shouldBe Item(
