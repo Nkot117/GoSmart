@@ -9,7 +9,7 @@ class SaveItemWithSpecialDateUseCase @Inject constructor(
     private val addSpecialItemDate: SaveItemSpecialDateUseCase,
 ) {
     /**
-     * アイテムを保存し、必要なら特定日を紐付けて保存する
+     * アイテムを保存し、特定日を紐付ける
      *
      * @param item 保存対象
      * @param specialDate 紐付ける特定日
