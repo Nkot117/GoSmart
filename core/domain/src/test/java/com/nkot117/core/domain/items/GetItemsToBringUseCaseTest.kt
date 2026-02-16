@@ -109,7 +109,7 @@ class GetItemsToBringUseCaseTest : FunSpec({
             workdayItems.shouldBeEmpty()
         }
 
-        test("「休日」カテゴリのアイテムが返却されないこと") {
+        test("「休日」カテゴリのアイテムが返却されること") {
             // Assert
             val holidayItems = result.filter { it.category == ItemCategory.HOLIDAY }
             holidayItems[0] shouldBe Item(id = 7, name = "本", category = ItemCategory.HOLIDAY)
