@@ -50,6 +50,6 @@ class ReminderSettingsDataSource @Inject constructor(
     private companion object {
         const val DEFAULT_HOUR = 8
         const val DEFAULT_MINUTE = 0
-        const val DEFAULT_ENABLED = true
+        const val DEFAULT_ENABLED = false
     }
 }

@@ -12,8 +12,9 @@ class UpdateReminderTimeUseCase @Inject constructor(
     /**
      * リマインダーの設定時間を更新するユースケース
      *
-     * 指定された時間と有効状態でリマインダー設定を保存し、
-     * アラームスケジューラーに新しい時間でのスケジュールを行う。
+     * 指定された時間と有効/無効の状態を保存し、
+     * リマインダーが有効な場合はアラームをスケジュールし、
+     * 無効な場合はアラームをキャンセルする。
      *
      * @param hour リマインダーの時（0-23）
      * @param minute リマインダーの分（0-59）
@@ -23,6 +24,11 @@ class UpdateReminderTimeUseCase @Inject constructor(
         val reminderTime = Reminder(hour, minute, enabled)
 
         settingsRepository.saveTime(reminderTime)
-        alarmScheduler.scheduleAt(hour, minute)
+
+        if (enabled) {
+            alarmScheduler.scheduleAt(hour, minute)
+        } else {
+            alarmScheduler.cancel()
+        }
     }
 }

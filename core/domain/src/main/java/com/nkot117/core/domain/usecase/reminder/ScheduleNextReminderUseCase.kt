@@ -16,6 +16,11 @@ class ScheduleNextReminderUseCase @Inject constructor(
      */
     suspend operator fun invoke() {
         val reminderTime = settingsRepository.getTime()
-        alarmScheduler.scheduleAt(reminderTime.hour, reminderTime.minute)
+
+        if (reminderTime.enabled) {
+            alarmScheduler.scheduleAt(reminderTime.hour, reminderTime.minute)
+        } else {
+            alarmScheduler.cancel()
+        }
     }
 }
