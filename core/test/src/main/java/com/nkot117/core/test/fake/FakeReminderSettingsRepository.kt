@@ -25,7 +25,7 @@ class FakeReminderSettingsRepository : ReminderSettingsRepository {
     }
 
     override suspend fun saveTime(time: Reminder) {
-        // NOP: テストでは保存操作は行わないため、ここでは何もしない
+        reminderTimeFlow.value = time
     }
 }
 
