@@ -1,4 +1,4 @@
-package com.nkot117.core.domain.usecase
+package com.nkot117.core.domain.usecase.reminder
 
 import com.nkot117.core.domain.model.Reminder
 import com.nkot117.core.domain.repository.ReminderSettingsRepository

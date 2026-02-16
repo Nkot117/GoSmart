@@ -1,4 +1,4 @@
-package com.nkot117.core.domain.usecase
+package com.nkot117.core.domain.usecase.dailynote
 
 import com.nkot117.core.domain.model.DailyNote
 import com.nkot117.core.domain.repository.DailyNoteRepository

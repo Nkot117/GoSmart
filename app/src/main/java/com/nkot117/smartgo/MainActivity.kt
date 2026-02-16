@@ -11,7 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.nkot117.core.domain.usecase.SyncReminderPermissionOnAppStartUseCase
+import com.nkot117.core.domain.usecase.reminder.SyncReminderPermissionOnAppStartUseCase
 import com.nkot117.core.ui.theme.SmartGoTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
