@@ -1,7 +1,8 @@
 package com.nkot117.feature.items
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -22,7 +24,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,9 +46,7 @@ import com.nkot117.core.ui.components.SecondaryButton
 import com.nkot117.core.ui.mapper.label
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
-import com.nkot117.core.ui.theme.BorderLine
 import com.nkot117.core.ui.theme.Error300
-import com.nkot117.core.ui.theme.Primary100
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextMain
 import com.nkot117.core.ui.theme.TextSub
@@ -110,34 +109,44 @@ fun ItemsScreen(
                     )
                 )
         ) {
-            val shape = RoundedCornerShape(18.dp)
+
             val scroll = rememberScrollState()
             Row(
-                modifier = Modifier
-                    .clip(shape)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .horizontalScroll(scroll)
-                    .border(1.dp, BorderLine, shape)
+                modifier = Modifier.horizontalScroll(scroll),
+                horizontalArrangement = Arrangement.spacedBy(22.dp)
             ) {
-                ItemCategory.entries.forEachIndexed { index, tag ->
+                ItemCategory.entries.forEach { tag ->
                     val isSelected = tag == state.category
-                    val bg =
-                        if (isSelected) Primary500 else Color.White
-                    val fg =
-                        if (isSelected) Primary100 else TextSub
+                    val textColor = if (isSelected) Primary500 else TextSub
 
-                    TextButton(
-                        onClick = {
-                            setCategory(tag)
-                        },
+                    Column(
                         modifier = Modifier
-                            .background(bg)
-                            .border(0.5.dp, BorderLine)
+                            .clickable { setCategory(tag) }
+                            .padding(vertical = 10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(tag.label(), color = fg, style = MaterialTheme.typography.labelSmall)
+                        Text(
+                            text = tag.label(),
+                            color = textColor,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
+                        Spacer(Modifier.height(6.dp))
+
+                        AnimatedVisibility(visible = isSelected) {
+                            Box(
+                                modifier = Modifier
+                                    .height(2.dp)
+                                    .width(24.dp)
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .background(Primary500)
+                            )
+                        }
                     }
                 }
             }
+
+
 
             Spacer(Modifier.height(20.dp))
 
