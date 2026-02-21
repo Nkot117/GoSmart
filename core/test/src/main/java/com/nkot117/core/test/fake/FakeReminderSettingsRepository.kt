@@ -16,17 +16,12 @@ class FakeReminderSettingsRepository : ReminderSettingsRepository {
         reminderTimeFlow.value = reminder
     }
 
-    override suspend fun getTime(): Reminder {
-        return reminderTimeFlow.value ?: Reminder(hour = 8, minute = 0, enabled = false)
-    }
+    override suspend fun getTime(): Reminder =
+        reminderTimeFlow.value ?: Reminder(hour = 8, minute = 0, enabled = false)
 
-    override fun observeTime(): Flow<Reminder> {
-        return reminderTimeFlow.filterNotNull()
-    }
+    override fun observeTime(): Flow<Reminder> = reminderTimeFlow.filterNotNull()
 
     override suspend fun saveTime(time: Reminder) {
         reminderTimeFlow.value = time
     }
 }
-
-

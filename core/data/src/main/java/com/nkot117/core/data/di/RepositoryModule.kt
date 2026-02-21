@@ -19,25 +19,19 @@ import javax.inject.Singleton
 abstract class RepositoryModule {
     @Binds
     @Singleton
-    abstract fun bindItemsRepository(
-        impl: ItemsRepositoryImpl,
-    ): ItemsRepository
+    abstract fun bindItemsRepository(impl: ItemsRepositoryImpl): ItemsRepository
 
     @Binds
     @Singleton
-    abstract fun bindSpecialDatesRepository(
-        impl: ItemDateRepositoryImpl,
-    ): ItemDateRepository
+    abstract fun bindSpecialDatesRepository(impl: ItemDateRepositoryImpl): ItemDateRepository
 
     @Binds
     @Singleton
     abstract fun bindReminderSettingRepository(
-        impl: ReminderSettingsRepositoryImpl,
+        impl: ReminderSettingsRepositoryImpl
     ): ReminderSettingsRepository
 
     @Binds
     @Singleton
-    abstract fun bindDailyNoteRepository(
-        impl: DailyNoteRepositoryImpl,
-    ): DailyNoteRepository
+    abstract fun bindDailyNoteRepository(impl: DailyNoteRepositoryImpl): DailyNoteRepository
 }

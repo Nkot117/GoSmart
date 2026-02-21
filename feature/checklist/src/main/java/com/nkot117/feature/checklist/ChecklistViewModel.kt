@@ -6,17 +6,17 @@ import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.domain.model.WeatherType
 import com.nkot117.core.domain.usecase.items.GetItemsToBringUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.LocalDate
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import javax.inject.Inject
 
 @HiltViewModel
 class ChecklistViewModel @Inject constructor(
-    private val getItemsToBringUseCase: GetItemsToBringUseCase,
+    private val getItemsToBringUseCase: GetItemsToBringUseCase
 ) : ViewModel() {
 
     /**

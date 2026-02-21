@@ -33,7 +33,6 @@ class FakeItemsRepository : ItemsRepository {
      */
     val categoryQueries = mutableListOf<RegisteredItemsQuery.ByCategory>()
 
-
     /**
      * テスト用の初期データ投入ヘルパー
      */
@@ -41,8 +40,7 @@ class FakeItemsRepository : ItemsRepository {
         itemsState.value = items.toList()
     }
 
-    override fun getAllItems(): Flow<List<Item>> =
-        itemsState
+    override fun getAllItems(): Flow<List<Item>> = itemsState
 
     override suspend fun saveItem(item: Item): Long {
         // IDがnullの場合は自動生成
@@ -70,7 +68,7 @@ class FakeItemsRepository : ItemsRepository {
     }
 
     override fun getRegisteredItemsByCategory(
-        query: RegisteredItemsQuery.ByCategory,
+        query: RegisteredItemsQuery.ByCategory
     ): Flow<List<Item>> {
         // クエリ履歴に追加
         categoryQueries += query
@@ -81,5 +79,3 @@ class FakeItemsRepository : ItemsRepository {
         }
     }
 }
-
-

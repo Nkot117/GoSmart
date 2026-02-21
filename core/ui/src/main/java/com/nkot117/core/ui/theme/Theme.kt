@@ -13,9 +13,8 @@ private val LightColorScheme = lightColorScheme(
     surface = Color.White,
     onBackground = TextMain,
     onSurface = TextMain,
-    outline = BorderLine,
+    outline = BorderLine
 )
-
 
 @Composable
 fun SmartGoTheme(content: @Composable () -> Unit) {

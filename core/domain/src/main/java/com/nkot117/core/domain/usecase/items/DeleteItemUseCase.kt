@@ -3,9 +3,9 @@ package com.nkot117.core.domain.usecase.items
 import com.nkot117.core.domain.repository.ItemsRepository
 import javax.inject.Inject
 
-class DeleteItemUseCase @Inject constructor(
-    private val itemsRepository: ItemsRepository,
-) {
+class DeleteItemUseCase
+@Inject
+constructor(private val itemsRepository: ItemsRepository) {
     /**
      * アイテムを削除するユースケース
      *
@@ -16,9 +16,7 @@ class DeleteItemUseCase @Inject constructor(
      *
      * @param itemId 削除したいアイテムの ID
      */
-    suspend operator fun invoke(
-        itemId: Long,
-    ) {
+    suspend operator fun invoke(itemId: Long) {
         itemsRepository.deleteItem(itemId)
     }
 }

@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ItemsDao {
-
     @Query("SELECT * FROM items ORDER BY name")
     fun getAll(): Flow<List<ItemEntity>>
 

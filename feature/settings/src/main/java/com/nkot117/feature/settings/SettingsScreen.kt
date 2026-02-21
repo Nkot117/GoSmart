@@ -60,13 +60,12 @@ import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextMain
 import com.nkot117.core.ui.theme.TextSub
 
-
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun SettingScreenRoute(
     contentPadding: PaddingValues,
     onBack: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
+    viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -75,7 +74,8 @@ fun SettingScreenRoute(
     }
 
     SettingsScreen(
-        contentPadding, state,
+        contentPadding,
+        state,
         viewModel::setReminderEnabled,
         viewModel::setReminderTime,
         viewModel::saveSettings,
@@ -92,7 +92,7 @@ fun SettingsScreen(
     setEnabled: (Boolean) -> Unit,
     setReminderTime: (Int, Int) -> Unit,
     saveSettings: () -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val topColor = BgWorkdayTop
@@ -179,7 +179,6 @@ fun SettingsScreen(
                     onClick = { showPermissionDialog = false },
                     text = "キャンセル"
                 )
-
             }
         )
     }
@@ -192,7 +191,7 @@ private fun ReminderSettingsCard(
     onToggle: (Boolean) -> Unit,
     onTimeClick: () -> Unit,
     onSave: () -> Unit,
-    onShowPermissionDialogChange: (Boolean) -> Unit,
+    onShowPermissionDialogChange: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val requestPermission = rememberLauncherForActivityResult(
@@ -249,10 +248,7 @@ private fun ReminderSettingsCard(
 }
 
 @Composable
-private fun ReminderToggleRow(
-    isEnabled: Boolean,
-    onToggle: (Boolean) -> Unit,
-) {
+private fun ReminderToggleRow(isEnabled: Boolean, onToggle: (Boolean) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -275,11 +271,7 @@ private fun ReminderToggleRow(
 
 @SuppressLint("DefaultLocale")
 @Composable
-private fun NotificationTimeRow(
-    onTimeClick: () -> Unit,
-    settingHour: Int,
-    settingMinute: Int,
-) {
+private fun NotificationTimeRow(onTimeClick: () -> Unit, settingHour: Int, settingMinute: Int) {
     Column {
         Row(
             modifier = Modifier
@@ -287,7 +279,6 @@ private fun NotificationTimeRow(
                 .clickable { onTimeClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
-
             Text(
                 "通知時刻",
                 modifier = Modifier.weight(1f),
@@ -317,7 +308,7 @@ private fun NotificationTimeRow(
 fun NotificationTimePickerDialog(
     timePickerState: TimePickerState,
     onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -354,7 +345,7 @@ fun SettingsScreenPreview() {
             setEnabled = {},
             setReminderTime = { _, _ -> },
             saveSettings = {},
-            onBack = {},
+            onBack = {}
         )
     }
 }

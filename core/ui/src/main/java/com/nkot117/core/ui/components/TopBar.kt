@@ -2,9 +2,14 @@ package com.nkot117.core.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -18,7 +23,7 @@ fun AppTopBar(
     title: String,
     onBack: (() -> Unit)? = null,
     onAction: (() -> Unit)? = null,
-    actionIcon: ImageVector? = null,
+    actionIcon: ImageVector? = null
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -26,13 +31,13 @@ fun AppTopBar(
                 title,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         },
         navigationIcon = {
             if (onBack != null) {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "戻る")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "戻る")
                 }
             }
         },

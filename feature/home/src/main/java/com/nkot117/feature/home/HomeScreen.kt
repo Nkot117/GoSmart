@@ -83,7 +83,7 @@ import java.time.ZoneOffset
 fun HomeScreenRoute(
     contentPadding: PaddingValues,
     onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -115,7 +115,7 @@ private fun HomeScreen(
     setWeatherType: (WeatherType) -> Unit,
     setDate: (Long) -> Unit,
     onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
-    saveDailyNote: (String) -> Unit,
+    saveDailyNote: (String) -> Unit
 ) {
     val backgroundBrush = rememberDayTypeGradient(state.dayType)
     var showEditNoteModal by remember { mutableStateOf(false) }
@@ -134,7 +134,9 @@ private fun HomeScreen(
 
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(
-                start = 41.dp, end = 41.dp, top = 16.dp,
+                start = 41.dp,
+                end = 41.dp,
+                top = 16.dp,
                 bottom = 88.dp
             ),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -239,9 +241,7 @@ private fun HomeScreen(
 }
 
 @Composable
-private fun ItemPreview(
-    previewList: List<Item>,
-) {
+private fun ItemPreview(previewList: List<Item>) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -283,10 +283,7 @@ private fun ItemPreview(
 }
 
 @Composable
-private fun DailyNoteCard(
-    text: String,
-    onClick: () -> Unit,
-) {
+private fun DailyNoteCard(text: String, onClick: () -> Unit) {
     val displayText = text.ifBlank { "タップして今日のメモを追加" }
 
     Surface(
@@ -318,9 +315,7 @@ private fun DailyNoteCard(
 }
 
 @Composable
-private fun rememberDayTypeGradient(
-    dayType: DayType,
-): Brush {
+private fun rememberDayTypeGradient(dayType: DayType): Brush {
     val topColor by animateColorAsState(
         targetValue = if (dayType == DayType.WORKDAY) {
             BgWorkdayTop
@@ -353,9 +348,7 @@ private fun rememberDayTypeGradient(
 }
 
 @Composable
-private fun WeatherIcon(
-    weatherType: WeatherType,
-) {
+private fun WeatherIcon(weatherType: WeatherType) {
     AnimatedContent(
         targetState = weatherType,
         transitionSpec = {
@@ -370,7 +363,7 @@ private fun WeatherIcon(
             )
 
             (slideIn + fadeIn(tween(320))) togetherWith
-                    (slideOut + fadeOut(tween(200)))
+                (slideOut + fadeOut(tween(200)))
         },
         label = "weather_lottie_switch"
     ) { type ->
@@ -403,11 +396,11 @@ private fun DailyNoteEditModal(
     draftNoteText: String,
     editNoteText: (String) -> Unit,
     saveDailyNote: (String) -> Unit,
-    onDismissRequest: (Boolean) -> Unit,
+    onDismissRequest: (Boolean) -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest(false) },
-        sheetState = sheetState,
+        sheetState = sheetState
     ) {
         Column(
             modifier = Modifier

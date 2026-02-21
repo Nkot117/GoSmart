@@ -49,7 +49,7 @@ fun DatePickerField(
     cancelButtonLabel: String,
     modifier: Modifier = Modifier,
     formLabel: String? = null,
-    placeholder: String? = null,
+    placeholder: String? = null
 ) {
     var visibleDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -63,7 +63,7 @@ fun DatePickerField(
         modifier = modifier,
         shape = shape,
         formLabel = formLabel,
-        placeholder = placeholder,
+        placeholder = placeholder
     )
 
     // ピッカーモーダル
@@ -88,7 +88,7 @@ private fun DatePickerTextField(
     modifier: Modifier,
     shape: RoundedCornerShape,
     formLabel: String?,
-    placeholder: String?,
+    placeholder: String?
 ) {
     Column(
         modifier = modifier
@@ -137,7 +137,7 @@ private fun DatePickerModal(
     confirmButtonLabel: String,
     cancelButtonLabel: String,
     onConfirm: (Long?) -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     if (!visible) return
 
@@ -181,7 +181,7 @@ fun DatePickerFieldPreview_Empty() {
                 confirmButtonLabel = "OK",
                 cancelButtonLabel = "キャンセル",
                 formLabel = "日付",
-                placeholder = "追加する日付",
+                placeholder = "追加する日付"
             )
         }
     }
@@ -213,7 +213,7 @@ fun DatePickerFieldPreview_Selected() {
                 confirmButtonLabel = "OK",
                 cancelButtonLabel = "キャンセル",
                 formLabel = "日付",
-                placeholder = "追加する日付",
+                placeholder = "追加する日付"
             )
         }
     }

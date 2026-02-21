@@ -5,8 +5,10 @@ import com.nkot117.core.domain.repository.DailyNoteRepository
 import java.time.LocalDate
 import javax.inject.Inject
 
-class SaveDailyNoteUseCase @Inject constructor(
-    private val dailyNoteRepository: DailyNoteRepository,
+class SaveDailyNoteUseCase
+@Inject
+constructor(
+    private val dailyNoteRepository: DailyNoteRepository
 ) {
     /**
      * デイリーノートを保存するユースケース
@@ -17,9 +19,7 @@ class SaveDailyNoteUseCase @Inject constructor(
      * @param date 日付
      * @param rawText デイリーノートの内容
      */
-    suspend operator fun invoke(
-        date: LocalDate, rawText: String,
-    ) {
+    suspend operator fun invoke(date: LocalDate, rawText: String) {
         val text = rawText.trim()
 
         if (text.isBlank()) {
@@ -27,10 +27,11 @@ class SaveDailyNoteUseCase @Inject constructor(
             return
         }
 
-        val note = DailyNote(
-            date = date,
-            text = text,
-        )
+        val note =
+            DailyNote(
+                date = date,
+                text = text
+            )
 
         dailyNoteRepository.update(note)
     }

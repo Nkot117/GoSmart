@@ -23,12 +23,8 @@ import com.nkot117.core.ui.theme.BorderLine
 import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
 
-
 @Composable
-fun ChecklistPreviewRow(
-    title: String,
-    modifier: Modifier = Modifier,
-) {
+fun ChecklistPreviewRow(title: String, modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(16.dp)
     Surface(
         shape = shape,
@@ -58,7 +54,7 @@ fun ChecklistActionRow(
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     iconColor: Color = TextSub,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     val shape = RoundedCornerShape(16.dp)
 
@@ -99,7 +95,7 @@ fun ChecklistRow(
     title: String,
     checked: Boolean,
     onToggle: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(16.dp)
     Surface(
@@ -132,7 +128,7 @@ fun ChecklistRow(
 private fun ChecklistPreviewRowPreview() {
     SmartGoTheme {
         ChecklistPreviewRow(
-            title = "家の鍵",
+            title = "家の鍵"
         )
     }
 }
@@ -173,6 +169,3 @@ private fun ChecklistActionRowPreview_NoIcon() {
         )
     }
 }
-
-
-

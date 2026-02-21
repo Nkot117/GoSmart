@@ -16,7 +16,7 @@ class ReminderAlarmModule {
         @Binds
         @Singleton
         abstract fun bindReminderAlarmScheduler(
-            impl: ReminderAlarmSchedulerImpl,
+            impl: ReminderAlarmSchedulerImpl
         ): ReminderAlarmScheduler
     }
 }

@@ -6,18 +6,18 @@ import com.nkot117.core.domain.usecase.reminder.CancelReminderAlarmUseCase
 import com.nkot117.core.domain.usecase.reminder.GetReminderTimeUseCase
 import com.nkot117.core.domain.usecase.reminder.UpdateReminderTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val getReminderTimeUseCase: GetReminderTimeUseCase,
     private val updateReminderTimeUseCase: UpdateReminderTimeUseCase,
-    private val cancelReminderAlarmUseCase: CancelReminderAlarmUseCase,
+    private val cancelReminderAlarmUseCase: CancelReminderAlarmUseCase
 ) : ViewModel() {
 
     /**

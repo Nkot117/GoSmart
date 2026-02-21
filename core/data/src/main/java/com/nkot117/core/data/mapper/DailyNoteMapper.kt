@@ -6,10 +6,10 @@ import java.time.LocalDate
 
 fun DailyNoteEntity.toDomain(): DailyNote = DailyNote(
     date = LocalDate.parse(date),
-    text = this.text,
+    text = this.text
 )
 
 fun DailyNote.toEntity(): DailyNoteEntity = DailyNoteEntity(
     date = date.toString(),
-    text = this.text,
+    text = this.text
 )

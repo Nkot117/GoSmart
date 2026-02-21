@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class DailyNoteEntity(
     @PrimaryKey
     val date: String,
-    val text: String,
+    val text: String
 )

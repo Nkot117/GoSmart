@@ -6,9 +6,8 @@ import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-
 class ReminderChannelInitializer @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context
 ) {
     fun createReminderChannel() {
         val channel =

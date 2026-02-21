@@ -2,10 +2,10 @@ package com.nkot117.core.test.fake
 
 import com.nkot117.core.domain.model.DailyNote
 import com.nkot117.core.domain.repository.DailyNoteRepository
+import java.time.LocalDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
-import java.time.LocalDate
 
 class FakeDailyNoteRepository : DailyNoteRepository {
     /**
@@ -25,10 +25,8 @@ class FakeDailyNoteRepository : DailyNoteRepository {
         state.value = dailyNote.toList()
     }
 
-    override fun getByDate(date: LocalDate): Flow<DailyNote?> {
-        return state.map { notes ->
-            notes.find { it.date == date }
-        }
+    override fun getByDate(date: LocalDate): Flow<DailyNote?> = state.map { notes ->
+        notes.find { it.date == date }
     }
 
     override suspend fun deleteByDate(date: LocalDate) {
@@ -46,5 +44,3 @@ class FakeDailyNoteRepository : DailyNoteRepository {
         state.value = current
     }
 }
-
-

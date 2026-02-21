@@ -2,9 +2,7 @@ package com.nkot117.core.navigation
 
 import androidx.compose.runtime.mutableStateListOf
 
-class Navigator(
-    start: AppNavKey = AppNavKey.Home,
-) {
+class Navigator(start: AppNavKey = AppNavKey.Home) {
     val backStack = mutableStateListOf(start)
 
     val current: AppNavKey

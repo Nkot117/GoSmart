@@ -4,12 +4,14 @@ import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.RegisteredItemsQuery
 import com.nkot117.core.domain.repository.ItemDateRepository
 import com.nkot117.core.domain.repository.ItemsRepository
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
-class GetRegisteredItemsUseCase @Inject constructor(
+class GetRegisteredItemsUseCase
+@Inject
+constructor(
     private val itemsRepository: ItemsRepository,
-    private val itemDateRepository: ItemDateRepository,
+    private val itemDateRepository: ItemDateRepository
 ) {
     /**
      * 登録されているアイテム一覧を取得するユースケース
@@ -29,16 +31,13 @@ class GetRegisteredItemsUseCase @Inject constructor(
      * @param query アイテム取得条件を表すクエリ
      * @return 条件に一致するItemの一覧
      */
-    operator fun invoke(
-        query: RegisteredItemsQuery,
-    ): Flow<List<Item>> {
-        return when (query) {
-            is RegisteredItemsQuery.ByCategory ->
-                itemsRepository.getRegisteredItemsByCategory(query)
+    operator fun invoke(query: RegisteredItemsQuery): Flow<List<Item>> = when (query) {
+        is RegisteredItemsQuery.ByCategory ->
+            itemsRepository.getRegisteredItemsByCategory(query)
 
-            is RegisteredItemsQuery.BySpecificDate -> itemDateRepository.getRegisteredItemsByDate(
+        is RegisteredItemsQuery.BySpecificDate ->
+            itemDateRepository.getRegisteredItemsByDate(
                 query
             )
-        }
     }
 }

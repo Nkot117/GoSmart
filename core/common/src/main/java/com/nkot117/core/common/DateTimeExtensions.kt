@@ -11,45 +11,35 @@ import java.util.Locale
  * epoch millisを指定されたタイムゾーンでLocalDateに変換する。
  *
  */
-fun Long.toLocalDate(
-    zoneId: ZoneId = ZoneId.systemDefault(),
-): LocalDate =
-    Instant.ofEpochMilli(this)
-        .atZone(zoneId)
-        .toLocalDate()
+fun Long.toLocalDate(zoneId: ZoneId = ZoneId.systemDefault()): LocalDate = Instant
+    .ofEpochMilli(this)
+    .atZone(zoneId)
+    .toLocalDate()
 
 /**
  * LocalDateをepoch millisに変換する（その日の 00:00 を基準に変換する）。
  *
  */
-fun LocalDate.toEpochMillis(
-    zoneId: ZoneId = ZoneId.systemDefault(),
-): Long =
-    atStartOfDay(zoneId)
-        .toInstant()
-        .toEpochMilli()
+fun LocalDate.toEpochMillis(zoneId: ZoneId = ZoneId.systemDefault()): Long = atStartOfDay(zoneId)
+    .toInstant()
+    .toEpochMilli()
 
 /**
  * epoch millisを指定されたタイムゾーンでLocalDateTimeに変換する。
  *
  */
-fun Long.toLocalDateTime(
-    zoneId: ZoneId = ZoneId.systemDefault(),
-): LocalDateTime =
-    Instant.ofEpochMilli(this)
-        .atZone(zoneId)
-        .toLocalDateTime()
+fun Long.toLocalDateTime(zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime = Instant
+    .ofEpochMilli(this)
+    .atZone(zoneId)
+    .toLocalDateTime()
 
 /**
  * LocalDateTimeをepoch millisに変換する。
  *
  */
-fun LocalDateTime.toEpochMillis(
-    zoneId: ZoneId = ZoneId.systemDefault(),
-): Long =
-    atZone(zoneId)
-        .toInstant()
-        .toEpochMilli()
+fun LocalDateTime.toEpochMillis(zoneId: ZoneId = ZoneId.systemDefault()): Long = atZone(zoneId)
+    .toInstant()
+    .toEpochMilli()
 
 /**
  * LocalDateを`yyyy/MM/dd` 形式にフォーマットする。
@@ -62,11 +52,9 @@ fun LocalDate.toDisplayYmdSlash(): String =
 /**
  * LocalDateをISO-8601（`yyyy-MM-dd`）形式にフォーマットする。
  */
-fun LocalDate.toIsoDateString(): String =
-    format(DateTimeFormatter.ISO_LOCAL_DATE)
+fun LocalDate.toIsoDateString(): String = format(DateTimeFormatter.ISO_LOCAL_DATE)
 
 /**
  * ISO-8601（`yyyy-MM-dd`）形式の文字列をLocalDateに変換する。
  */
-fun String.toLocalDateIso(): LocalDate =
-    LocalDate.parse(this, DateTimeFormatter.ISO_LOCAL_DATE)
+fun String.toLocalDateIso(): LocalDate = LocalDate.parse(this, DateTimeFormatter.ISO_LOCAL_DATE)

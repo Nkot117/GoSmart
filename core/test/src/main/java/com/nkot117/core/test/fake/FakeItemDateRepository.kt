@@ -3,11 +3,11 @@ package com.nkot117.core.test.fake
 import com.nkot117.core.domain.model.Item
 import com.nkot117.core.domain.model.RegisteredItemsQuery
 import com.nkot117.core.domain.repository.ItemDateRepository
+import java.time.LocalDate
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import java.time.LocalDate
 
 class FakeItemDateRepository : ItemDateRepository {
     /**
@@ -37,8 +37,8 @@ class FakeItemDateRepository : ItemDateRepository {
         itemsState.addAll(items)
     }
 
-    override fun getItemIdsOnDate(date: LocalDate): Flow<List<Long>> {
-        return dateToItemIds.map { it[date] ?: emptyList() }
+    override fun getItemIdsOnDate(date: LocalDate): Flow<List<Long>> = dateToItemIds.map {
+        it[date] ?: emptyList()
     }
 
     override suspend fun saveDate(itemId: Long, date: LocalDate) {
@@ -56,13 +56,10 @@ class FakeItemDateRepository : ItemDateRepository {
         }
     }
 
-    override fun getRegisteredItemsByDate(query: RegisteredItemsQuery.BySpecificDate): Flow<List<Item>> {
-        return dateToItemIds.map {
-            val itemIds = it[query.date] ?: emptyList()
-            itemsState.filter { item -> item.id in itemIds }
-        }
+    override fun getRegisteredItemsByDate(
+        query: RegisteredItemsQuery.BySpecificDate
+    ): Flow<List<Item>> = dateToItemIds.map {
+        val itemIds = it[query.date] ?: emptyList()
+        itemsState.filter { item -> item.id in itemIds }
     }
-
 }
-
-

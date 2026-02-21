@@ -14,12 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import com.nkot117.core.domain.usecase.reminder.SyncReminderPermissionOnAppStartUseCase
 import com.nkot117.core.ui.theme.SmartGoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     @Inject
     lateinit var syncReminderPermissionOnAppStartUseCase: SyncReminderPermissionOnAppStartUseCase
 
@@ -43,8 +42,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun isNotificationPermissionGranted(context: Context): Boolean {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+fun isNotificationPermissionGranted(context: Context): Boolean =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.POST_NOTIFICATIONS
@@ -52,8 +51,6 @@ fun isNotificationPermissionGranted(context: Context): Boolean {
     } else {
         true
     }
-}
-
 
 @Composable
 fun AppContent() {
@@ -61,4 +58,3 @@ fun AppContent() {
         AppScaffold()
     }
 }
-
