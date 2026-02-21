@@ -16,8 +16,8 @@ android {
         applicationId = "com.nkot117.smartgo"
         minSdk = 28
         targetSdk = 36
-        versionCode = 100
-        versionName = "1.0.0"
+        versionCode = 1
+        versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
