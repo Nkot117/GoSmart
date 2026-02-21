@@ -32,6 +32,15 @@ android {
             keyAlias = System.getenv("SIGNING_KEY_ALIAS")
             keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
         }
+
+        create("release") {
+            storeFile = rootProject.file(
+                System.getenv("RELEASE_STORE_FILE") ?: "keystore/smartgo-release.jks"
+            )
+            storePassword = System.getenv("RELEASE_STORE_PASSWORD")
+            keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+            keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+        }
     }
 
     buildTypes {
@@ -55,7 +64,9 @@ android {
 
         release {
             resValue("string", "app_name", "SmartGo")
-            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
