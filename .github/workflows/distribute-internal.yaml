@@ -74,32 +74,32 @@ jobs:
         if: success()
         uses: slackapi/slack-github-action@v2
         with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "attachments": [
                 {
                   "color": "#2eb886",
-                  "title": "✅ CI成功",
+                  "title": "✅ 成功",
                   "text": "リポジトリ: ${{ github.repository }}\nブランチ: ${{ github.ref_name }}\n実行者: ${{ github.actor }}\n詳細: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                 }
               ]
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Notify Slack (Failure)
         if: failure()
         uses: slackapi/slack-github-action@v2
         with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
           payload: |
             {
               "attachments": [
                 {
                   "color": "#e01e5a",
-                  "title": "❌ CI失敗",
+                  "title": "❌ 失敗",
                   "text": "リポジトリ: ${{ github.repository }}\nブランチ: ${{ github.ref_name }}\n実行者: ${{ github.actor }}\n詳細: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                 }
               ]
             }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
