@@ -1,0 +1,14 @@
+pre-commit:
+  commands:
+    format:
+      run: ./gradlew ktlintFormat
+
+pre-push:
+  parallel: true
+  commands:
+    ktlint:
+      run: ./gradlew ktlintCheck
+    detekt:
+      run: ./gradlew detekt
+    test:
+      run: ./gradlew test
