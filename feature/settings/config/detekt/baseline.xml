@@ -2,8 +2,8 @@
 <SmellBaseline>
   <ManuallySuppressedIssues></ManuallySuppressedIssues>
   <CurrentIssues>
-    <ID>LongMethod:SettingsScreen.kt$@RequiresApi(Build.VERSION_CODES.TIRAMISU) @OptIn(ExperimentalMaterial3Api::class) @Composable fun SettingsScreen( contentPadding: PaddingValues, state: SettingsUiState, setEnabled: (Boolean) -&gt; Unit, setReminderTime: (Int, Int) -&gt; Unit, saveSettings: () -&gt; Unit, onBack: () -&gt; Unit, )</ID>
-    <ID>LongParameterList:SettingsScreen.kt$( contentPadding: PaddingValues, state: SettingsUiState, setEnabled: (Boolean) -&gt; Unit, setReminderTime: (Int, Int) -&gt; Unit, saveSettings: () -&gt; Unit, onBack: () -&gt; Unit, )</ID>
+    <ID>LongMethod:SettingsScreen.kt$@RequiresApi(Build.VERSION_CODES.TIRAMISU) @OptIn(ExperimentalMaterial3Api::class) @Composable fun SettingsScreen( contentPadding: PaddingValues, state: SettingsUiState, setEnabled: (Boolean) -&gt; Unit, setReminderTime: (Int, Int) -&gt; Unit, saveSettings: () -&gt; Unit, onBack: () -&gt; Unit )</ID>
+    <ID>LongParameterList:SettingsScreen.kt$( contentPadding: PaddingValues, state: SettingsUiState, setEnabled: (Boolean) -&gt; Unit, setReminderTime: (Int, Int) -&gt; Unit, saveSettings: () -&gt; Unit, onBack: () -&gt; Unit )</ID>
     <ID>MagicNumber:SettingsUiState.kt$SettingsUiState$9</ID>
   </CurrentIssues>
 </SmellBaseline>
