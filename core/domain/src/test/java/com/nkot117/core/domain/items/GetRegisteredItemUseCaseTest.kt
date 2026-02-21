@@ -9,9 +9,9 @@ import com.nkot117.core.test.fake.FakeItemsRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import java.time.LocalDate
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import java.time.LocalDate
 
 class GetRegisteredItemUseCaseTest :
     FunSpec({

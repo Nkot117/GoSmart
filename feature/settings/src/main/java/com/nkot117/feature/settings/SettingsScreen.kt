@@ -65,7 +65,7 @@ import com.nkot117.core.ui.theme.TextSub
 fun SettingsScreenRoute(
     contentPadding: PaddingValues,
     onBack: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>(),
+    viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -92,7 +92,7 @@ fun SettingsScreen(
     setEnabled: (Boolean) -> Unit,
     setReminderTime: (Int, Int) -> Unit,
     saveSettings: () -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val topColor = BgWorkdayTop
@@ -191,7 +191,7 @@ private fun ReminderSettingsCard(
     onToggle: (Boolean) -> Unit,
     onTimeClick: () -> Unit,
     onSave: () -> Unit,
-    onShowPermissionDialogChange: (Boolean) -> Unit,
+    onShowPermissionDialogChange: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
     val requestPermission = rememberLauncherForActivityResult(
@@ -310,7 +310,7 @@ private fun NotificationTimeRow(onTimeClick: () -> Unit, settingHour: Int, setti
 fun NotificationTimePickerDialog(
     timePickerState: TimePickerState,
     onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,

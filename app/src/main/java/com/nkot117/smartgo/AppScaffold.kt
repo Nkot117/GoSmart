@@ -37,62 +37,62 @@ fun AppScaffold() {
             backStack = backStack,
             onBack = { navigator.pop() },
             entryProvider =
-                entryProvider {
-                    // HOME画面
-                    entry(AppNavKey.Home) {
-                        HomeScreenRoute(
-                            contentPadding = innerPadding,
-                            onTapCheckList = { checklistScreenTransitionParams ->
-                                navigator.push(
-                                    AppNavKey.Checklist(
-                                        params = checklistScreenTransitionParams
-                                    )
+            entryProvider {
+                // HOME画面
+                entry(AppNavKey.Home) {
+                    HomeScreenRoute(
+                        contentPadding = innerPadding,
+                        onTapCheckList = { checklistScreenTransitionParams ->
+                            navigator.push(
+                                AppNavKey.Checklist(
+                                    params = checklistScreenTransitionParams
                                 )
-                            }
-                        )
-                    }
-
-                    // チェックリスト画面
-                    entry<AppNavKey.Checklist> { key ->
-                        val params = key.params
-                        ChecklistScreenRoute(
-                            contentPadding = innerPadding,
-                            params = params,
-                            onTapDone = { doneScreenTransitionParams ->
-                                navigator.push(
-                                    AppNavKey.Done(params = doneScreenTransitionParams)
-                                )
-                            }
-                        )
-                    }
-
-                    // 完了画面
-                    entry<AppNavKey.Done> { key ->
-                        val params = key.params
-                        DoneScreenRoute(
-                            contentPadding = innerPadding,
-                            params = params,
-                            onTapHome = {
-                                navigator.resetToHome()
-                            }
-                        )
-                    }
-
-                    // 持ち物登録画面
-                    entry<AppNavKey.Items> { key ->
-                        ItemsScreenRoute(
-                            contentPadding = innerPadding
-                        )
-                    }
-
-                    // 設定画面
-                    entry(AppNavKey.Setting) { key ->
-                        SettingsScreenRoute(
-                            contentPadding = innerPadding,
-                            onBack = { navigator.pop() }
-                        )
-                    }
+                            )
+                        }
+                    )
                 }
+
+                // チェックリスト画面
+                entry<AppNavKey.Checklist> { key ->
+                    val params = key.params
+                    ChecklistScreenRoute(
+                        contentPadding = innerPadding,
+                        params = params,
+                        onTapDone = { doneScreenTransitionParams ->
+                            navigator.push(
+                                AppNavKey.Done(params = doneScreenTransitionParams)
+                            )
+                        }
+                    )
+                }
+
+                // 完了画面
+                entry<AppNavKey.Done> { key ->
+                    val params = key.params
+                    DoneScreenRoute(
+                        contentPadding = innerPadding,
+                        params = params,
+                        onTapHome = {
+                            navigator.resetToHome()
+                        }
+                    )
+                }
+
+                // 持ち物登録画面
+                entry<AppNavKey.Items> { key ->
+                    ItemsScreenRoute(
+                        contentPadding = innerPadding
+                    )
+                }
+
+                // 設定画面
+                entry(AppNavKey.Setting) { key ->
+                    SettingsScreenRoute(
+                        contentPadding = innerPadding,
+                        onBack = { navigator.pop() }
+                    )
+                }
+            }
         )
     }
 }
@@ -111,8 +111,8 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): S
                 fab = {
                     FloatingActionButton(
                         modifier =
-                            Modifier
-                                .padding(end = 16.dp, bottom = 96.dp),
+                        Modifier
+                            .padding(end = 16.dp, bottom = 96.dp),
                         containerColor = Primary500,
                         onClick = {
                             navigator.push(AppNavKey.Items)
@@ -154,5 +154,5 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): S
 
 data class ScaffoldSpec(
     val topBar: @Composable () -> Unit = {},
-    val fab: @Composable () -> Unit = {},
+    val fab: @Composable () -> Unit = {}
 )

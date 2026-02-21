@@ -80,7 +80,7 @@ fun ItemsScreen(
     setCategory: (ItemCategory) -> Unit,
     setRegisterItemName: (String) -> Unit,
     registerItem: () -> Unit,
-    deleteItem: (Long) -> Unit,
+    deleteItem: (Long) -> Unit
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
