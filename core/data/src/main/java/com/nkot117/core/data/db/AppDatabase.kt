@@ -20,10 +20,11 @@ import com.nkot117.core.data.db.entity.SpecialItemDatesEntity
     version = 1,
     exportSchema = true
 )
-
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun itemsDao(): ItemsDao
+
     abstract fun specialItemDateDao(): SpecialItemDateDao
+
     abstract fun dailyNoteDao(): DailyNoteDao
 }

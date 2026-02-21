@@ -41,7 +41,7 @@ import com.nkot117.core.ui.theme.SmartGoTheme
 fun DoneScreenRoute(
     contentPadding: PaddingValues,
     params: DoneScreenTransitionParams,
-    onTapHome: () -> Unit,
+    onTapHome: () -> Unit
 ) {
     DoneScreen(
         contentPadding = contentPadding,
@@ -58,7 +58,7 @@ fun DoneScreen(
     dayType: DayType,
     checkedCount: Int,
     totalCount: Int,
-    onTapHome: () -> Unit,
+    onTapHome: () -> Unit
 ) {
     val topColor = if (dayType == DayType.WORKDAY) BgWorkdayTop else BgHolidayTop
     val bottomColor = if (dayType == DayType.WORKDAY) BgWorkdayBottom else BgHolidayBottom

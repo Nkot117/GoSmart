@@ -9,98 +9,104 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.test.runTest
 import java.time.LocalDate
+import kotlinx.coroutines.test.runTest
 
-class SaveItemUseCaseTest : FunSpec({
-    lateinit var itemsRepository: FakeItemsRepository
-    lateinit var specialItemDateRepository: FakeItemDateRepository
-    lateinit var useCase: SaveItemUseCase
+class SaveItemUseCaseTest :
+    FunSpec({
+        lateinit var itemsRepository: FakeItemsRepository
+        lateinit var specialItemDateRepository: FakeItemDateRepository
+        lateinit var useCase: SaveItemUseCase
 
-    beforeTest {
-        itemsRepository = FakeItemsRepository()
-        specialItemDateRepository = FakeItemDateRepository()
-        useCase = SaveItemUseCase(
-            itemsRepository = itemsRepository,
-            itemDateRepository = specialItemDateRepository,
-        )
-    }
-
-    test("通常カテゴリのアイテムを登録できること") {
-        runTest {
-            // Arrange
-            itemsRepository.nextId = 1L
-
-            // Act
-            val resultId = useCase(
-                Item(
-                    name = "財布",
-                    category = ItemCategory.ALWAYS,
+        beforeTest {
+            itemsRepository = FakeItemsRepository()
+            specialItemDateRepository = FakeItemDateRepository()
+            useCase =
+                SaveItemUseCase(
+                    itemsRepository = itemsRepository,
+                    itemDateRepository = specialItemDateRepository
                 )
-            )
-
-            // Assert
-            resultId shouldBe 1L
-            itemsRepository.savedItems shouldHaveSize 1
-            itemsRepository.savedItems.first() shouldBe Item(
-                id = 1L,
-                name = "財布",
-                category = ItemCategory.ALWAYS,
-            )
-
-            // 特定日付は保存されないこと
-            specialItemDateRepository.savedDates shouldHaveSize 0
         }
-    }
 
-    test("DATE_SPECIFICカテゴリのアイテムを日付付きで登録できること") {
-        runTest {
-            // Arrange
-            itemsRepository.nextId = 2L
+        test("通常カテゴリのアイテムを登録できること") {
+            runTest {
+                // Arrange
+                itemsRepository.nextId = 1L
 
-            // Act
-            val resultId = useCase(
-                Item(
-                    name = "プレゼント",
-                    category = ItemCategory.DATE_SPECIFIC,
-                ),
-                date = LocalDate.of(2026, 2, 14)
-            )
+                // Act
+                val resultId =
+                    useCase(
+                        Item(
+                            name = "財布",
+                            category = ItemCategory.ALWAYS
+                        )
+                    )
 
-            // Assert
-            resultId shouldBe 2L
-            itemsRepository.savedItems shouldHaveSize 1
-            itemsRepository.savedItems.first() shouldBe Item(
-                id = 2L,
-                name = "プレゼント",
-                category = ItemCategory.DATE_SPECIFIC,
-            )
-
-            // 特定日付も保存されること
-            specialItemDateRepository.savedDates shouldHaveSize 1
-            specialItemDateRepository.savedDates.first() shouldBe Pair(
-                2L,
-                LocalDate.of(2026, 2, 14)
-            )
-        }
-    }
-
-    test("DATE_SPECIFICカテゴリで日付がnullの場合は例外が発生すること") {
-        runTest {
-            // Act & Assert
-            val exception = shouldThrow<IllegalArgumentException> {
-                useCase(
+                // Assert
+                resultId shouldBe 1L
+                itemsRepository.savedItems shouldHaveSize 1
+                itemsRepository.savedItems.first() shouldBe
                     Item(
-                        name = "日付なしアイテム",
-                        category = ItemCategory.DATE_SPECIFIC,
-                    ),
-                    date = null
-                )
+                        id = 1L,
+                        name = "財布",
+                        category = ItemCategory.ALWAYS
+                    )
+
+                // 特定日付は保存されないこと
+                specialItemDateRepository.savedDates shouldHaveSize 0
             }
-
-            exception.message shouldBe "DATE_SPECIFICカテゴリの場合は日付が必要です"
         }
-    }
-})
 
+        test("DATE_SPECIFICカテゴリのアイテムを日付付きで登録できること") {
+            runTest {
+                // Arrange
+                itemsRepository.nextId = 2L
 
+                // Act
+                val resultId =
+                    useCase(
+                        Item(
+                            name = "プレゼント",
+                            category = ItemCategory.DATE_SPECIFIC
+                        ),
+                        date = LocalDate.of(2026, 2, 14)
+                    )
+
+                // Assert
+                resultId shouldBe 2L
+                itemsRepository.savedItems shouldHaveSize 1
+                itemsRepository.savedItems.first() shouldBe
+                    Item(
+                        id = 2L,
+                        name = "プレゼント",
+                        category = ItemCategory.DATE_SPECIFIC
+                    )
+
+                // 特定日付も保存されること
+                specialItemDateRepository.savedDates shouldHaveSize 1
+                specialItemDateRepository.savedDates.first() shouldBe
+                    Pair(
+                        2L,
+                        LocalDate.of(2026, 2, 14)
+                    )
+            }
+        }
+
+        test("DATE_SPECIFICカテゴリで日付がnullの場合は例外が発生すること") {
+            runTest {
+                // Act & Assert
+                val exception =
+                    shouldThrow<IllegalArgumentException> {
+                        useCase(
+                            Item(
+                                name = "日付なしアイテム",
+                                category = ItemCategory.DATE_SPECIFIC
+                            ),
+                            date = null
+                        )
+                    }
+
+                exception.message shouldBe "DATE_SPECIFICカテゴリの場合は日付が必要です"
+            }
+        }
+    })

@@ -26,7 +26,7 @@ fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+    enabled: Boolean = true
 ) {
     Button(
         onClick = onClick,
@@ -37,7 +37,7 @@ fun PrimaryButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = Primary500,
             contentColor = Color.White,
-            disabledContainerColor = Primary100,
+            disabledContainerColor = Primary100
         )
     ) {
         Text(text)
@@ -49,7 +49,7 @@ fun SecondaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
+    enabled: Boolean = true
 ) {
     OutlinedButton(
         onClick = onClick,
@@ -66,7 +66,6 @@ fun SecondaryButton(
         Text(text)
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

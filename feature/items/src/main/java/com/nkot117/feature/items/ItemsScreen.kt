@@ -54,10 +54,7 @@ import java.time.LocalDate
 import java.time.ZoneOffset
 
 @Composable
-fun ItemsScreenRoute(
-    contentPadding: PaddingValues,
-    viewModel: ItemsViewModel = hiltViewModel(),
-) {
+fun ItemsScreenRoute(contentPadding: PaddingValues, viewModel: ItemsViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     ItemsScreen(
@@ -83,7 +80,7 @@ fun ItemsScreen(
     setCategory: (ItemCategory) -> Unit,
     setRegisterItemName: (String) -> Unit,
     registerItem: () -> Unit,
-    deleteItem: (Long) -> Unit,
+    deleteItem: (Long) -> Unit
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
@@ -104,12 +101,13 @@ fun ItemsScreen(
                 .fillMaxSize()
                 .padding(
                     PaddingValues(
-                        start = 41.dp, end = 41.dp, top = 16.dp,
+                        start = 41.dp,
+                        end = 41.dp,
+                        top = 16.dp,
                         bottom = 88.dp
                     )
                 )
         ) {
-
             val scroll = rememberScrollState()
             Row(
                 modifier = Modifier.horizontalScroll(scroll),
@@ -146,8 +144,6 @@ fun ItemsScreen(
                 }
             }
 
-
-
             Spacer(Modifier.height(20.dp))
 
             if (state.category == ItemCategory.DATE_SPECIFIC) {
@@ -158,7 +154,7 @@ fun ItemsScreen(
                     },
                     confirmButtonLabel = "OK",
                     cancelButtonLabel = "キャンセル",
-                    formLabel = "日付",
+                    formLabel = "日付"
                 )
 
                 Spacer(Modifier.height(20.dp))
@@ -179,7 +175,7 @@ fun ItemsScreen(
                     modifier = Modifier
                         .weight(1f)
                         .background(Color.White, shape = RoundedCornerShape(12.dp)),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(12.dp)
                 )
 
                 SecondaryButton(
@@ -187,7 +183,6 @@ fun ItemsScreen(
                     onClick = {
                         focusManager.clearFocus()
                         registerItem()
-
                     },
                     modifier = Modifier.height(56.dp),
                     enabled = state.form.canSubmit
@@ -212,7 +207,7 @@ fun ItemsScreen(
                 )
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     items(state.itemList) { item ->
                         ChecklistActionRow(
@@ -223,15 +218,13 @@ fun ItemsScreen(
                                 item.id?.let {
                                     deleteItem(it)
                                 }
-                            },
+                            }
                         )
 
                         Spacer(modifier = Modifier.padding(top = 15.dp))
                     }
                 }
             }
-
-
         }
     }
 }
@@ -259,5 +252,5 @@ private fun previewRegisteredItems(): List<Item> = listOf(
     Item(id = 2L, name = "家の鍵", category = ItemCategory.ALWAYS),
     Item(id = 3L, name = "スマホ", category = ItemCategory.RAINY),
     Item(id = 4L, name = "ハンカチ", category = ItemCategory.SUNNY),
-    Item(id = 5L, name = "ティッシュ", category = ItemCategory.DATE_SPECIFIC),
+    Item(id = 5L, name = "ティッシュ", category = ItemCategory.DATE_SPECIFIC)
 )

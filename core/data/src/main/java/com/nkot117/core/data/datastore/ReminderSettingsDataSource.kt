@@ -9,17 +9,19 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nkot117.core.domain.model.Reminder
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 private val Context.reminderDataStore: DataStore<Preferences> by preferencesDataStore(
     name = "reminder_settings"
 )
 
-class ReminderSettingsDataSource @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+class ReminderSettingsDataSource
+@Inject
+constructor(
+    @param:ApplicationContext private val context: Context
 ) {
     private object Keys {
         val HOUR = intPreferencesKey("hour")
@@ -27,17 +29,15 @@ class ReminderSettingsDataSource @Inject constructor(
         val ENABLED = booleanPreferencesKey("enabled")
     }
 
-    fun observeTime(): Flow<Reminder> =
-        context.reminderDataStore.data.map { pref ->
-            Reminder(
-                hour = pref[Keys.HOUR] ?: DEFAULT_HOUR,
-                minute = pref[Keys.MINUTE] ?: DEFAULT_MINUTE,
-                enabled = pref[Keys.ENABLED] ?: DEFAULT_ENABLED,
-            )
-        }
+    fun observeTime(): Flow<Reminder> = context.reminderDataStore.data.map { pref ->
+        Reminder(
+            hour = pref[Keys.HOUR] ?: DEFAULT_HOUR,
+            minute = pref[Keys.MINUTE] ?: DEFAULT_MINUTE,
+            enabled = pref[Keys.ENABLED] ?: DEFAULT_ENABLED
+        )
+    }
 
-    suspend fun getTime(): Reminder =
-        observeTime().first()
+    suspend fun getTime(): Reminder = observeTime().first()
 
     suspend fun saveTime(time: Reminder) {
         context.reminderDataStore.edit { pref ->

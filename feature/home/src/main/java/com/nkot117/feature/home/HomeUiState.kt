@@ -10,5 +10,5 @@ data class HomeUiState(
     val dayType: DayType = DayType.WORKDAY,
     val weatherType: WeatherType = WeatherType.SUNNY,
     val preview: List<Item> = emptyList(),
-    val dailyNote: String = "",
+    val dailyNote: String = ""
 )

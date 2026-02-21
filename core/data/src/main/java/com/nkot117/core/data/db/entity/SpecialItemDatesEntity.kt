@@ -5,7 +5,6 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-
 @Entity(
     tableName = "special_item_dates",
     foreignKeys = [
@@ -24,5 +23,5 @@ data class SpecialItemDatesEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val itemId: Long,
-    val date: String,
+    val date: String
 )

@@ -61,11 +61,9 @@ dependencies {
     // Lottie
     implementation(libs.lottie.compose)
 
-
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
 
     // Icons
     implementation(libs.material.icons.core)
-
 }

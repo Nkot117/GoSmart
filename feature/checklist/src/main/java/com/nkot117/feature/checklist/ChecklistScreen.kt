@@ -56,7 +56,7 @@ fun ChecklistScreenRoute(
     contentPadding: PaddingValues,
     params: ChecklistScreenTransitionParams,
     onTapDone: (params: DoneScreenTransitionParams) -> Unit,
-    viewModel: ChecklistViewModel = hiltViewModel(),
+    viewModel: ChecklistViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val isAllChecked = viewModel.isAllChecked
@@ -88,7 +88,7 @@ fun ChecklistScreen(
     toggleChecklistItem: (id: Long, checked: Boolean) -> Unit,
     onCheckAll: () -> Unit,
     isAllChecked: Boolean,
-    onTapDone: (params: DoneScreenTransitionParams) -> Unit,
+    onTapDone: (params: DoneScreenTransitionParams) -> Unit
 ) {
     val topColor = if (dayType == DayType.WORKDAY) {
         BgWorkdayTop
@@ -115,7 +115,9 @@ fun ChecklistScreen(
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(
-                start = 41.dp, end = 41.dp, top = 16.dp,
+                start = 41.dp,
+                end = 41.dp,
+                top = 16.dp,
                 bottom = 88.dp
             ),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -154,7 +156,7 @@ fun ChecklistScreen(
                             item.id,
                             !item.checked
                         )
-                    },
+                    }
                 )
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
@@ -170,7 +172,7 @@ fun ChecklistScreen(
                     checkedCount = checklist.size,
                     totalCount = checklist.filter {
                         it.checked
-                    }.size,
+                    }.size
                 )
                 onTapDone(params)
             },
@@ -187,20 +189,20 @@ fun ChecklistScreen(
 }
 
 @Composable
-fun ChecklistProgressHeader(
-    checkedCount: Int,
-    totalCount: Int,
-    modifier: Modifier = Modifier,
-) {
+fun ChecklistProgressHeader(checkedCount: Int, totalCount: Int, modifier: Modifier = Modifier) {
     val progress =
-        if (totalCount == 0) 0f
-        else checkedCount / totalCount.toFloat()
+        if (totalCount == 0) {
+            0f
+        } else {
+            checkedCount / totalCount.toFloat()
+        }
 
     val text =
-        if (checkedCount == totalCount && totalCount > 0)
+        if (checkedCount == totalCount && totalCount > 0) {
             "すべて完了"
-        else
+        } else {
             "$checkedCount / $totalCount 完了"
+        }
 
     Column(
         modifier = modifier.fillMaxWidth()
@@ -230,10 +232,7 @@ fun ChecklistProgressHeader(
 }
 
 @Composable
-fun ChecklistProgressBar(
-    progress: Float,
-    modifier: Modifier = Modifier,
-) {
+fun ChecklistProgressBar(progress: Float, modifier: Modifier = Modifier) {
     val safeProgress = progress.coerceIn(0f, 1f)
 
     val animatedProgress by animateFloatAsState(
@@ -241,9 +240,11 @@ fun ChecklistProgressBar(
         label = "checklist_progress"
     )
     val barColor =
-        if (progress >= 1f) ProgressComplete
-        else ProgressActive
-
+        if (progress >= 1f) {
+            ProgressComplete
+        } else {
+            ProgressActive
+        }
 
     Box(
         modifier = modifier
@@ -276,7 +277,7 @@ private fun ChecklistScreenPreview_Workday() {
                     ChecklistItem(id = 2, title = "財布", checked = true),
                     ChecklistItem(id = 3, title = "スマートフォン", checked = false),
                     ChecklistItem(id = 4, title = "社員証", checked = false),
-                    ChecklistItem(id = 5, title = "折りたたみ傘", checked = false),
+                    ChecklistItem(id = 5, title = "折りたたみ傘", checked = false)
                 ),
                 toggleChecklistItem = { _, _ -> },
                 onCheckAll = {},
@@ -300,7 +301,7 @@ private fun ChecklistScreenPreview_Holiday() {
                 checklist = listOf(
                     ChecklistItem(id = 1, title = "チケット", checked = true),
                     ChecklistItem(id = 2, title = "イヤホン", checked = true),
-                    ChecklistItem(id = 3, title = "モバイルバッテリー", checked = true),
+                    ChecklistItem(id = 3, title = "モバイルバッテリー", checked = true)
                 ),
                 toggleChecklistItem = { _, _ -> },
                 onCheckAll = {},

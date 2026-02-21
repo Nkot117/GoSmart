@@ -25,7 +25,7 @@ import com.nkot117.feature.settings.SettingScreenRoute
 
 data class ScaffoldSpec(
     val topBar: @Composable () -> Unit = {},
-    val fab: @Composable () -> Unit = {},
+    val fab: @Composable () -> Unit = {}
 )
 
 @Composable
@@ -41,7 +41,8 @@ fun AppScaffold() {
         NavDisplay(
             backStack = backStack,
             onBack = { navigator.pop() },
-            entryProvider = entryProvider {
+            entryProvider =
+            entryProvider {
                 // HOME画面
                 entry(AppNavKey.Home) {
                     HomeScreenRoute(
@@ -53,7 +54,6 @@ fun AppScaffold() {
                                 )
                             )
                         }
-
                     )
                 }
 
@@ -86,7 +86,7 @@ fun AppScaffold() {
                 // 持ち物登録画面
                 entry<AppNavKey.Items> { key ->
                     ItemsScreenRoute(
-                        contentPadding = innerPadding,
+                        contentPadding = innerPadding
                     )
                 }
 
@@ -97,55 +97,62 @@ fun AppScaffold() {
                         onBack = { navigator.pop() }
                     )
                 }
-
-            })
+            }
+        )
     }
 }
 
-private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): ScaffoldSpec {
-    return when (appNavKey) {
-        AppNavKey.Home -> ScaffoldSpec(
-            topBar = {
-                AppTopBar(
-                    title = "ホーム", onAction = { navigator.push(AppNavKey.Setting) },
-                    actionIcon = Icons.Default.Settings
-                )
-            },
-            fab = {
-                FloatingActionButton(
-                    modifier = Modifier
-                        .padding(end = 16.dp, bottom = 96.dp),
-                    containerColor = Primary500,
-                    onClick = {
-                        navigator.push(AppNavKey.Items)
-                    }) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
+private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): ScaffoldSpec =
+    when (appNavKey) {
+        AppNavKey.Home ->
+            ScaffoldSpec(
+                topBar = {
+                    AppTopBar(
+                        title = "ホーム",
+                        onAction = { navigator.push(AppNavKey.Setting) },
+                        actionIcon = Icons.Default.Settings
+                    )
+                },
+                fab = {
+                    FloatingActionButton(
+                        modifier =
+                        Modifier
+                            .padding(end = 16.dp, bottom = 96.dp),
+                        containerColor = Primary500,
+                        onClick = {
+                            navigator.push(AppNavKey.Items)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+
+        is AppNavKey.Checklist ->
+            ScaffoldSpec(
+                topBar = { AppTopBar(title = "チェックリスト", onBack = { navigator.pop() }) }
+            )
+
+        is AppNavKey.Done ->
+            ScaffoldSpec(
+                topBar = { AppTopBar(title = "完了") }
+            )
+
+        AppNavKey.Items ->
+            ScaffoldSpec(
+                topBar = { AppTopBar(title = "持ち物の登録", onBack = { navigator.pop() }) }
+            )
+
+        AppNavKey.Setting ->
+            ScaffoldSpec(
+                topBar = {
+                    AppTopBar(
+                        title = "設定画面",
+                        onBack = { navigator.pop() }
                     )
                 }
-            }
-        )
-
-        is AppNavKey.Checklist -> ScaffoldSpec(
-            topBar = { AppTopBar(title = "チェックリスト", onBack = { navigator.pop() }) }
-        )
-
-        is AppNavKey.Done -> ScaffoldSpec(
-            topBar = { AppTopBar(title = "完了") }
-        )
-
-        AppNavKey.Items -> ScaffoldSpec(
-            topBar = { AppTopBar(title = "持ち物の登録", onBack = { navigator.pop() }) }
-        )
-
-        AppNavKey.Setting -> ScaffoldSpec(
-            topBar = {
-                AppTopBar(
-                    title = "設定画面",
-                    onBack = { navigator.pop() },
-                )
-            }
-        )
+            )
     }
-}

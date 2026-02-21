@@ -20,28 +20,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Two(
-    title: String,
-    modifier: Modifier = Modifier,
-) {
+fun Two(title: String, modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         Column {
             Text(
                 title,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge
             )
 
             Spacer(modifier = Modifier.padding(top = 5.dp))
 
             ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.elevatedCardColors(Color.White),
+                colors = CardDefaults.elevatedCardColors(Color.White)
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 65.dp, vertical = 15.dp)
-                        .background(color = Color.White),
+                        .background(color = Color.White)
                 ) {
                     SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
                         SegmentedButton(

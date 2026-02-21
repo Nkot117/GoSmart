@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DailyNoteDao {
-
     @Query("SELECT * FROM daily_notes WHERE date = :date LIMIT 1")
     fun getByDate(date: String): Flow<DailyNoteEntity?>
 

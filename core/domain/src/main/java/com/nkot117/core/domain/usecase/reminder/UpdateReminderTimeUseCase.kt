@@ -5,9 +5,11 @@ import com.nkot117.core.domain.repository.ReminderAlarmScheduler
 import com.nkot117.core.domain.repository.ReminderSettingsRepository
 import javax.inject.Inject
 
-class UpdateReminderTimeUseCase @Inject constructor(
+class UpdateReminderTimeUseCase
+@Inject
+constructor(
     private val settingsRepository: ReminderSettingsRepository,
-    private val alarmScheduler: ReminderAlarmScheduler,
+    private val alarmScheduler: ReminderAlarmScheduler
 ) {
     /**
      * リマインダーの設定時間を更新するユースケース

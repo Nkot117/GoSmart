@@ -24,10 +24,7 @@ import com.nkot117.core.ui.theme.Primary100
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextSub
 
-data class SegmentOption<T>(
-    val value: T,
-    val label: String,
-)
+data class SegmentOption<T>(val value: T, val label: String)
 
 @Composable
 fun <T> TwoOptionSegment(
@@ -35,7 +32,7 @@ fun <T> TwoOptionSegment(
     right: SegmentOption<T>,
     selected: T,
     onSelectedChange: (T) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(12.dp)
 
@@ -82,7 +79,7 @@ fun <T> TwoOptionSegment(
 
 private enum class PreviewType {
     Work,
-    Holiday,
+    Holiday
 }
 
 @Preview(showBackground = true, name = "Left Selected")

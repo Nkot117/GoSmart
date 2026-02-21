@@ -9,6 +9,7 @@ import com.nkot117.core.domain.usecase.dailynote.GetDailyNoteUseCase
 import com.nkot117.core.domain.usecase.dailynote.SaveDailyNoteUseCase
 import com.nkot117.core.domain.usecase.items.GetItemsToBringUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,13 +19,12 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getItemsToBringUseCase: GetItemsToBringUseCase,
     private val getDailyNoteUseCase: GetDailyNoteUseCase,
-    private val saveDailyNoteUseCase: SaveDailyNoteUseCase,
+    private val saveDailyNoteUseCase: SaveDailyNoteUseCase
 ) : ViewModel() {
     /**
      * UiState

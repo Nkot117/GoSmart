@@ -10,14 +10,12 @@ import androidx.core.app.NotificationManagerCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class ReminderNotifier @Inject constructor(
-    @param:ApplicationContext private val context: Context,
-) {
+class ReminderNotifier @Inject constructor(@param:ApplicationContext private val context: Context) {
     @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
     fun showReminder() {
         val intent = context.packageManager
             .getLaunchIntentForPackage(context.packageName)
-        
+
         val pendingIntent = PendingIntent.getActivity(
             context,
             0,

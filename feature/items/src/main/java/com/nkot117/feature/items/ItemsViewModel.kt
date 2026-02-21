@@ -10,6 +10,7 @@ import com.nkot117.core.domain.usecase.items.DeleteItemUseCase
 import com.nkot117.core.domain.usecase.items.GetRegisteredItemsUseCase
 import com.nkot117.core.domain.usecase.items.SaveItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,13 +20,12 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ItemsViewModel @Inject constructor(
     private val getRegisteredItemsUseCase: GetRegisteredItemsUseCase,
     private val saveItemUseCase: SaveItemUseCase,
-    private val deleteItemUseCase: DeleteItemUseCase,
+    private val deleteItemUseCase: DeleteItemUseCase
 ) : ViewModel() {
     /**
      * UiState

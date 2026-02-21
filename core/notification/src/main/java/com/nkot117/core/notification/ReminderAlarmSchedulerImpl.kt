@@ -11,7 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 class ReminderAlarmSchedulerImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context
 ) : ReminderAlarmScheduler {
     override fun scheduleAt(hour: Int, minute: Int) {
         val triggerAtMillis = computeNextSchedule(hour, minute)
