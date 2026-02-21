@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>LongMethod:ItemsScreen.kt$@Composable fun ItemsScreen( contentPadding: PaddingValues, state: ItemsUiState, setDate: (Long) -&gt; Unit, setCategory: (ItemCategory) -&gt; Unit, setRegisterItemName: (String) -&gt; Unit, registerItem: () -&gt; Unit, deleteItem: (Long) -&gt; Unit, )</ID>
+    <ID>LongParameterList:ItemsScreen.kt$( contentPadding: PaddingValues, state: ItemsUiState, setDate: (Long) -&gt; Unit, setCategory: (ItemCategory) -&gt; Unit, setRegisterItemName: (String) -&gt; Unit, registerItem: () -&gt; Unit, deleteItem: (Long) -&gt; Unit, )</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>LongParameterList:DatePickerField.kt$( selectedDateMillis: Long?, onDateChange: (Long) -&gt; Unit, confirmButtonLabel: String, cancelButtonLabel: String, modifier: Modifier = Modifier, formLabel: String? = null, placeholder: String? = null )</ID>
+    <ID>LongParameterList:DatePickerField.kt$( value: String, onOpenDialog: () -&gt; Unit, modifier: Modifier, shape: RoundedCornerShape, formLabel: String?, placeholder: String? )</ID>
+    <ID>LongParameterList:DatePickerField.kt$( visible: Boolean, initialSelectedDateMillis: Long?, confirmButtonLabel: String, cancelButtonLabel: String, onConfirm: (Long?) -&gt; Unit, onDismiss: () -&gt; Unit )</ID>
+    <ID>MagicNumber:Color.kt$0xFF222222</ID>
+    <ID>MagicNumber:Color.kt$0xFF4C8BF5</ID>
+    <ID>MagicNumber:Color.kt$0xFF4CAF50</ID>
+    <ID>MagicNumber:Color.kt$0xFF666666</ID>
+    <ID>MagicNumber:Color.kt$0xFFC62828</ID>
+    <ID>MagicNumber:Color.kt$0xFFDCEAFF</ID>
+    <ID>MagicNumber:Color.kt$0xFFE0E7F1</ID>
+    <ID>MagicNumber:Color.kt$0xFFE6ECF5</ID>
+    <ID>MagicNumber:Color.kt$0xFFE8F1FF</ID>
+    <ID>MagicNumber:Color.kt$0xFFEEF4FF</ID>
+    <ID>MagicNumber:Color.kt$0xFFFFB84C</ID>
+    <ID>MagicNumber:Color.kt$0xFFFFECCF</ID>
+    <ID>MagicNumber:Color.kt$0xFFFFF8EC</ID>
+    <ID>MagicNumber:DatePickerField.kt$2026</ID>
+    <ID>MagicNumber:DatePickerField.kt$4</ID>
+    <ID>MatchingDeclarationName:Segment.kt$SegmentOption&lt;T&gt;</ID>
+  </CurrentIssues>
+</SmellBaseline>

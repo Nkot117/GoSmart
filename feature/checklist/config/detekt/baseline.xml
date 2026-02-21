@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>LongMethod:ChecklistScreen.kt$@Composable fun ChecklistScreen( contentPadding: PaddingValues, dayType: DayType, checklist: List&lt;ChecklistItem&gt;, toggleChecklistItem: (id: Long, checked: Boolean) -&gt; Unit, onCheckAll: () -&gt; Unit, isAllChecked: Boolean, onTapDone: (params: DoneScreenTransitionParams) -&gt; Unit )</ID>
+    <ID>LongParameterList:ChecklistScreen.kt$( contentPadding: PaddingValues, dayType: DayType, checklist: List&lt;ChecklistItem&gt;, toggleChecklistItem: (id: Long, checked: Boolean) -&gt; Unit, onCheckAll: () -&gt; Unit, isAllChecked: Boolean, onTapDone: (params: DoneScreenTransitionParams) -&gt; Unit )</ID>
+  </CurrentIssues>
+</SmellBaseline>
