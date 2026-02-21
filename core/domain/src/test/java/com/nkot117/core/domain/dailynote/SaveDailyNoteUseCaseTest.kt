@@ -21,7 +21,7 @@ class SaveDailyNoteUseCaseTest :
                 " ",
                 // 全角空白
                 "　"
-            ) { it ->
+            ) {
                 test("テキストが'$it'の場合、該当する日付のデイリーノートを削除する") {
                     runTest {
                         // Arrange

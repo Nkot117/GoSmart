@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>LongMethod:HomeScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun HomeScreen( contentPadding: PaddingValues, state: HomeUiState, setDayType: (DayType) -&gt; Unit, setWeatherType: (WeatherType) -&gt; Unit, setDate: (Long) -&gt; Unit, onTapCheckList: (params: ChecklistScreenTransitionParams) -&gt; Unit, saveDailyNote: (String) -&gt; Unit )</ID>
+    <ID>LongParameterList:HomeScreen.kt$( contentPadding: PaddingValues, state: HomeUiState, setDayType: (DayType) -&gt; Unit, setWeatherType: (WeatherType) -&gt; Unit, setDate: (Long) -&gt; Unit, onTapCheckList: (params: ChecklistScreenTransitionParams) -&gt; Unit, saveDailyNote: (String) -&gt; Unit )</ID>
+    <ID>MagicNumber:HomeScreen.kt$200</ID>
+    <ID>MagicNumber:HomeScreen.kt$260</ID>
+    <ID>MagicNumber:HomeScreen.kt$320</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -80,7 +80,7 @@ fun ItemsScreen(
     setCategory: (ItemCategory) -> Unit,
     setRegisterItemName: (String) -> Unit,
     registerItem: () -> Unit,
-    deleteItem: (Long) -> Unit
+    deleteItem: (Long) -> Unit,
 ) {
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
@@ -167,7 +167,7 @@ fun ItemsScreen(
             ) {
                 OutlinedTextField(
                     value = state.form.name,
-                    onValueChange = { it ->
+                    onValueChange = {
                         setRegisterItemName(it)
                     },
                     placeholder = { Text("追加する持ち物") },
