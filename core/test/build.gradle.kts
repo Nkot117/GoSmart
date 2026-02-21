@@ -1,26 +1,10 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-}
-
-android {
-    namespace = "com.nkot117.core.test"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 28
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions { jvmTarget = "11" }
+    kotlin("jvm")
 }
 
 dependencies {
-    implementation(project(":core:domain"))
-    
-    implementation(libs.kotlinx.coroutines.test)
-    implementation(libs.kotest.assertions.core)
+    api(project(":core:domain"))
+    api(libs.kotest.runner.junit5)
+    api(libs.kotest.assertions.core)
+    api(libs.kotlinx.coroutines.test)
 }

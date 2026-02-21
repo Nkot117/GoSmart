@@ -66,7 +66,7 @@ class ItemsViewModel @Inject constructor(
                 }
                 .distinctUntilChanged()
                 .flatMapLatest { query ->
-                    getRegisteredItemsUseCase(query) // Flow<List<Item>>
+                    getRegisteredItemsUseCase(query)
                 }
                 .collect { items ->
                     _uiState.update { it.copy(itemList = items) }
