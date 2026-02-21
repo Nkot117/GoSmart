@@ -9,9 +9,9 @@ import com.nkot117.core.test.fake.FakeItemsRepository
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import java.time.LocalDate
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
+import java.time.LocalDate
 
 class GetRegisteredItemUseCaseTest :
     FunSpec({
@@ -97,7 +97,10 @@ class GetRegisteredItemUseCaseTest :
 
                 // Assert
                 result.map { it.id } shouldBe listOf(1L, 3L)
-                result.map { it.name } shouldBe listOf("締め切り期限の書類", "友人の誕生日プレゼント")
+                result.map { it.name } shouldBe listOf(
+                    "締め切り期限の書類",
+                    "友人の誕生日プレゼント"
+                )
             }
         }
 

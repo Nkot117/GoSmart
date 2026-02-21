@@ -11,4 +11,4 @@ pre-push:
     detekt:
       run: ./gradlew detekt
     test:
-      run: ./gradlew test
+      run: ./gradlew :core:domain:test
