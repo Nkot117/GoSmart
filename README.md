@@ -150,8 +150,8 @@ GitHub Actionsを利用してCI/CDパイプラインを構築しています。<
   - ユニットテスト（Kotest）
 - CD
   - Firebase App Distributionへの配信（開発ビルド）
-  - Firebase App Distributionおよび GitHub Releases への配信（本番ビルド）(TODO)
-  - GitHub Releasesによるリリースノート自動生成(TODO)
+  - Firebase App Distributionおよび GitHub Releases への配信（本番ビルド）
+  - GitHub Releasesによるリリースノート自動生成
 
 ---
 

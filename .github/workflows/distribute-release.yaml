@@ -1,0 +1,121 @@
+name: Distribute Release App
+
+on:
+    push:
+        branches: ["main"]
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Set up Java
+              uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: 17
+
+            - name: Read versionName
+              id: ver
+              shell: bash
+              run: |
+                  VERSION_NAME=$(grep -E 'versionName\s*=\s*"' -m1 app/build.gradle.kts | sed -E 's/.*versionName\s*=\s*"([^"]+)".*/\1/')
+                  if [ -z "$VERSION_NAME" ]; then
+                    echo "Failed to read versionName from app/build.gradle.kts"
+                    exit 1
+                  fi
+                  TAG="v${VERSION_NAME}"
+                  echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+                  echo "tag=$TAG" >> $GITHUB_OUTPUT
+                  echo "VERSION_NAME=$VERSION_NAME"
+                  echo "TAG=$TAG"
+
+            - name: Restore google-services.json
+              shell: bash
+              run: |
+                  if [ -z "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" ]; then
+                  echo "ERROR: GOOGLE_SERVICES_JSON_BASE64 is missing in GitHub Secrets."
+                  exit 1
+                  fi
+                  echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
+                  test -s app/google-services.json
+
+            - name: Restore release keystore
+              shell: bash
+              run: |
+                  mkdir -p keystore
+                  echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 --decode > keystore/smartgo-release.jks
+                  ls -la keystore
+
+            - name: Build signed Release APK
+              env:
+                  RELEASE_STORE_FILE: keystore/smartgo-release.jks
+                  RELEASE_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+                  RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+                  RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+              run: ./gradlew clean :app:assembleRelease
+
+            - name: Locate APK
+              id: apk
+              shell: bash
+              run: |
+                  APK_PATH=$(ls -1 app/build/outputs/apk/release/*.apk | head -n 1)
+                  if [ -z "$APK_PATH" ]; then
+                    echo "Release APK not found."
+                    exit 1
+                  fi
+                  echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
+                  echo "APK_PATH=$APK_PATH"
+
+            - name: Create tag if not exists
+              id: tag
+              shell: bash
+              run: |
+                  TAG="${{ steps.ver.outputs.tag }}"
+                  if git rev-parse "$TAG" >/dev/null 2>&1; then
+                    echo "exists=true" >> $GITHUB_OUTPUT
+                    echo "Tag $TAG already exists. (Skip creating tag)"
+                  else
+                    git tag "$TAG"
+                    git push origin "$TAG"
+                    echo "exists=false" >> $GITHUB_OUTPUT
+                    echo "Created tag $TAG"
+                  fi
+
+            - name: Generate release notes
+              id: notes
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      const tag_name = "${{ steps.ver.outputs.tag }}";
+                      const target_commitish = "main";
+                      const res = await github.request("POST /repos/{owner}/{repo}/releases/generate-notes", {
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        tag_name,
+                        target_commitish
+                      });
+                      core.setOutput("body", res.data.body);
+
+            - name: Create GitHub Release and upload APK
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ steps.ver.outputs.tag }}
+                  name: SmartGo ${{ steps.ver.outputs.version_name }}
+                  body: ${{ steps.notes.outputs.body }}
+                  files: ${{ steps.apk.outputs.apk_path }}
+                  prerelease: false
+
+            - name: Distribute to Firebase App Distribution
+              uses: wzieba/Firebase-Distribution-Github-Action@v1
+              with:
+                  appId: ${{ secrets.FIREBASE_APP_ID_RELEASE }}
+                  serviceCredentialsFileContent: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+                  groups: release
+                  file: ${{ steps.apk.outputs.apk_path }}
+                  releaseNotes: ${{ steps.notes.outputs.body }}
