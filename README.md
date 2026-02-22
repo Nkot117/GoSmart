@@ -4,8 +4,8 @@
   <img src="docs/images/icon.png" width="120" />
 </p>
 
-SmartGoは、外出前の「忘れ物の不安」を減らすことを目的としたAndroidアプリです。
-仕事の日・お休みの日・天気（晴れ / 雨）・特定の日付といったシンプルな条件に応じて、必要な持ち物を自動で抽出し、チェックリストを生成します。
+SmartGoは、外出前の「忘れ物の不安」を減らすことを目的としたAndroidアプリです。<br>
+仕事の日・お休みの日・天気（晴れ / 雨）・特定の日付といったシンプルな条件に応じて、必要な持ち物を自動で抽出し、チェックリストを生成します。<br>
 外出前にチェックリストを確認することで、安心して一日をスタートできます。
 
 ---
@@ -62,7 +62,7 @@ SmartGoは、外出前の「忘れ物の不安」を減らすことを目的と�
 
 ## Architecture 🏗️
 
-MVVM + Repositoryパターンをベースに、UI / Domain / Data の3レイヤ構成を採用しています。
+MVVM + Repositoryパターンをベースに、UI / Domain / Data の3レイヤ構成を採用しています。<br>
 Clean Architectureを参考に、依存関係を内側（Domain）へ向ける設計とすることで、ビジネスロジックをフレームワークから独立させています。
 
 - UI: Compose / ViewModel
@@ -101,8 +101,8 @@ RepoImpl -->|fetch| DS
 
 ## Module Structure 📦
 
-マルチモジュール構成を採用しています。
-Domainレイヤ（`:core:domain`）を依存関係の中心に配置し、依存を内側へ寄せる構造としています。
+マルチモジュール構成を採用しています。<br>
+Domainレイヤ（`:core:domain`）を依存関係の中心に配置し、依存を内側へ寄せる構造としています。<br>
 UI / Data レイヤはDomainに依存する形で整理し、責務の分離と依存関係の明確化を図っています。
 
 - `:app`
@@ -128,8 +128,8 @@ UI / Data レイヤはDomainに依存する形で整理し、責務の分離と�
 
 ## Git Hooks（Lefthook）🪝
 
-Git Hooksの管理にはLefthookを使用しています。
-コミット前・プッシュ前にコード品質チェックやテストを自動実行することで、品質を担保しています。
+Git Hooksの管理にはLefthookを使用しています。<br>
+コミット前・プッシュ前にコード品質チェックやテストを自動実行することで、品質を担保しています。<br>
 
 `lefthook.yml`：  
 https://raw.githubusercontent.com/Nkot117/GoSmart/main/lefthook.yml
@@ -144,8 +144,8 @@ https://raw.githubusercontent.com/Nkot117/GoSmart/main/lefthook.yml
 
 ## CI/CD 🤖
 
-GitHub Actionsを利用してCI/CDパイプラインを構築しています。
-開発ビルドはFirebase App Distributionで配信し、  
+GitHub Actionsを利用してCI/CDパイプラインを構築しています。<br>
+開発ビルドはFirebase App Distributionで配信し、<br>
 本番リリースは Firebase App DistributionとGitHub Releasesを通じて配信しています。
 
 - CI
