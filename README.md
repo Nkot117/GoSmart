@@ -131,9 +131,6 @@ UI / Data レイヤはDomainに依存する形で整理し、責務の分離と�
 Git Hooksの管理にはLefthookを使用しています。<br>
 コミット前・プッシュ前にコード品質チェックやテストを自動実行することで、品質を担保しています。<br>
 
-`lefthook.yml`：  
-https://raw.githubusercontent.com/Nkot117/GoSmart/main/lefthook.yml
-
 - pre-commit
   - `./gradlew ktlintCheck`
 - pre-push（parallel）
