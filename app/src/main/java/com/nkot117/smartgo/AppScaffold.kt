@@ -10,7 +10,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
@@ -114,7 +115,7 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): S
                         modifier =
                         Modifier
                             .padding(end = 16.dp, bottom = 96.dp)
-                            .testTag("add_item_fab"),
+                            .semantics { contentDescription = "add_item_fab" },
                         containerColor = Primary500,
                         onClick = {
                             navigator.push(AppNavKey.Items)
