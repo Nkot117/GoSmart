@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -174,7 +175,8 @@ fun ItemsScreen(
                     singleLine = true,
                     modifier = Modifier
                         .weight(1f)
-                        .background(Color.White, shape = RoundedCornerShape(12.dp)),
+                        .background(Color.White, shape = RoundedCornerShape(12.dp))
+                        .testTag("item_name_text_field"),
                     shape = RoundedCornerShape(12.dp)
                 )
 
@@ -184,7 +186,9 @@ fun ItemsScreen(
                         focusManager.clearFocus()
                         registerItem()
                     },
-                    modifier = Modifier.height(56.dp),
+                    modifier = Modifier
+                        .height(56.dp)
+                        .testTag("register_item_button"),
                     enabled = state.form.canSubmit
                 )
             }

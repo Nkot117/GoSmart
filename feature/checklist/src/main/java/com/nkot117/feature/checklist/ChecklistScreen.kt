@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -156,7 +157,8 @@ fun ChecklistScreen(
                             item.id,
                             !item.checked
                         )
-                    }
+                    },
+                    modifier = Modifier.testTag("checklist_item_${item.id}")
                 )
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
@@ -184,6 +186,7 @@ fun ChecklistScreen(
                 .padding(horizontal = 41.dp)
                 .height(56.dp)
                 .widthIn(max = 360.dp)
+                .testTag("departure_button")
         )
     }
 }
