@@ -3,6 +3,9 @@ appId: com.nkot117.smartgo.debug
 - clearState
 - launchApp
 
+# ホーム画面が開かれるまで待機
+- assertVisible: "ホーム"
+
 # 持ち物登録画面を開く
 - tapOn: "add_item_fab"
 
