@@ -1,0 +1,26 @@
+appId: com.nkot117.smartgo.debug
+---
+- clearState
+- launchApp
+
+# ホーム画面が開かれるまで待機
+- assertVisible: "ホーム"
+
+# 持ち物登録画面を開く
+- tapOn: "add_item_fab"
+
+# アイテムの登録
+- tapOn: "item_name_text_field"
+- inputText: "umbrella"
+- tapOn: "register_item_button"
+- tapOn: "back_button"
+
+# チェックリスト画面を開く
+- tapOn: "go_to_checklist_button"
+- tapOn: "umbrella"
+
+# 完了画面を開く
+- tapOn: "departure_button"
+
+# HOME画面に戻る
+- tapOn: "back_home_button"
