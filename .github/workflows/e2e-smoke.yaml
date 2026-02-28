@@ -34,6 +34,12 @@ jobs:
             - name: Build debug APK
               run: ./gradlew :app:assembleDebug
 
+            - name: Enable KVM
+              run: |
+                  ls -al /dev/kvm || true
+                  sudo chmod a+rw /dev/kvm
+                  ls -al /dev/kvm
+
             - name: Install Maestro
               run: |
                   curl -Ls "https://get.maestro.mobile.dev" | bash
@@ -45,9 +51,11 @@ jobs:
                   api-level: 34
                   target: google_apis
                   arch: x86_64
-                  profile: pixel
                   disable-animations: true
+                  emulator-boot-timeout: 600
+                  emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-save
                   script: |
+                      adb devices
                       adb shell pm clear com.nkot117.smartgo.debug || true
                       adb install -r app/build/outputs/apk/debug/app-debug.apk
                       maestro test maestro/smoke.yaml
