@@ -65,6 +65,7 @@ import com.nkot117.core.ui.theme.TextSub
 fun SettingsScreenRoute(
     contentPadding: PaddingValues,
     onBack: () -> Unit,
+    onTapOssLicenses: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -79,7 +80,8 @@ fun SettingsScreenRoute(
         viewModel::setReminderEnabled,
         viewModel::setReminderTime,
         viewModel::saveSettings,
-        onBack
+        onBack,
+        onTapOssLicenses
     )
 }
 
@@ -92,7 +94,8 @@ fun SettingsScreen(
     setEnabled: (Boolean) -> Unit,
     setReminderTime: (Int, Int) -> Unit,
     saveSettings: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onTapOssLicenses: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val topColor = BgWorkdayTop
@@ -142,6 +145,40 @@ fun SettingsScreen(
                     showPermissionDialog = show
                 }
             )
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                "その他",
+                style = MaterialTheme.typography.titleSmall,
+                color = TextMain
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onTapOssLicenses() },
+                colors = cardColors(containerColor = Color.White)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "OSSライセンス",
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = TextMain
+                    )
+                    Text(
+                        text = "確認する",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = TextSub
+                    )
+                }
+            }
         }
     }
 
@@ -203,7 +240,6 @@ private fun ReminderSettingsCard(
             onShowPermissionDialogChange(true)
         }
     }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = cardColors(containerColor = Color.White)
@@ -336,6 +372,14 @@ fun openNotificationSettings(context: Context) {
     context.startActivity(intent)
 }
 
+@Composable
+private fun OpenOssLicenses(aboutLibrariesRes: Int, contentPadding: PaddingValues) {
+    OssLicensesScreen(
+        aboutLibrariesRes = aboutLibrariesRes,
+        contentPadding = contentPadding
+    )
+}
+
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(showBackground = true)
 @Composable
@@ -347,7 +391,8 @@ fun SettingsScreenPreview() {
             setEnabled = {},
             setReminderTime = { _, _ -> },
             saveSettings = {},
-            onBack = {}
+            onBack = {},
+            onTapOssLicenses = {}
         )
     }
 }
