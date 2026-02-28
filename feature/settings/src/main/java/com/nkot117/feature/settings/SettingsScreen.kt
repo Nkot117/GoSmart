@@ -98,10 +98,6 @@ fun SettingsScreen(
     val context = LocalContext.current
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
-    val timePickerState = rememberTimePickerState(
-        initialHour = state.reminder.hour,
-        initialMinute = state.reminder.minute
-    )
     var showTimePicker by rememberSaveable { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
 
@@ -119,14 +115,6 @@ fun SettingsScreen(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            Text(
-                "外出前リマインダー設定",
-                style = MaterialTheme.typography.titleSmall,
-                color = TextMain
-            )
-
-            Spacer(Modifier.height(8.dp))
-
             ReminderSettingsCard(
                 reminderSettings = state.reminder,
                 onToggle = { isEnabled ->
@@ -146,14 +134,6 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            Text(
-                "その他",
-                style = MaterialTheme.typography.titleSmall,
-                color = TextMain
-            )
-
-            Spacer(Modifier.height(8.dp))
-
             OssLicensesCard(
                 onTapOssLicenses = {
                     actions.onTapOssLicenses()
@@ -163,6 +143,12 @@ fun SettingsScreen(
     }
 
     if (showTimePicker) {
+        val timePickerState = rememberTimePickerState(
+            initialHour = state.reminder.hour,
+            initialMinute = state.reminder.minute,
+            is24Hour = true
+        )
+
         NotificationTimePickerDialog(
             timePickerState = timePickerState,
             onConfirm = {
@@ -230,6 +216,15 @@ private fun ReminderSettingsCard(
             onShowPermissionDialogChange(true)
         }
     }
+
+    Text(
+        "外出前リマインダー設定",
+        style = MaterialTheme.typography.titleSmall,
+        color = TextMain
+    )
+
+    Spacer(Modifier.height(8.dp))
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = cardColors(containerColor = Color.White)
@@ -275,6 +270,14 @@ private fun ReminderSettingsCard(
 
 @Composable
 private fun OssLicensesCard(onTapOssLicenses: () -> Unit) {
+    Text(
+        "その他",
+        style = MaterialTheme.typography.titleSmall,
+        color = TextMain
+    )
+
+    Spacer(Modifier.height(8.dp))
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
