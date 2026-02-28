@@ -1,68 +1,68 @@
 name: E2E (Maestro)
 
 on:
-    pull_request:
-        branches: [release/*, main]
+  pull_request:
+    branches: [main]
 
 jobs:
-    maestro:
-        runs-on: ubuntu-latest
-        timeout-minutes: 30
+  maestro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            - name: Set up Java
-              uses: actions/setup-java@v4
-              with:
-                  distribution: temurin
-                  java-version: 17
-                  cache: gradle
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
 
-            - name: Restore google-services.json
-              shell: bash
-              run: |
-                  if [ -z "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" ]; then
-                  echo "ERROR: GOOGLE_SERVICES_JSON_BASE64 is missing in GitHub Secrets."
-                  exit 1
-                  fi
-                  echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
-                  test -s app/google-services.json
+      - name: Restore google-services.json
+        shell: bash
+        run: |
+          if [ -z "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" ]; then
+          echo "ERROR: GOOGLE_SERVICES_JSON_BASE64 is missing in GitHub Secrets."
+          exit 1
+          fi
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > app/google-services.json
+          test -s app/google-services.json
 
-            - name: Build debug APK
-              run: ./gradlew :app:assembleDebug
+      - name: Build debug APK
+        run: ./gradlew :app:assembleDebug
 
-            - name: Enable KVM
-              run: |
-                  ls -al /dev/kvm || true
-                  sudo chmod a+rw /dev/kvm
-                  ls -al /dev/kvm
+      - name: Enable KVM
+        run: |
+          ls -al /dev/kvm || true
+          sudo chmod a+rw /dev/kvm
+          ls -al /dev/kvm
 
-            - name: Install Maestro
-              run: |
-                  curl -Ls "https://get.maestro.mobile.dev" | bash
-                  echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
 
-            - name: Run emulator + Maestro test
-              uses: reactivecircus/android-emulator-runner@v2
-              with:
-                  api-level: 34
-                  target: google_apis
-                  arch: x86_64
-                  disable-animations: true
-                  emulator-boot-timeout: 600
-                  emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-save
-                  script: |
-                      adb devices
-                      adb shell pm clear com.nkot117.smartgo.debug || true
-                      adb install -r app/build/outputs/apk/debug/app-debug.apk
-                      maestro test maestro/smoke.yaml
-            - name: Upload Maestro test artifacts
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                  name: maestro-${{ github.run_id }}
-                  path: /home/runner/.maestro/tests
+      - name: Run emulator + Maestro test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot-save
+          script: |
+            adb devices
+            adb shell pm clear com.nkot117.smartgo.debug || true
+            adb install -r app/build/outputs/apk/debug/app-debug.apk
+            maestro test maestro/smoke.yaml
+      - name: Upload Maestro test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-${{ github.run_id }}
+          path: /home/runner/.maestro/tests
