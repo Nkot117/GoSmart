@@ -60,4 +60,7 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
+
+    // AboutLibraries
+    implementation(libs.aboutlibraries.compose.m3)
 }

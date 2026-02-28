@@ -65,6 +65,7 @@ import com.nkot117.core.ui.theme.TextSub
 fun SettingsScreenRoute(
     contentPadding: PaddingValues,
     onBack: () -> Unit,
+    onTapOssLicenses: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -76,10 +77,13 @@ fun SettingsScreenRoute(
     SettingsScreen(
         contentPadding,
         state,
-        viewModel::setReminderEnabled,
-        viewModel::setReminderTime,
-        viewModel::saveSettings,
-        onBack
+        actions = SettingsActions(
+            onBack = onBack,
+            onTapOssLicenses = onTapOssLicenses,
+            onToggleReminder = viewModel::setReminderEnabled,
+            onChangeReminderTime = viewModel::setReminderTime,
+            onSettingSave = viewModel::saveSettings
+        )
     )
 }
 
@@ -89,10 +93,7 @@ fun SettingsScreenRoute(
 fun SettingsScreen(
     contentPadding: PaddingValues,
     state: SettingsUiState,
-    setEnabled: (Boolean) -> Unit,
-    setReminderTime: (Int, Int) -> Unit,
-    saveSettings: () -> Unit,
-    onBack: () -> Unit
+    actions: SettingsActions
 ) {
     val context = LocalContext.current
     val topColor = BgWorkdayTop
@@ -129,17 +130,33 @@ fun SettingsScreen(
             ReminderSettingsCard(
                 reminderSettings = state.reminder,
                 onToggle = { isEnabled ->
-                    setEnabled(isEnabled)
+                    actions.onToggleReminder(isEnabled)
                 },
                 onTimeClick = {
                     showTimePicker = true
                 },
                 onSave = {
-                    saveSettings()
-                    onBack()
+                    actions.onSettingSave()
+                    actions.onBack()
                 },
                 onShowPermissionDialogChange = { show ->
                     showPermissionDialog = show
+                }
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                "その他",
+                style = MaterialTheme.typography.titleSmall,
+                color = TextMain
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            OssLicensesCard(
+                onTapOssLicenses = {
+                    actions.onTapOssLicenses()
                 }
             )
         }
@@ -149,7 +166,7 @@ fun SettingsScreen(
         NotificationTimePickerDialog(
             timePickerState = timePickerState,
             onConfirm = {
-                setReminderTime(timePickerState.hour, timePickerState.minute)
+                actions.onChangeReminderTime(timePickerState.hour, timePickerState.minute)
                 showTimePicker = false
             },
             onDismiss = { showTimePicker = false }
@@ -157,31 +174,41 @@ fun SettingsScreen(
     }
 
     if (showPermissionDialog) {
-        AlertDialog(
-            onDismissRequest = { showPermissionDialog = false },
-            title = {
-                Text("通知の許可が必要です")
-            },
-            text = {
-                Text("リマインダー通知を受け取るには、設定画面で通知を許可してください。")
-            },
-            confirmButton = {
-                PrimaryButton(
-                    onClick = {
-                        openNotificationSettings(context)
-                        showPermissionDialog = false
-                    },
-                    text = "設定を開く"
-                )
-            },
-            dismissButton = {
-                SecondaryButton(
-                    onClick = { showPermissionDialog = false },
-                    text = "キャンセル"
-                )
+        PermissionDialog(
+            context = context,
+            onDismiss = { show ->
+                showPermissionDialog = show
             }
         )
     }
+}
+
+@Composable
+private fun PermissionDialog(context: Context, onDismiss: (Boolean) -> Unit) {
+    AlertDialog(
+        onDismissRequest = { onDismiss(false) },
+        title = {
+            Text("通知の許可が必要です")
+        },
+        text = {
+            Text("リマインダー通知を受け取るには、設定画面で通知を許可してください。")
+        },
+        confirmButton = {
+            PrimaryButton(
+                onClick = {
+                    openNotificationSettings(context)
+                    onDismiss(false)
+                },
+                text = "設定を開く"
+            )
+        },
+        dismissButton = {
+            SecondaryButton(
+                onClick = { onDismiss(false) },
+                text = "キャンセル"
+            )
+        }
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -203,7 +230,6 @@ private fun ReminderSettingsCard(
             onShowPermissionDialogChange(true)
         }
     }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = cardColors(containerColor = Color.White)
@@ -242,6 +268,33 @@ private fun ReminderSettingsCard(
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = "保存する"
+            )
+        }
+    }
+}
+
+@Composable
+private fun OssLicensesCard(onTapOssLicenses: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onTapOssLicenses() },
+        colors = cardColors(containerColor = Color.White)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "OSSライセンス",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.labelLarge,
+                color = TextMain
+            )
+            Text(
+                text = "確認する",
+                style = MaterialTheme.typography.bodyMedium,
+                color = TextSub
             )
         }
     }
@@ -344,10 +397,7 @@ fun SettingsScreenPreview() {
         SettingsScreen(
             contentPadding = PaddingValues(0.dp),
             state = SettingsUiState(),
-            setEnabled = {},
-            setReminderTime = { _, _ -> },
-            saveSettings = {},
-            onBack = {}
+            actions = SettingsActions()
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.nkot117.smartgo
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -23,8 +25,10 @@ import com.nkot117.feature.checklist.ChecklistScreenRoute
 import com.nkot117.feature.done.DoneScreenRoute
 import com.nkot117.feature.home.HomeScreenRoute
 import com.nkot117.feature.items.ItemsScreenRoute
+import com.nkot117.feature.settings.OssLicensesScreen
 import com.nkot117.feature.settings.SettingsScreenRoute
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun AppScaffold() {
     val navigator = remember { Navigator() }
@@ -91,7 +95,17 @@ fun AppScaffold() {
                 entry(AppNavKey.Setting) { key ->
                     SettingsScreenRoute(
                         contentPadding = innerPadding,
-                        onBack = { navigator.pop() }
+                        onBack = { navigator.pop() },
+                        onTapOssLicenses = {
+                            navigator.push(AppNavKey.OssLicenses)
+                        }
+                    )
+                }
+
+                entry(AppNavKey.OssLicenses) { key ->
+                    OssLicensesScreen(
+                        aboutLibrariesRes = R.raw.aboutlibraries,
+                        contentPadding = innerPadding
                     )
                 }
             }
@@ -149,6 +163,16 @@ private fun scaffoldSpecForNavKey(appNavKey: AppNavKey, navigator: Navigator): S
                 topBar = {
                     AppTopBar(
                         title = "設定画面",
+                        onBack = { navigator.pop() }
+                    )
+                }
+            )
+
+        AppNavKey.OssLicenses ->
+            ScaffoldSpec(
+                topBar = {
+                    AppTopBar(
+                        title = "OSSライセンス",
                         onBack = { navigator.pop() }
                     )
                 }

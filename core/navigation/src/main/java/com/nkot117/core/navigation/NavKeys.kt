@@ -18,6 +18,9 @@ sealed interface AppNavKey : NavKey {
 
     @Serializable
     data object Setting : AppNavKey
+
+    @Serializable
+    data object OssLicenses : AppNavKey
 }
 
 @Serializable
