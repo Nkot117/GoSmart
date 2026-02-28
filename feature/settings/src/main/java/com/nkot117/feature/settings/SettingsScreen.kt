@@ -120,9 +120,7 @@ fun SettingsScreen(
                 style = MaterialTheme.typography.titleSmall,
                 color = TextMain
             )
-
             Spacer(Modifier.height(8.dp))
-
             ReminderSettingsCard(
                 reminderSettings = state.reminder,
                 onToggle = { isEnabled ->
