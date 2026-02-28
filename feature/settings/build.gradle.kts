@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.about.libraries)
 }
 
 android {
@@ -60,4 +61,7 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
+
+    // AboutLibraries
+    implementation(libs.aboutlibraries.compose.m3)
 }
