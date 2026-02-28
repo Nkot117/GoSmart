@@ -98,10 +98,6 @@ fun SettingsScreen(
     val context = LocalContext.current
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
-    val timePickerState = rememberTimePickerState(
-        initialHour = state.reminder.hour,
-        initialMinute = state.reminder.minute
-    )
     var showTimePicker by rememberSaveable { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
 
@@ -163,6 +159,12 @@ fun SettingsScreen(
     }
 
     if (showTimePicker) {
+        val timePickerState = rememberTimePickerState(
+            initialHour = state.reminder.hour,
+            initialMinute = state.reminder.minute,
+            is24Hour = true
+        )
+
         NotificationTimePickerDialog(
             timePickerState = timePickerState,
             onConfirm = {
