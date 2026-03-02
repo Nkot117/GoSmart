@@ -1,15 +1,6 @@
 package com.nkot117.feature.settings
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
-import android.provider.Settings
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,35 +23,25 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.domain.model.Reminder
 import com.nkot117.core.ui.components.PrimaryButton
-import com.nkot117.core.ui.components.SecondaryButton
 import com.nkot117.core.ui.theme.BgWorkdayBottom
 import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextMain
 import com.nkot117.core.ui.theme.TextSub
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun SettingsScreenRoute(
     contentPadding: PaddingValues,
@@ -69,37 +50,35 @@ fun SettingsScreenRoute(
     viewModel: SettingsViewModel = hiltViewModel<SettingsViewModel>()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.fetchReminderSettings()
-    }
-
+    // メインコンテンツの表示
     SettingsScreen(
         contentPadding,
-        state,
-        actions = SettingsActions(
-            onBack = onBack,
-            onTapOssLicenses = onTapOssLicenses,
-            onToggleReminder = viewModel::setReminderEnabled,
-            onChangeReminderTime = viewModel::setReminderTime,
-            onSettingSave = viewModel::saveSettings
-        )
+        state
+    ) { viewModel.onEvent(it) }
+
+    // ダイアログの表示
+    SettingsDialogs(
+        state = state,
+        onEvent = { viewModel.onEvent(it) }
+    )
+
+    // 副作用
+    SettingsEffects(
+        viewModel = viewModel,
+        onBack = onBack,
+        onTapOssLicenses = onTapOssLicenses
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     contentPadding: PaddingValues,
     state: SettingsUiState,
-    actions: SettingsActions
+    onEvent: (SettingsUiEvent) -> Unit
 ) {
-    val context = LocalContext.current
     val topColor = BgWorkdayTop
     val bottomColor = BgWorkdayBottom
-    var showTimePicker by rememberSaveable { mutableStateOf(false) }
-    var showPermissionDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -117,106 +96,20 @@ fun SettingsScreen(
         ) {
             ReminderSettingsCard(
                 reminderSettings = state.reminder,
-                onToggle = { isEnabled ->
-                    actions.onToggleReminder(isEnabled)
-                },
-                onTimeClick = {
-                    showTimePicker = true
-                },
-                onSave = {
-                    actions.onSettingSave()
-                    actions.onBack()
-                },
-                onShowPermissionDialogChange = { show ->
-                    showPermissionDialog = show
-                }
+                onEvent = onEvent
             )
 
             Spacer(Modifier.height(12.dp))
 
             OssLicensesCard(
-                onTapOssLicenses = {
-                    actions.onTapOssLicenses()
-                }
+                onEvent = onEvent
             )
         }
-    }
-
-    if (showTimePicker) {
-        val timePickerState = rememberTimePickerState(
-            initialHour = state.reminder.hour,
-            initialMinute = state.reminder.minute,
-            is24Hour = true
-        )
-
-        NotificationTimePickerDialog(
-            timePickerState = timePickerState,
-            onConfirm = {
-                actions.onChangeReminderTime(timePickerState.hour, timePickerState.minute)
-                showTimePicker = false
-            },
-            onDismiss = { showTimePicker = false }
-        )
-    }
-
-    if (showPermissionDialog) {
-        PermissionDialog(
-            context = context,
-            onDismiss = { show ->
-                showPermissionDialog = show
-            }
-        )
     }
 }
 
 @Composable
-private fun PermissionDialog(context: Context, onDismiss: (Boolean) -> Unit) {
-    AlertDialog(
-        onDismissRequest = { onDismiss(false) },
-        title = {
-            Text("通知の許可が必要です")
-        },
-        text = {
-            Text("リマインダー通知を受け取るには、設定画面で通知を許可してください。")
-        },
-        confirmButton = {
-            PrimaryButton(
-                onClick = {
-                    openNotificationSettings(context)
-                    onDismiss(false)
-                },
-                text = "設定を開く"
-            )
-        },
-        dismissButton = {
-            SecondaryButton(
-                onClick = { onDismiss(false) },
-                text = "キャンセル"
-            )
-        }
-    )
-}
-
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Composable
-private fun ReminderSettingsCard(
-    reminderSettings: Reminder,
-    onToggle: (Boolean) -> Unit,
-    onTimeClick: () -> Unit,
-    onSave: () -> Unit,
-    onShowPermissionDialogChange: (Boolean) -> Unit
-) {
-    val context = LocalContext.current
-    val requestPermission = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) {
-            onSave()
-        } else {
-            onShowPermissionDialogChange(true)
-        }
-    }
-
+private fun ReminderSettingsCard(reminderSettings: Reminder, onEvent: (SettingsUiEvent) -> Unit) {
     Text(
         "外出前リマインダー設定",
         style = MaterialTheme.typography.titleSmall,
@@ -230,7 +123,12 @@ private fun ReminderSettingsCard(
         colors = cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            ReminderToggleRow(reminderSettings.enabled, onToggle)
+            ReminderToggleRow(
+                reminderSettings.enabled
+            ) { enabled ->
+                onEvent(ReminderEvent.ReminderToggled(enabled))
+            }
+
             if (reminderSettings.enabled) {
                 Spacer(Modifier.height(16.dp))
                 Box(
@@ -240,26 +138,16 @@ private fun ReminderSettingsCard(
                         .background(Color.LightGray)
                 )
                 Spacer(Modifier.height(16.dp))
-                NotificationTimeRow(onTimeClick, reminderSettings.hour, reminderSettings.minute)
+                NotificationTimeRow(
+                    { onEvent(ClickEvent.TimeClicked) },
+                    reminderSettings.hour,
+                    reminderSettings.minute
+                )
             }
             Spacer(Modifier.height(16.dp))
             PrimaryButton(
                 onClick = {
-                    if (reminderSettings.enabled) {
-                        val hasPermission =
-                            ContextCompat.checkSelfPermission(
-                                context,
-                                Manifest.permission.POST_NOTIFICATIONS
-                            ) == PackageManager.PERMISSION_GRANTED
-
-                        if (hasPermission) {
-                            onSave()
-                        } else {
-                            requestPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        }
-                    } else {
-                        onSave()
-                    }
+                    onEvent(ClickEvent.SaveClicked)
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = "保存する"
@@ -269,7 +157,7 @@ private fun ReminderSettingsCard(
 }
 
 @Composable
-private fun OssLicensesCard(onTapOssLicenses: () -> Unit) {
+private fun OssLicensesCard(onEvent: (SettingsUiEvent) -> Unit) {
     Text(
         "その他",
         style = MaterialTheme.typography.titleSmall,
@@ -281,7 +169,9 @@ private fun OssLicensesCard(onTapOssLicenses: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onTapOssLicenses() },
+            .clickable {
+                onEvent(ClickEvent.OssLicensesClicked)
+            },
         colors = cardColors(containerColor = Color.White)
     ) {
         Row(
@@ -304,7 +194,7 @@ private fun OssLicensesCard(onTapOssLicenses: () -> Unit) {
 }
 
 @Composable
-private fun ReminderToggleRow(isEnabled: Boolean, onToggle: (Boolean) -> Unit) {
+private fun ReminderToggleRow(isEnabled: Boolean, toggled: (Boolean) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -317,7 +207,9 @@ private fun ReminderToggleRow(isEnabled: Boolean, onToggle: (Boolean) -> Unit) {
         )
         Switch(
             checked = isEnabled,
-            onCheckedChange = onToggle,
+            onCheckedChange = {
+                toggled(it)
+            },
             colors = SwitchDefaults.colors(
                 checkedTrackColor = Primary500
             )
@@ -327,12 +219,14 @@ private fun ReminderToggleRow(isEnabled: Boolean, onToggle: (Boolean) -> Unit) {
 
 @SuppressLint("DefaultLocale")
 @Composable
-private fun NotificationTimeRow(onTimeClick: () -> Unit, settingHour: Int, settingMinute: Int) {
+private fun NotificationTimeRow(timeClicked: () -> Unit, settingHour: Int, settingMinute: Int) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onTimeClick() },
+                .clickable {
+                    timeClicked()
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -364,35 +258,44 @@ private fun NotificationTimeRow(onTimeClick: () -> Unit, settingHour: Int, setti
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationTimePickerDialog(
-    timePickerState: TimePickerState,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
+    onEvent: (SettingsUiEvent) -> Unit,
+    settingHour: Int,
+    settingMinute: Int
 ) {
+    val timePickerState = rememberTimePickerState(
+        initialHour = settingHour,
+        initialMinute = settingMinute,
+        is24Hour = true
+    )
+
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {
+            onEvent(ReminderEvent.ReminderTimePickerDismissed)
+        },
         title = { Text("通知時刻を選択") },
         text = { TimePicker(state = timePickerState) },
         confirmButton = {
-            Button(onClick = onConfirm) {
+            Button(onClick = {
+                onEvent(
+                    ReminderEvent.ReminderTimePickerConfirmed(
+                        timePickerState.hour,
+                        timePickerState.minute
+                    )
+                )
+            }) {
                 Text("確定")
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
+            Button(onClick = {
+                onEvent(ReminderEvent.ReminderTimePickerDismissed)
+            }) {
                 Text("キャンセル")
             }
         }
     )
 }
 
-fun openNotificationSettings(context: Context) {
-    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
-        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-    }
-    context.startActivity(intent)
-}
-
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview(showBackground = true)
 @Composable
 fun SettingsScreenPreview() {
@@ -400,7 +303,7 @@ fun SettingsScreenPreview() {
         SettingsScreen(
             contentPadding = PaddingValues(0.dp),
             state = SettingsUiState(),
-            actions = SettingsActions()
+            onEvent = {}
         )
     }
 }
