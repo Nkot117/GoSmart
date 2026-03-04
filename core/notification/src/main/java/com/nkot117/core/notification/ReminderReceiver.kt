@@ -8,6 +8,9 @@ import androidx.annotation.RequiresPermission
 import com.nkot117.core.domain.usecase.reminder.ScheduleNextReminderUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ReminderReceiver : BroadcastReceiver() {
@@ -23,6 +26,14 @@ class ReminderReceiver : BroadcastReceiver() {
         reminderNotifier.showReminder()
 
         // 次リマインダースケジュールを設定
-        scheduleNextReminderUseCase
+        goAsync().also { pendingResult ->
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    scheduleNextReminderUseCase()
+                } finally {
+                    pendingResult.finish()
+                }
+            }
+        }
     }
 }
