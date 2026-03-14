@@ -44,7 +44,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -124,7 +123,7 @@ private fun HomeScreen(
 ) {
     val backgroundBrush = rememberDayTypeGradient(state.dayType)
     var showEditNoteModal by remember { mutableStateOf(false) }
-    var draftNoteText by rememberSaveable { mutableStateOf("") }
+    val currentDailyNote = state.dailyNote
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Box(
@@ -192,9 +191,8 @@ private fun HomeScreen(
 
                 // 今日のノート
                 DailyNoteCard(
-                    text = state.dailyNote,
+                    text = currentDailyNote,
                     onClick = {
-                        draftNoteText = state.dailyNote
                         showEditNoteModal = true
                     }
                 )
@@ -237,8 +235,7 @@ private fun HomeScreen(
     if (showEditNoteModal) {
         DailyNoteEditModal(
             sheetState = sheetState,
-            draftNoteText = draftNoteText,
-            editNoteText = { draftNoteText = it },
+            draftNoteText = currentDailyNote,
             saveDailyNote = saveDailyNote,
             onDismissRequest = { showEditNoteModal = it }
         )
@@ -399,10 +396,11 @@ private fun WeatherIcon(weatherType: WeatherType) {
 private fun DailyNoteEditModal(
     sheetState: SheetState,
     draftNoteText: String,
-    editNoteText: (String) -> Unit,
     saveDailyNote: (String) -> Unit,
     onDismissRequest: (Boolean) -> Unit
 ) {
+    var draftNoteText by remember { mutableStateOf(draftNoteText) }
+
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest(false) },
         sheetState = sheetState
@@ -421,7 +419,7 @@ private fun DailyNoteEditModal(
 
             OutlinedTextField(
                 value = draftNoteText,
-                onValueChange = { editNoteText(it) },
+                onValueChange = { draftNoteText = it },
                 minLines = 4,
                 placeholder = {
                     Text("例：ティッシュ切れてるので帰りに買う")
