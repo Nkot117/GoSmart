@@ -10,6 +10,7 @@ import com.nkot117.core.domain.usecase.dailynote.SaveDailyNoteUseCase
 import com.nkot117.core.domain.usecase.items.GetItemsToBringUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +41,7 @@ class HomeViewModel @Inject constructor(
                 weatherType = state.weatherType,
                 date = state.date
             )
-            _uiState.update { it.copy(preview = items) }
+            _uiState.update { it.copy(preview = items.toImmutableList()) }
         }
     }
 

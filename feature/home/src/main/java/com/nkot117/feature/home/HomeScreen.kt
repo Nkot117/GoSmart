@@ -48,6 +48,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -80,6 +81,8 @@ import com.nkot117.core.ui.theme.BgWorkdayTop
 import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
 import java.time.ZoneOffset
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun HomeScreenRoute(
@@ -128,12 +131,11 @@ private fun HomeScreen(
         Modifier
             .fillMaxSize()
             .padding(contentPadding)
-            .background(
-                brush = backgroundBrush
-            )
+            .drawBehind {
+                drawRect(brush = backgroundBrush)
+            }
     ) {
         LazyColumn(
-
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(
                 start = 41.dp,
@@ -244,7 +246,7 @@ private fun HomeScreen(
 }
 
 @Composable
-private fun ItemPreview(previewList: List<Item>) {
+private fun ItemPreview(previewList: ImmutableList<Item>) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -472,7 +474,7 @@ private fun HomeScreenPreview() {
             HomeScreen(
                 contentPadding = inner,
                 state = HomeUiState(
-                    preview = listOf(
+                    preview = persistentListOf(
                         Item(
                             name = "家の鍵",
                             category = ItemCategory.ALWAYS
