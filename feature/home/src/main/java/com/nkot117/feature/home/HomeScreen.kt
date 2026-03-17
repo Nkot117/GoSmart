@@ -165,51 +165,7 @@ private fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // 日付選択
-                    DatePickerField(
-                        selectedDateMillis = state.date.toEpochMillis(ZoneOffset.UTC),
-                        onDateChange = {
-                            onEvent(DialogEvent.CalendarDialogConfirmed(it))
-                        },
-                        confirmButtonLabel = "OK",
-                        cancelButtonLabel = "キャンセル",
-                        modifier = Modifier.weight(1f)
-                    )
-
-                    Spacer(modifier = Modifier.width(20.dp))
-
-                    // 天気アイコン
-                    WeatherIcon(weatherType = state.weatherType)
-                }
-
-                Spacer(modifier = Modifier.padding(top = 15.dp))
-
-                // Work / Holiday 選択
-                TwoOptionSegment(
-                    left = SegmentOption(DayType.WORKDAY, "仕事の日"),
-                    right = SegmentOption(DayType.HOLIDAY, "休みの日"),
-                    selected = state.dayType,
-                    onSelectedChange = {
-                        onEvent(ClickEvent.DailyTypeToggled(it))
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.padding(top = 15.dp))
-
-                // Sunny / Rainy 選択
-                TwoOptionSegment(
-                    left = SegmentOption(WeatherType.SUNNY, "晴れの日"),
-                    right = SegmentOption(WeatherType.RAINY, "雨の日"),
-                    selected = state.weatherType,
-                    onSelectedChange = {
-                        onEvent(ClickEvent.WeatherTypeToggled(it))
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                ConditionSection(state = state, onEvent = onEvent)
 
                 Spacer(modifier = Modifier.padding(top = 15.dp))
 
@@ -289,6 +245,55 @@ private fun ItemPreview(previewList: ImmutableList<Item>) {
             }
         }
     }
+}
+
+@Composable
+private fun ConditionSection(state: HomeUiState, onEvent: (HomeUiEvent) -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // 日付選択
+        DatePickerField(
+            selectedDateMillis = state.date.toEpochMillis(ZoneOffset.UTC),
+            onDateChange = {
+                onEvent(DialogEvent.CalendarDialogConfirmed(it))
+            },
+            confirmButtonLabel = "OK",
+            cancelButtonLabel = "キャンセル",
+            modifier = Modifier.weight(1f)
+        )
+
+        Spacer(modifier = Modifier.width(20.dp))
+
+        // 天気アイコン
+        WeatherIcon(weatherType = state.weatherType)
+    }
+
+    Spacer(modifier = Modifier.padding(top = 15.dp))
+
+    // Work / Holiday 選択
+    TwoOptionSegment(
+        left = SegmentOption(DayType.WORKDAY, "仕事の日"),
+        right = SegmentOption(DayType.HOLIDAY, "休みの日"),
+        selected = state.dayType,
+        onSelectedChange = {
+            onEvent(ClickEvent.DailyTypeToggled(it))
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.padding(top = 15.dp))
+
+    // Sunny / Rainy 選択
+    TwoOptionSegment(
+        left = SegmentOption(WeatherType.SUNNY, "晴れの日"),
+        right = SegmentOption(WeatherType.RAINY, "雨の日"),
+        selected = state.weatherType,
+        onSelectedChange = {
+            onEvent(ClickEvent.WeatherTypeToggled(it))
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 @Composable
