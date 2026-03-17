@@ -12,8 +12,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -32,6 +34,64 @@ class HomeViewModel @Inject constructor(
      */
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    /**
+     * UiEffect
+     */
+    private val _uiEffect = MutableSharedFlow<HomeUiEffect>()
+    val uiEffect = _uiEffect.asSharedFlow()
+
+    fun onEvent(event: HomeUiEvent) {
+        when (event) {
+            is ClickEvent -> clickEvent(event)
+            is DialogEvent -> dialogEvent(event)
+        }
+    }
+
+    private fun clickEvent(event: ClickEvent) {
+        when (event) {
+            ClickEvent.DailyNoteClicked -> _uiState.update {
+                it.copy(dialog = HomeDialog.DailyNoteEditDialog)
+            }
+
+            is ClickEvent.DailyTypeToggled -> setDayType(event.dayType)
+
+            is ClickEvent.WeatherTypeToggled -> {
+                setWeatherType(event.weatherType)
+            }
+
+            ClickEvent.ChecklistClicked -> {
+                viewModelScope.launch {
+                    _uiEffect.emit(HomeUiEffect.TransitionToChecklistScreen)
+                }
+            }
+        }
+    }
+
+    private fun dialogEvent(event: DialogEvent) {
+        when (event) {
+            is DialogEvent.CalendarDialogConfirmed -> {
+                val localDate = event.selectedDate.toLocalDate()
+                _uiState.update {
+                    it.copy(dialog = null, date = localDate)
+                }
+            }
+
+            is DialogEvent.DailyNoteEditDialogConfirmed -> {
+                _uiState.update {
+                    it.copy(dialog = null, dailyNote = event.note)
+                }
+
+                saveDailyNote(event.note)
+            }
+
+            DialogEvent.CalendarDialogDismissed,
+            DialogEvent.DailyNoteEditDialogDismissed
+            -> _uiState.update {
+                it.copy(dialog = null)
+            }
+        }
+    }
 
     fun getChecklist() {
         viewModelScope.launch {
@@ -58,24 +118,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun setDayType(dayType: DayType) {
+    private fun setDayType(dayType: DayType) {
         _uiState.update { it.copy(dayType = dayType) }
     }
 
-    fun setDate(selectedDate: Long) {
-        val localDate = selectedDate.toLocalDate()
-        _uiState.update { it.copy(date = localDate) }
-    }
-
-    fun setWeatherType(weatherType: WeatherType) {
+    private fun setWeatherType(weatherType: WeatherType) {
         _uiState.update { it.copy(weatherType = weatherType) }
     }
 
-    fun saveDailyNote(note: String) {
+    private fun saveDailyNote(note: String) {
         viewModelScope.launch {
             val date = _uiState.value.date
             saveDailyNoteUseCase(date, note)
-            _uiState.update { it.copy(dailyNote = note) }
         }
     }
 }

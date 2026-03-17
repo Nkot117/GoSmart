@@ -34,7 +34,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -86,11 +85,33 @@ import kotlinx.collections.immutable.persistentListOf
 @Composable
 fun HomeScreenRoute(
     contentPadding: PaddingValues,
-    onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
+    transitionChecklistScreen: (params: ChecklistScreenTransitionParams) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
+    // メインコンテンツの表示
+    HomeScreen(
+        contentPadding = contentPadding,
+        state = state,
+        onEvent = viewModel::onEvent
+    )
+
+    // ダイアログの表示
+    when (state.dialog) {
+        HomeDialog.DailyNoteEditDialog -> {
+            DailyNoteEditModal(
+                draftNoteText = state.dailyNote,
+                onEvent = viewModel::onEvent
+            )
+        }
+
+        null -> {
+            // No dialog to show
+        }
+    }
+
+    // 副作用
     LaunchedEffect(state.dayType, state.weatherType, state.date) {
         viewModel.getChecklist()
     }
@@ -99,15 +120,20 @@ fun HomeScreenRoute(
         viewModel.observeDailyNote()
     }
 
-    HomeScreen(
-        contentPadding = contentPadding,
-        state = state,
-        setDayType = viewModel::setDayType,
-        setWeatherType = viewModel::setWeatherType,
-        setDate = viewModel::setDate,
-        onTapCheckList = onTapCheckList,
-        saveDailyNote = viewModel::saveDailyNote
-    )
+    LaunchedEffect(Unit) {
+        viewModel.uiEffect.collect { effect ->
+            when (effect) {
+                HomeUiEffect.TransitionToChecklistScreen -> {
+                    val params = ChecklistScreenTransitionParams(
+                        dayType = state.dayType.toNav(),
+                        weatherType = state.weatherType.toNav(),
+                        date = state.date.toString()
+                    )
+                    transitionChecklistScreen(params)
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,16 +141,10 @@ fun HomeScreenRoute(
 private fun HomeScreen(
     contentPadding: PaddingValues,
     state: HomeUiState,
-    setDayType: (DayType) -> Unit,
-    setWeatherType: (WeatherType) -> Unit,
-    setDate: (Long) -> Unit,
-    onTapCheckList: (params: ChecklistScreenTransitionParams) -> Unit,
-    saveDailyNote: (String) -> Unit
+    onEvent: (HomeUiEvent) -> Unit
 ) {
     val backgroundBrush = rememberDayTypeGradient(state.dayType)
-    var showEditNoteModal by remember { mutableStateOf(false) }
     val currentDailyNote = state.dailyNote
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Box(
         Modifier
@@ -152,7 +172,7 @@ private fun HomeScreen(
                     DatePickerField(
                         selectedDateMillis = state.date.toEpochMillis(ZoneOffset.UTC),
                         onDateChange = {
-                            setDate(it)
+                            onEvent(DialogEvent.CalendarDialogConfirmed(it))
                         },
                         confirmButtonLabel = "OK",
                         cancelButtonLabel = "キャンセル",
@@ -172,7 +192,9 @@ private fun HomeScreen(
                     left = SegmentOption(DayType.WORKDAY, "仕事の日"),
                     right = SegmentOption(DayType.HOLIDAY, "休みの日"),
                     selected = state.dayType,
-                    onSelectedChange = { setDayType(it) },
+                    onSelectedChange = {
+                        onEvent(ClickEvent.DailyTypeToggled(it))
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -183,7 +205,9 @@ private fun HomeScreen(
                     left = SegmentOption(WeatherType.SUNNY, "晴れの日"),
                     right = SegmentOption(WeatherType.RAINY, "雨の日"),
                     selected = state.weatherType,
-                    onSelectedChange = { setWeatherType(it) },
+                    onSelectedChange = {
+                        onEvent(ClickEvent.WeatherTypeToggled(it))
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -193,7 +217,7 @@ private fun HomeScreen(
                 DailyNoteCard(
                     text = currentDailyNote,
                     onClick = {
-                        showEditNoteModal = true
+                        onEvent(ClickEvent.DailyNoteClicked)
                     }
                 )
 
@@ -210,14 +234,7 @@ private fun HomeScreen(
         PrimaryButton(
             text = "チェックリストへ",
             onClick = {
-                val params = ChecklistScreenTransitionParams(
-                    dayType = state.dayType.toNav(),
-                    weatherType = state.weatherType.toNav(),
-                    date = state.date.toString()
-                )
-                onTapCheckList(
-                    params
-                )
+                onEvent(ClickEvent.ChecklistClicked)
             },
             enabled = state.preview.isNotEmpty(),
             modifier = Modifier
@@ -228,16 +245,6 @@ private fun HomeScreen(
                 .height(56.dp)
                 .widthIn(max = 360.dp)
                 .semantics { contentDescription = "go_to_checklist_button" }
-        )
-    }
-
-    // 今日のノート編集モーダル
-    if (showEditNoteModal) {
-        DailyNoteEditModal(
-            sheetState = sheetState,
-            draftNoteText = currentDailyNote,
-            saveDailyNote = saveDailyNote,
-            onDismissRequest = { showEditNoteModal = it }
         )
     }
 }
@@ -393,16 +400,14 @@ private fun WeatherIcon(weatherType: WeatherType) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DailyNoteEditModal(
-    sheetState: SheetState,
-    draftNoteText: String,
-    saveDailyNote: (String) -> Unit,
-    onDismissRequest: (Boolean) -> Unit
-) {
+private fun DailyNoteEditModal(draftNoteText: String, onEvent: (HomeUiEvent) -> Unit) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var draftNoteText by remember { mutableStateOf(draftNoteText) }
 
     ModalBottomSheet(
-        onDismissRequest = { onDismissRequest(false) },
+        onDismissRequest = {
+            onEvent(DialogEvent.DailyNoteEditDialogDismissed)
+        },
         sheetState = sheetState
     ) {
         Column(
@@ -435,7 +440,7 @@ private fun DailyNoteEditModal(
             ) {
                 SecondaryButton(
                     text = "キャンセル",
-                    onClick = { onDismissRequest(false) }
+                    onClick = { onEvent(DialogEvent.DailyNoteEditDialogDismissed) }
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -443,8 +448,7 @@ private fun DailyNoteEditModal(
                 PrimaryButton(
                     text = "保存",
                     onClick = {
-                        saveDailyNote(draftNoteText)
-                        onDismissRequest(false)
+                        onEvent(DialogEvent.DailyNoteEditDialogConfirmed(draftNoteText))
                     },
                     enabled = draftNoteText.isNotBlank()
                 )
@@ -495,11 +499,7 @@ private fun HomeScreenPreview() {
                         )
                     )
                 ),
-                setDayType = {},
-                setWeatherType = {},
-                setDate = {},
-                onTapCheckList = {},
-                saveDailyNote = {}
+                onEvent = {}
             )
         }
     }
