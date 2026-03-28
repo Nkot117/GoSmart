@@ -1,10 +1,10 @@
-package com.nkot117.core.data.api.dto
+package com.nkot117.core.data.api.openmeteo.dto
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class OpenMeteoWeatherResponse(
+data class OpenMeteoResponse(
     val latitude: Double,
     val longitude: Double,
     @SerialName("generationtime_ms")

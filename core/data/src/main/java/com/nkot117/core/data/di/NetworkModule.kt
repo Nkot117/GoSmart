@@ -2,7 +2,7 @@ package com.nkot117.core.data.di
 
 import com.nkot117.core.data.api.ApiClient
 import com.nkot117.core.data.api.KtorHttpClientFactory
-import com.nkot117.core.data.api.service.OpenMeteoApiService
+import com.nkot117.core.data.api.openmeteo.OpenMeteoApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
