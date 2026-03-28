@@ -7,6 +7,7 @@ import com.nkot117.core.domain.model.DailyWeatherInfo
 import com.nkot117.core.domain.repository.WeatherInfoRepository
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 class WeatherInfoRepositoryImpl @Inject constructor(
     private val apiService: OpenMeteoApiService,
@@ -15,7 +16,7 @@ class WeatherInfoRepositoryImpl @Inject constructor(
     override suspend fun getCurrentLocationDailyWeatherInfo(
         latitude: Double,
         longitude: Double
-    ): DailyWeatherInfo {
+    ): DailyWeatherInfo = withContext(io) {
         val requestParams = OpenMeteoRequest(
             latitude = latitude,
             longitude = longitude,
@@ -26,7 +27,7 @@ class WeatherInfoRepositoryImpl @Inject constructor(
 
         val response = apiService.getDailyWeatherInfo(requestParams)
 
-        return DailyWeatherInfo(
+        DailyWeatherInfo(
             weatherCode = response.daily.weatherCode.firstOrNull() ?: 0
         )
     }
