@@ -10,25 +10,15 @@ data class OpenMeteoResponse(
     @SerialName("generationtime_ms")
     val generationTimeMs: Double,
     @SerialName("utc_offset_seconds")
-    val utcOffsetSeconds: Int,
     val timezone: String,
     @SerialName("timezone_abbreviation")
     val timezoneAbbreviation: String,
-    @SerialName("current_units")
-    val currentUnits: CurrentUnits,
-    val current: Current
+    val daily: Daily
 )
 
 @Serializable
-data class CurrentUnits(
-    val time: String,
+data class Daily(
+    val time: List<String>,
     @SerialName("weathercode")
-    val weatherCode: String
-)
-
-@Serializable
-data class Current(
-    val time: String,
-    @SerialName("weathercode")
-    val weatherCode: Int
+    val weatherCode: List<Int>
 )
