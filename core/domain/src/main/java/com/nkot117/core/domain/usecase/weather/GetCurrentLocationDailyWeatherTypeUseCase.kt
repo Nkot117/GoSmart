@@ -7,6 +7,13 @@ import javax.inject.Inject
 class GetCurrentLocationDailyWeatherTypeUseCase @Inject constructor(
     private val weatherInfoRepository: WeatherInfoRepository
 ) {
+    /**
+     * 現在地のその日の天気種別を取得するユースケース
+     *
+     * Repositoryから取得した日次天気情報のweatherCodeをもとに、
+     * アプリ内で扱うWeatherTypeを返却する。
+     *
+     */
     suspend operator fun invoke(): WeatherType {
         // TODO: 端末から現在地の緯度経度を取得し、Repositoryに渡すように修正する
         val dailyWeatherInfo = weatherInfoRepository.getCurrentLocationDailyWeatherInfo(
