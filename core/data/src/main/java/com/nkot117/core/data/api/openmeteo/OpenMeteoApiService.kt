@@ -6,7 +6,7 @@ import com.nkot117.core.data.api.openmeteo.dto.OpenMeteoResponse
 import io.ktor.client.request.parameter
 
 class OpenMeteoApiService(private val apiClient: ApiClient) {
-    suspend fun getWeather(openMeteoRequest: OpenMeteoRequest): OpenMeteoResponse =
+    suspend fun getDailyWeatherInfo(openMeteoRequest: OpenMeteoRequest): OpenMeteoResponse =
         apiClient.get("$BASE_URL$FORECAST_PATH") {
             parameter("latitude", openMeteoRequest.latitude)
             parameter("longitude", openMeteoRequest.longitude)
