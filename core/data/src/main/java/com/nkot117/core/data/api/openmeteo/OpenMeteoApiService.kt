@@ -10,7 +10,8 @@ class OpenMeteoApiService(private val apiClient: ApiClient) {
         apiClient.get("$BASE_URL$FORECAST_PATH") {
             parameter("latitude", openMeteoRequest.latitude)
             parameter("longitude", openMeteoRequest.longitude)
-            parameter("current", openMeteoRequest.current.joinToString(","))
+            parameter("forecast_days", openMeteoRequest.forecastDays)
+            parameter("daily", openMeteoRequest.daily.joinToString(","))
             parameter("timezone", openMeteoRequest.timezone)
         }
 
