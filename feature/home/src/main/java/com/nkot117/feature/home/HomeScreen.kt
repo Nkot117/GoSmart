@@ -236,11 +236,12 @@ private fun ItemPreview(previewList: ImmutableList<Item>) {
                 )
             } else {
                 previewList.forEach {
-                    ChecklistPreviewRow(
-                        title = it.name
-                    )
-
-                    Spacer(modifier = Modifier.padding(top = 15.dp))
+                    key(it.id) {
+                        ChecklistPreviewRow(
+                            title = it.name
+                        )
+                        Spacer(modifier = Modifier.padding(top = 15.dp))
+                    }
                 }
             }
         }
