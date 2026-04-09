@@ -26,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,10 +41,7 @@ import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.core.ui.components.ChecklistRow
 import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.components.SecondaryButton
-import com.nkot117.core.ui.theme.BgHolidayBottom
-import com.nkot117.core.ui.theme.BgHolidayTop
-import com.nkot117.core.ui.theme.BgWorkdayBottom
-import com.nkot117.core.ui.theme.BgWorkdayTop
+import com.nkot117.core.ui.theme.BackgroundColor
 import com.nkot117.core.ui.theme.ProgressActive
 import com.nkot117.core.ui.theme.ProgressComplete
 import com.nkot117.core.ui.theme.ProgressTrack
@@ -92,26 +88,12 @@ fun ChecklistScreen(
     isAllChecked: Boolean,
     onTapDone: (params: DoneScreenTransitionParams) -> Unit
 ) {
-    val topColor = if (dayType == DayType.WORKDAY) {
-        BgWorkdayTop
-    } else {
-        BgHolidayTop
-    }
-
-    val bottomColor = if (dayType == DayType.WORKDAY) {
-        BgWorkdayBottom
-    } else {
-        BgHolidayBottom
-    }
-
     Box(
         Modifier
             .fillMaxSize()
             .padding(contentPadding)
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(topColor, bottomColor)
-                )
+                BackgroundColor
             )
     ) {
         LazyColumn(

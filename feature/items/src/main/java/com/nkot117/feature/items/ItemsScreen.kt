@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.contentDescription
@@ -46,8 +45,7 @@ import com.nkot117.core.ui.components.ChecklistActionRow
 import com.nkot117.core.ui.components.DatePickerField
 import com.nkot117.core.ui.components.SecondaryButton
 import com.nkot117.core.ui.mapper.label
-import com.nkot117.core.ui.theme.BgWorkdayBottom
-import com.nkot117.core.ui.theme.BgWorkdayTop
+import com.nkot117.core.ui.theme.BackgroundColor
 import com.nkot117.core.ui.theme.Error300
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextMain
@@ -84,8 +82,6 @@ fun ItemsScreen(
     registerItem: () -> Unit,
     deleteItem: (Long) -> Unit
 ) {
-    val topColor = BgWorkdayTop
-    val bottomColor = BgWorkdayBottom
     val focusManager = LocalFocusManager.current
 
     Box(
@@ -93,9 +89,7 @@ fun ItemsScreen(
             .fillMaxSize()
             .padding(contentPadding)
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(topColor, bottomColor)
-                )
+                BackgroundColor
             )
     ) {
         Column(

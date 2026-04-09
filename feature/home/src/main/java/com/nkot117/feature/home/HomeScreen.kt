@@ -1,7 +1,6 @@
 package com.nkot117.feature.home
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -46,8 +45,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,10 +69,7 @@ import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.components.SecondaryButton
 import com.nkot117.core.ui.components.SegmentOption
 import com.nkot117.core.ui.components.TwoOptionSegment
-import com.nkot117.core.ui.theme.BgHolidayBottom
-import com.nkot117.core.ui.theme.BgHolidayTop
-import com.nkot117.core.ui.theme.BgWorkdayBottom
-import com.nkot117.core.ui.theme.BgWorkdayTop
+import com.nkot117.core.ui.theme.BackgroundColor
 import com.nkot117.core.ui.theme.SmartGoTheme
 import com.nkot117.core.ui.theme.TextSub
 import java.time.ZoneOffset
@@ -143,16 +137,15 @@ private fun HomeScreen(
     state: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit
 ) {
-    val backgroundBrush = rememberDayTypeGradient(state.dayType)
     val currentDailyNote = state.dailyNote
 
     Box(
         Modifier
             .fillMaxSize()
             .padding(contentPadding)
-            .drawBehind {
-                drawRect(brush = backgroundBrush)
-            }
+            .background(
+                BackgroundColor
+            )
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
@@ -326,39 +319,6 @@ private fun DailyNoteCard(text: String, onClick: () -> Unit) {
                 maxLines = 4
             )
         }
-    }
-}
-
-@Composable
-private fun rememberDayTypeGradient(dayType: DayType): Brush {
-    val topColor by animateColorAsState(
-        targetValue = if (dayType == DayType.WORKDAY) {
-            BgWorkdayTop
-        } else {
-            BgHolidayTop
-        },
-        animationSpec = tween(
-            durationMillis = 600,
-            easing = FastOutSlowInEasing
-        ),
-        label = "bg_top"
-    )
-
-    val bottomColor by animateColorAsState(
-        targetValue = if (dayType == DayType.WORKDAY) {
-            BgWorkdayBottom
-        } else {
-            BgHolidayBottom
-        },
-        animationSpec = tween(
-            durationMillis = 600,
-            easing = FastOutSlowInEasing
-        ),
-        label = "bg_bottom"
-    )
-
-    return remember(topColor, bottomColor) {
-        Brush.verticalGradient(listOf(topColor, bottomColor))
     }
 }
 

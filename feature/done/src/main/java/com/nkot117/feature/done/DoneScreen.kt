@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -33,10 +32,7 @@ import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.navigation.DoneScreenTransitionParams
 import com.nkot117.core.navigation.toDomain
 import com.nkot117.core.ui.components.PrimaryButton
-import com.nkot117.core.ui.theme.BgHolidayBottom
-import com.nkot117.core.ui.theme.BgHolidayTop
-import com.nkot117.core.ui.theme.BgWorkdayBottom
-import com.nkot117.core.ui.theme.BgWorkdayTop
+import com.nkot117.core.ui.theme.BackgroundColor
 import com.nkot117.core.ui.theme.SmartGoTheme
 
 @Composable
@@ -62,15 +58,12 @@ fun DoneScreen(
     totalCount: Int,
     onTapHome: () -> Unit
 ) {
-    val topColor = if (dayType == DayType.WORKDAY) BgWorkdayTop else BgHolidayTop
-    val bottomColor = if (dayType == DayType.WORKDAY) BgWorkdayBottom else BgHolidayBottom
-
     Box(
         Modifier
             .fillMaxSize()
             .padding(contentPadding)
             .background(
-                brush = Brush.verticalGradient(colors = listOf(topColor, bottomColor))
+                BackgroundColor
             )
     ) {
         val composition by rememberLottieComposition(
