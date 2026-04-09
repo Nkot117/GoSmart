@@ -28,9 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.navigation.DoneScreenTransitionParams
-import com.nkot117.core.navigation.toDomain
 import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.theme.BackgroundColor
 import com.nkot117.core.ui.theme.SmartGoTheme
@@ -43,7 +41,6 @@ fun DoneScreenRoute(
 ) {
     DoneScreen(
         contentPadding = contentPadding,
-        dayType = params.dayType.toDomain(),
         checkedCount = params.checkedCount,
         totalCount = params.totalCount,
         onTapHome = onTapHome
@@ -53,7 +50,6 @@ fun DoneScreenRoute(
 @Composable
 fun DoneScreen(
     contentPadding: PaddingValues,
-    dayType: DayType,
     checkedCount: Int,
     totalCount: Int,
     onTapHome: () -> Unit
@@ -140,7 +136,6 @@ fun DoneScreenPreview_Workday() {
     SmartGoTheme {
         DoneScreen(
             contentPadding = PaddingValues(0.dp),
-            dayType = DayType.WORKDAY,
             onTapHome = {},
             checkedCount = 10,
             totalCount = 10
@@ -154,7 +149,6 @@ fun DoneScreenPreview_Holiday() {
     SmartGoTheme {
         DoneScreen(
             contentPadding = PaddingValues(0.dp),
-            dayType = DayType.HOLIDAY,
             onTapHome = {},
             checkedCount = 10,
             totalCount = 10

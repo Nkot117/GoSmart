@@ -37,7 +37,6 @@ import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.navigation.ChecklistScreenTransitionParams
 import com.nkot117.core.navigation.DoneScreenTransitionParams
 import com.nkot117.core.navigation.toDomain
-import com.nkot117.core.navigation.toNav
 import com.nkot117.core.ui.components.AppTopBar
 import com.nkot117.core.ui.components.ChecklistRow
 import com.nkot117.core.ui.components.PrimaryButton
@@ -156,7 +155,6 @@ fun ChecklistScreen(
             text = "出発する",
             onClick = {
                 val params = DoneScreenTransitionParams(
-                    dayType = dayType.toNav(),
                     checkedCount = checklist.size,
                     totalCount = checklist.filter {
                         it.checked
