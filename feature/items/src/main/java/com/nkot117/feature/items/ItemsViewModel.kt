@@ -34,6 +34,10 @@ class ItemsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ItemsUiState())
     val uiState: StateFlow<ItemsUiState> = _uiState.asStateFlow()
 
+    init {
+        observeRegisteredItemList()
+    }
+
     fun setDate(selectedDate: Long) {
         val localDate = selectedDate.toLocalDate()
         _uiState.update { it.copy(date = localDate) }
@@ -55,7 +59,7 @@ class ItemsViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun observeRegisteredItemList() {
+    private fun observeRegisteredItemList() {
         viewModelScope.launch {
             uiState
                 .map { state ->

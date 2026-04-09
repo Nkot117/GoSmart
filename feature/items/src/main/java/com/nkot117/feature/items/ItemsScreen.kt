@@ -25,7 +25,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,10 +67,6 @@ fun ItemsScreenRoute(contentPadding: PaddingValues, viewModel: ItemsViewModel = 
         registerItem = viewModel::registerItem,
         deleteItem = viewModel::deleteItem
     )
-
-    LaunchedEffect(Unit) {
-        viewModel.observeRegisteredItemList()
-    }
 }
 
 @Composable
@@ -106,50 +101,17 @@ fun ItemsScreen(
                     )
                 )
         ) {
-            val scroll = rememberScrollState()
-            Row(
-                modifier = Modifier.horizontalScroll(scroll),
-                horizontalArrangement = Arrangement.spacedBy(22.dp)
-            ) {
-                ItemCategory.entries.forEach { tag ->
-                    val isSelected = tag == state.category
-                    val textColor = if (isSelected) Primary500 else TextSub
-
-                    Column(
-                        modifier = Modifier
-                            .clickable { setCategory(tag) }
-                            .padding(vertical = 10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = tag.label(),
-                            color = textColor,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-
-                        Spacer(Modifier.height(6.dp))
-
-                        AnimatedVisibility(visible = isSelected) {
-                            Box(
-                                modifier = Modifier
-                                    .height(2.dp)
-                                    .width(24.dp)
-                                    .clip(RoundedCornerShape(2.dp))
-                                    .background(Primary500)
-                            )
-                        }
-                    }
-                }
-            }
+            CategoryTabRow(
+                selectedCategory = state.category,
+                onSelectCategory = { setCategory(it) }
+            )
 
             Spacer(Modifier.height(20.dp))
 
             if (state.category == ItemCategory.DATE_SPECIFIC) {
                 DatePickerField(
                     selectedDateMillis = state.date.toEpochMillis(ZoneOffset.UTC),
-                    onDateChange = {
-                        setDate(it)
-                    },
+                    onDateChange = setDate,
                     confirmButtonLabel = "OK",
                     cancelButtonLabel = "キャンセル",
                     formLabel = "日付"
@@ -227,6 +189,48 @@ fun ItemsScreen(
 
                         Spacer(modifier = Modifier.padding(top = 15.dp))
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CategoryTabRow(
+    selectedCategory: ItemCategory,
+    onSelectCategory: (ItemCategory) -> Unit
+) {
+    val scroll = rememberScrollState()
+    Row(
+        modifier = Modifier.horizontalScroll(scroll),
+        horizontalArrangement = Arrangement.spacedBy(22.dp)
+    ) {
+        ItemCategory.entries.forEach { tag ->
+            val isSelected = tag == selectedCategory
+            val textColor = if (isSelected) Primary500 else TextSub
+
+            Column(
+                modifier = Modifier
+                    .clickable { onSelectCategory(tag) }
+                    .padding(vertical = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = tag.label(),
+                    color = textColor,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+                Spacer(Modifier.height(6.dp))
+
+                AnimatedVisibility(visible = isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .height(2.dp)
+                            .width(24.dp)
+                            .clip(RoundedCornerShape(2.dp))
+                            .background(Primary500)
+                    )
                 }
             }
         }
