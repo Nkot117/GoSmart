@@ -41,6 +41,8 @@ android {
         stabilityConfigurationFiles.add(
             rootProject.layout.projectDirectory.file("stability_config.conf")
         )
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+        metricsDestination = layout.buildDirectory.dir("compose_compiler")
     }
 }
 
