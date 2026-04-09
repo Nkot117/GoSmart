@@ -52,6 +52,8 @@ import com.nkot117.core.ui.theme.TextMain
 import com.nkot117.core.ui.theme.TextSub
 import java.time.LocalDate
 import java.time.ZoneOffset
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun ItemsScreenRoute(contentPadding: PaddingValues, viewModel: ItemsViewModel = hiltViewModel()) {
@@ -246,7 +248,7 @@ fun ItemsScreenPreview() {
     )
 }
 
-private fun previewRegisteredItems(): List<Item> = listOf(
+private fun previewRegisteredItems(): ImmutableList<Item> = persistentListOf(
     Item(id = 1L, name = "財布", category = ItemCategory.WORKDAY),
     Item(id = 2L, name = "家の鍵", category = ItemCategory.ALWAYS),
     Item(id = 3L, name = "スマホ", category = ItemCategory.RAINY),

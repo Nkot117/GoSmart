@@ -11,6 +11,7 @@ import com.nkot117.core.domain.usecase.items.GetRegisteredItemsUseCase
 import com.nkot117.core.domain.usecase.items.SaveItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -69,7 +70,7 @@ class ItemsViewModel @Inject constructor(
                     getRegisteredItemsUseCase(query)
                 }
                 .collect { items ->
-                    _uiState.update { it.copy(itemList = items) }
+                    _uiState.update { it.copy(itemList = items.toImmutableList()) }
                 }
         }
     }
