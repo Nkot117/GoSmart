@@ -210,7 +210,10 @@ fun ItemsScreen(
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    items(state.itemList) { item ->
+                    items(
+                        items = state.itemList,
+                        key = { item -> item.id ?: item.name }
+                    ) { item ->
                         ChecklistActionRow(
                             title = item.name,
                             icon = Icons.Default.Delete,
