@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,8 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.domain.model.Reminder
 import com.nkot117.core.ui.components.PrimaryButton
-import com.nkot117.core.ui.theme.BgWorkdayBottom
-import com.nkot117.core.ui.theme.BgWorkdayTop
+import com.nkot117.core.ui.theme.BackgroundColor
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextMain
 import com.nkot117.core.ui.theme.TextSub
@@ -77,17 +75,12 @@ fun SettingsScreen(
     state: SettingsUiState,
     onEvent: (SettingsUiEvent) -> Unit
 ) {
-    val topColor = BgWorkdayTop
-    val bottomColor = BgWorkdayBottom
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(contentPadding)
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(topColor, bottomColor)
-                )
+                BackgroundColor
             )
     ) {
         Column(
