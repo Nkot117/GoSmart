@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +25,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
@@ -131,7 +132,10 @@ fun ChecklistScreen(
             }
 
             // チェックリスト
-            items(checklist) { item ->
+            items(
+                items = checklist,
+                key = { item -> item.id }
+            ) { item ->
                 ChecklistRow(
                     title = item.title,
                     checked = item.checked,
@@ -236,15 +240,25 @@ fun ChecklistProgressBar(progress: Float, modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .height(12.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(ProgressTrack)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(animatedProgress)
-                .background(barColor)
-        )
-    }
+            .drawBehind {
+                drawRoundRect(
+                    color = ProgressTrack,
+                    cornerRadius = CornerRadius(
+                        x = size.height / 2,
+                        y = size.height / 2
+                    )
+                )
+
+                drawRoundRect(
+                    color = barColor,
+                    size = size.copy(width = size.width * animatedProgress),
+                    cornerRadius = CornerRadius(
+                        x = size.height / 2,
+                        y = size.height / 2
+                    )
+                )
+            }
+    )
 }
 
 @Preview(showBackground = true, name = "Workday")

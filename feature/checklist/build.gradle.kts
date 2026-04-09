@@ -55,7 +55,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.kotlinx.collections.immutable)
 
     // Hilt
     implementation(libs.hilt.android)
