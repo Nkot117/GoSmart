@@ -33,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.nkot117.core.domain.model.DayType
 import com.nkot117.core.navigation.ChecklistScreenTransitionParams
 import com.nkot117.core.navigation.DoneScreenTransitionParams
 import com.nkot117.core.navigation.toDomain
@@ -69,7 +68,6 @@ fun ChecklistScreenRoute(
 
     ChecklistScreen(
         contentPadding = contentPadding,
-        dayType = params.dayType.toDomain(),
         checklist = state.checklist,
         toggleChecklistItem = viewModel::toggleChecklistItem,
         onCheckAll = viewModel::checkAllItems,
@@ -78,10 +76,10 @@ fun ChecklistScreenRoute(
     )
 }
 
+@Suppress("LongParameterList")
 @Composable
 fun ChecklistScreen(
     contentPadding: PaddingValues,
-    dayType: DayType,
     checklist: List<ChecklistItem>,
     toggleChecklistItem: (id: Long, checked: Boolean) -> Unit,
     onCheckAll: () -> Unit,
@@ -259,16 +257,15 @@ fun ChecklistProgressBar(progress: Float, modifier: Modifier = Modifier) {
     )
 }
 
-@Preview(showBackground = true, name = "Workday")
+@Preview(showBackground = true)
 @Composable
-private fun ChecklistScreenPreview_Workday() {
+private fun ChecklistScreenPreview() {
     SmartGoTheme {
         Scaffold(
             topBar = { AppTopBar("チェックリスト") }
         ) { inner ->
             ChecklistScreen(
                 contentPadding = inner,
-                dayType = DayType.WORKDAY,
                 checklist = listOf(
                     ChecklistItem(id = 1, title = "家の鍵", checked = true),
                     ChecklistItem(id = 2, title = "財布", checked = true),
@@ -279,30 +276,6 @@ private fun ChecklistScreenPreview_Workday() {
                 toggleChecklistItem = { _, _ -> },
                 onCheckAll = {},
                 isAllChecked = false,
-                onTapDone = {}
-            )
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "Holiday")
-@Composable
-private fun ChecklistScreenPreview_Holiday() {
-    SmartGoTheme {
-        Scaffold(
-            topBar = { AppTopBar("チェックリスト") }
-        ) { inner ->
-            ChecklistScreen(
-                contentPadding = inner,
-                dayType = DayType.HOLIDAY,
-                checklist = listOf(
-                    ChecklistItem(id = 1, title = "チケット", checked = true),
-                    ChecklistItem(id = 2, title = "イヤホン", checked = true),
-                    ChecklistItem(id = 3, title = "モバイルバッテリー", checked = true)
-                ),
-                toggleChecklistItem = { _, _ -> },
-                onCheckAll = {},
-                isAllChecked = true,
                 onTapDone = {}
             )
         }
