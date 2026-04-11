@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nkot117.core.domain.model.Reminder
 import com.nkot117.core.ui.components.PrimaryButton
+import com.nkot117.core.ui.components.SwitchCard
 import com.nkot117.core.ui.theme.BackgroundColor
 import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextMain
@@ -119,12 +120,14 @@ private fun ReminderSettingsCard(reminderSettings: Reminder, onEvent: (SettingsU
         modifier = Modifier.fillMaxWidth(),
         colors = cardColors(containerColor = Color.White)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            ReminderToggleRow(
-                reminderSettings.enabled
-            ) { enabled ->
-                onEvent(ReminderEvent.ReminderToggled(enabled))
-            }
+        Column {
+            SwitchCard(
+                "外出前リマインダー",
+                reminderSettings.enabled,
+                { enabled ->
+                    onEvent(ReminderEvent.ReminderToggled(enabled))
+                }
+            )
 
             if (reminderSettings.enabled) {
                 Spacer(Modifier.height(16.dp))
@@ -146,7 +149,7 @@ private fun ReminderSettingsCard(reminderSettings: Reminder, onEvent: (SettingsU
                 onClick = {
                     onEvent(ClickEvent.SaveClicked)
                 },
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.CenterHorizontally).padding(bottom = 16.dp),
                 text = "保存する"
             )
         }
@@ -163,29 +166,11 @@ private fun AutoWeatherSettingCard() {
 
     Spacer(Modifier.height(8.dp))
 
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = cardColors(containerColor = Color.White)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "現在地の天気を自動で設定する",
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.labelLarge,
-                color = TextMain
-            )
-            Switch(
-                checked = true,
-                onCheckedChange = { /* TODO */ },
-                colors = SwitchDefaults.colors(
-                    checkedTrackColor = Primary500
-                )
-            )
-        }
-    }
+    SwitchCard(
+        text = "現在地の天気を自動で設定する",
+        checked = true,
+        onCheckedChange = {}
+    )
 }
 
 @Composable
@@ -252,7 +237,9 @@ private fun ReminderToggleRow(isEnabled: Boolean, toggled: (Boolean) -> Unit) {
 @SuppressLint("DefaultLocale")
 @Composable
 private fun NotificationTimeRow(timeClicked: () -> Unit, settingHour: Int, settingMinute: Int) {
-    Column {
+    Column(
+        modifier = Modifier.padding(horizontal = 16.dp)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -328,13 +315,25 @@ fun NotificationTimePickerDialog(
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name = "Remainder Off")
 @Composable
-fun SettingsScreenPreview() {
+fun SettingsScreenPreview_Remainder_Off() {
     Surface {
         SettingsScreen(
             contentPadding = PaddingValues(0.dp),
             state = SettingsUiState(),
+            onEvent = {}
+        )
+    }
+}
+
+@Preview(showBackground = true, name = "Remainder On")
+@Composable
+fun SettingsScreenPreview_Remainder_On() {
+    Surface {
+        SettingsScreen(
+            contentPadding = PaddingValues(0.dp),
+            state = SettingsUiState(reminder = Reminder(9, 0, true)),
             onEvent = {}
         )
     }
