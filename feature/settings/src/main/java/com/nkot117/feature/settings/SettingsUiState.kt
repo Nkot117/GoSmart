@@ -8,6 +8,7 @@ import com.nkot117.core.domain.model.Reminder
  */
 data class SettingsUiState(
     val reminder: Reminder = Reminder(9, 0, false),
+    val autoWeatherSettings: Boolean = false,
     val dialog: SettingsDialog? = null
 )
 
@@ -42,6 +43,13 @@ sealed interface ReminderEvent : SettingsUiEvent {
     data class ReminderToggled(val enabled: Boolean) : ReminderEvent
     data class ReminderTimePickerConfirmed(val hour: Int, val minute: Int) : ReminderEvent
     data object ReminderTimePickerDismissed : ReminderEvent
+}
+
+/**
+ * 自動天気設定イベント
+ */
+sealed interface AutoWeatherSettingsEvent : SettingsUiEvent {
+    data class AutoWeatherToggled(val enabled: Boolean) : AutoWeatherSettingsEvent
 }
 
 /**

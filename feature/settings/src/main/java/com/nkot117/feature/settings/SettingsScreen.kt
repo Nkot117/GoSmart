@@ -92,7 +92,10 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            AutoWeatherSettingCard()
+            AutoWeatherSettingCard(
+                autoWeatherSettings = state.autoWeatherSettings,
+                onEvent = onEvent
+            )
 
             Spacer(Modifier.height(12.dp))
 
@@ -154,7 +157,10 @@ private fun ReminderSettingsCard(reminderSettings: Reminder, onEvent: (SettingsU
 }
 
 @Composable
-private fun AutoWeatherSettingCard() {
+private fun AutoWeatherSettingCard(
+    autoWeatherSettings: Boolean,
+    onEvent: (SettingsUiEvent) -> Unit
+) {
     Text(
         "天気の自動設定",
         style = MaterialTheme.typography.titleSmall,
@@ -165,8 +171,10 @@ private fun AutoWeatherSettingCard() {
 
     SwitchCard(
         text = "現在地の天気を自動で設定する",
-        checked = true,
-        onCheckedChange = {}
+        checked = autoWeatherSettings,
+        onCheckedChange = {
+            onEvent(AutoWeatherSettingsEvent.AutoWeatherToggled(it))
+        }
     )
 }
 

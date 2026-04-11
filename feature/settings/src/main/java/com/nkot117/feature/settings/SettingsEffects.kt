@@ -33,11 +33,6 @@ fun SettingsEffects(
     }
 
     LaunchedEffect(Unit) {
-        // 画面表示時にリマインダー設定をロードし、UIを初期化する
-        viewModel.fetchReminderSettings()
-    }
-
-    LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 SettingsUiEffect.NavigateBack -> onBack()

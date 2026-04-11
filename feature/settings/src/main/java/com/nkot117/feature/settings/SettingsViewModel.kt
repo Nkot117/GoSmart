@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.nkot117.core.domain.usecase.reminder.CancelReminderAlarmUseCase
 import com.nkot117.core.domain.usecase.reminder.GetReminderTimeUseCase
 import com.nkot117.core.domain.usecase.reminder.UpdateReminderTimeUseCase
+import com.nkot117.core.domain.usecase.weather.ObserveAutoWeatherSettingsUseCase
+import com.nkot117.core.domain.usecase.weather.UpdateAutoWeatherSettingsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,7 +21,9 @@ import kotlinx.coroutines.launch
 class SettingsViewModel @Inject constructor(
     private val getReminderTimeUseCase: GetReminderTimeUseCase,
     private val updateReminderTimeUseCase: UpdateReminderTimeUseCase,
-    private val cancelReminderAlarmUseCase: CancelReminderAlarmUseCase
+    private val cancelReminderAlarmUseCase: CancelReminderAlarmUseCase,
+    private val observeAutoWeatherSettingsUseCase: ObserveAutoWeatherSettingsUseCase,
+    private val updateAutoWeatherSettingsUseCase: UpdateAutoWeatherSettingsUseCase
 ) : ViewModel() {
 
     /**
@@ -34,11 +38,17 @@ class SettingsViewModel @Inject constructor(
     private val _uiEffect = MutableSharedFlow<SettingsUiEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
 
+    init {
+        fetchReminderSettings()
+        observeAutoWeatherEnabled()
+    }
+
     fun onEvent(event: SettingsUiEvent) {
         when (event) {
             is ClickEvent -> clickEvent(event)
             is ReminderEvent -> reminderEvent(event)
             is PermissionEvent -> permissionEvent(event)
+            is AutoWeatherSettingsEvent -> autoWeatherSettingsEvent(event)
             is DialogEvent -> dialogEvent(event)
         }
     }
@@ -61,7 +71,7 @@ class SettingsViewModel @Inject constructor(
             is ClickEvent.SaveClicked -> viewModelScope.launch {
                 // リマインダー設定が無効になっている場合は、設定を保存して戻る
                 if (!uiState.value.reminder.enabled) {
-                    saveSettings()
+                    saveReminderSettings()
                     emitEffect(SettingsUiEffect.NavigateBack)
                     return@launch
                 }
@@ -108,7 +118,7 @@ class SettingsViewModel @Inject constructor(
             is PermissionEvent.ExactAlarm -> {
                 if (event.granted) {
                     viewModelScope.launch {
-                        saveSettings()
+                        saveReminderSettings()
                         emitEffect(SettingsUiEffect.NavigateBack)
                     }
                 } else {
@@ -116,6 +126,14 @@ class SettingsViewModel @Inject constructor(
                         it.copy(dialog = SettingsDialog.ExactAlarmRequiredDialog)
                     }
                 }
+            }
+        }
+    }
+
+    private fun autoWeatherSettingsEvent(event: AutoWeatherSettingsEvent) {
+        when (event) {
+            is AutoWeatherSettingsEvent.AutoWeatherToggled -> viewModelScope.launch {
+                saveAutoWeatherSettings(event.enabled)
             }
         }
     }
@@ -156,13 +174,25 @@ class SettingsViewModel @Inject constructor(
         _uiEffect.emit(effect)
     }
 
-    fun fetchReminderSettings() {
+    private fun fetchReminderSettings() {
         viewModelScope.launch {
             val reminder = getReminderTimeUseCase()
             _uiState.update {
                 it.copy(
                     reminder = reminder
                 )
+            }
+        }
+    }
+
+    private fun observeAutoWeatherEnabled() {
+        viewModelScope.launch {
+            observeAutoWeatherSettingsUseCase().collect { enabled ->
+                _uiState.update {
+                    it.copy(
+                        autoWeatherSettings = enabled
+                    )
+                }
             }
         }
     }
@@ -188,7 +218,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveSettings() {
+    private suspend fun saveReminderSettings() {
         val state = uiState.value
 
         updateReminderTimeUseCase(
@@ -200,5 +230,9 @@ class SettingsViewModel @Inject constructor(
         if (!state.reminder.enabled) {
             cancelReminderAlarmUseCase()
         }
+    }
+
+    private suspend fun saveAutoWeatherSettings(enabled: Boolean) {
+        updateAutoWeatherSettingsUseCase(enabled)
     }
 }
