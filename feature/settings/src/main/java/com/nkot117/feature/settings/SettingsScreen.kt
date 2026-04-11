@@ -19,8 +19,6 @@ import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
@@ -37,7 +35,6 @@ import com.nkot117.core.domain.model.Reminder
 import com.nkot117.core.ui.components.PrimaryButton
 import com.nkot117.core.ui.components.SwitchCard
 import com.nkot117.core.ui.theme.BackgroundColor
-import com.nkot117.core.ui.theme.Primary500
 import com.nkot117.core.ui.theme.TextMain
 import com.nkot117.core.ui.theme.TextSub
 
@@ -207,30 +204,6 @@ private fun OssLicensesCard(onEvent: (SettingsUiEvent) -> Unit) {
                 color = TextSub
             )
         }
-    }
-}
-
-@Composable
-private fun ReminderToggleRow(isEnabled: Boolean, toggled: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            "外出前リマインダー",
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.labelLarge,
-            color = TextMain
-        )
-        Switch(
-            checked = isEnabled,
-            onCheckedChange = {
-                toggled(it)
-            },
-            colors = SwitchDefaults.colors(
-                checkedTrackColor = Primary500
-            )
-        )
     }
 }
 
