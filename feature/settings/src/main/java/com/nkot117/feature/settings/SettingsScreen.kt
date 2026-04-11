@@ -94,6 +94,10 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            AutoWeatherSettingCard()
+
+            Spacer(Modifier.height(12.dp))
+
             OssLicensesCard(
                 onEvent = onEvent
             )
@@ -144,6 +148,41 @@ private fun ReminderSettingsCard(reminderSettings: Reminder, onEvent: (SettingsU
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 text = "保存する"
+            )
+        }
+    }
+}
+
+@Composable
+private fun AutoWeatherSettingCard() {
+    Text(
+        "天気の自動設定",
+        style = MaterialTheme.typography.titleSmall,
+        color = TextMain
+    )
+
+    Spacer(Modifier.height(8.dp))
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = cardColors(containerColor = Color.White)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "現在地の天気を自動で設定する",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.labelLarge,
+                color = TextMain
+            )
+            Switch(
+                checked = true,
+                onCheckedChange = { /* TODO */ },
+                colors = SwitchDefaults.colors(
+                    checkedTrackColor = Primary500
+                )
             )
         }
     }
