@@ -19,6 +19,7 @@ sealed interface SettingsDialog {
     data object ReminderTimePicker : SettingsDialog
     data object NotificationRequiredDialog : SettingsDialog
     data object ExactAlarmRequiredDialog : SettingsDialog
+    data object LocationPermissionRequiredDialog : SettingsDialog
 }
 
 /**
