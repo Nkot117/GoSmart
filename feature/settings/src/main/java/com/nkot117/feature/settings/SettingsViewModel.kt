@@ -115,6 +115,20 @@ class SettingsViewModel @Inject constructor(
                 }
             }
 
+            is PermissionEvent.Location -> {
+                viewModelScope.launch {
+                    if (event.granted) {
+                        saveAutoWeatherSettings(enabled = true)
+                    } else {
+                        _uiState.update {
+                            it.copy(
+                                dialog = SettingsDialog.LocationRequiredDialog
+                            )
+                        }
+                    }
+                }
+            }
+
             is PermissionEvent.ExactAlarm -> {
                 if (event.granted) {
                     viewModelScope.launch {
@@ -132,8 +146,18 @@ class SettingsViewModel @Inject constructor(
 
     private fun autoWeatherSettingsEvent(event: AutoWeatherSettingsEvent) {
         when (event) {
-            is AutoWeatherSettingsEvent.AutoWeatherToggled -> viewModelScope.launch {
-                saveAutoWeatherSettings(event.enabled)
+            is AutoWeatherSettingsEvent.AutoWeatherToggled -> {
+                if (event.enabled) {
+                    viewModelScope.launch {
+                        emitEffect(
+                            SettingsUiEffect.RequestLocationPermission
+                        )
+                    }
+                } else {
+                    viewModelScope.launch {
+                        saveAutoWeatherSettings(enabled = false)
+                    }
+                }
             }
         }
     }
@@ -165,6 +189,23 @@ class SettingsViewModel @Inject constructor(
                     it.copy(
                         dialog = null
                     )
+                }
+            }
+
+            DialogEvent.LocationPermissionDialogConfirmed -> {
+                viewModelScope.launch {
+                    _uiState.update {
+                        it.copy(dialog = null)
+                    }
+                    emitEffect(
+                        SettingsUiEffect.OpenLocationSettings
+                    )
+                }
+            }
+
+            DialogEvent.LocationPermissionDialogDismissed -> {
+                _uiState.update {
+                    it.copy(dialog = null)
                 }
             }
         }
