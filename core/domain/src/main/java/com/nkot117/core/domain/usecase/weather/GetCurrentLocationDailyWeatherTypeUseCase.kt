@@ -5,7 +5,8 @@ import com.nkot117.core.domain.repository.WeatherInfoRepository
 import javax.inject.Inject
 
 class GetCurrentLocationDailyWeatherTypeUseCase @Inject constructor(
-    private val weatherInfoRepository: WeatherInfoRepository
+    private val weatherInfoRepository: WeatherInfoRepository,
+    private val getLocationUseCase: GetLocationUseCase
 ) {
     /**
      * 現在地のその日の天気種別を取得するユースケース
@@ -15,10 +16,10 @@ class GetCurrentLocationDailyWeatherTypeUseCase @Inject constructor(
      *
      */
     suspend operator fun invoke(): WeatherType {
-        // TODO: 端末から現在地の緯度経度を取得し、Repositoryに渡すように修正する
+        val location = getLocationUseCase()
         val dailyWeatherInfo = weatherInfoRepository.getCurrentLocationDailyWeatherInfo(
-            latitude = 0.0,
-            longitude = 0.0
+            latitude = location?.latitude ?: 0.0,
+            longitude = location?.longitude ?: 0.0
         )
         return dailyWeatherInfo.weatherCode.toWeatherType()
     }
