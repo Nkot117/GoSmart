@@ -111,10 +111,6 @@ fun HomeScreenRoute(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.observeDailyNote()
-    }
-
-    LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
                 HomeUiEffect.TransitionToChecklistScreen -> {

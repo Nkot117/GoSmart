@@ -8,6 +8,8 @@ import com.nkot117.core.domain.model.WeatherType
 import com.nkot117.core.domain.usecase.dailynote.GetDailyNoteUseCase
 import com.nkot117.core.domain.usecase.dailynote.SaveDailyNoteUseCase
 import com.nkot117.core.domain.usecase.items.GetItemsToBringUseCase
+import com.nkot117.core.domain.usecase.weather.GetAutoWeatherSettingsUseCase
+import com.nkot117.core.domain.usecase.weather.GetCurrentLocationDailyWeatherTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.collections.immutable.toImmutableList
@@ -27,7 +29,9 @@ import kotlinx.coroutines.launch
 class HomeViewModel @Inject constructor(
     private val getItemsToBringUseCase: GetItemsToBringUseCase,
     private val getDailyNoteUseCase: GetDailyNoteUseCase,
-    private val saveDailyNoteUseCase: SaveDailyNoteUseCase
+    private val saveDailyNoteUseCase: SaveDailyNoteUseCase,
+    private val getAutoWeatherSettingsUseCase: GetAutoWeatherSettingsUseCase,
+    private val getCurrentLocationDailyWeatherTypeUseCase: GetCurrentLocationDailyWeatherTypeUseCase
 ) : ViewModel() {
     /**
      * UiState
@@ -40,6 +44,18 @@ class HomeViewModel @Inject constructor(
      */
     private val _uiEffect = MutableSharedFlow<HomeUiEffect>()
     val uiEffect = _uiEffect.asSharedFlow()
+
+    init {
+        observeDailyNote()
+        viewModelScope.launch {
+            val autoWeatherEnabled = getAutoWeatherSettingsUseCase()
+            if (autoWeatherEnabled) {
+                getCurrentLocationDailyWeatherTypeUseCase().let {
+                    _uiState.update { state -> state.copy(weatherType = it) }
+                }
+            }
+        }
+    }
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
@@ -106,7 +122,7 @@ class HomeViewModel @Inject constructor(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun observeDailyNote() {
+    private fun observeDailyNote() {
         viewModelScope.launch {
             uiState
                 .map { it.date }

@@ -9,7 +9,6 @@ data class OpenMeteoResponse(
     val longitude: Double,
     @SerialName("generationtime_ms")
     val generationTimeMs: Double,
-    @SerialName("utc_offset_seconds")
     val timezone: String,
     @SerialName("timezone_abbreviation")
     val timezoneAbbreviation: String,
@@ -19,6 +18,6 @@ data class OpenMeteoResponse(
 @Serializable
 data class Daily(
     val time: List<String>,
-    @SerialName("weathercode")
+    @SerialName("weather_code")
     val weatherCode: List<Int>
 )
