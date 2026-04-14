@@ -4,11 +4,13 @@ import com.nkot117.core.data.repository.AutoWeatherSettingRepositoryImpl
 import com.nkot117.core.data.repository.DailyNoteRepositoryImpl
 import com.nkot117.core.data.repository.ItemDateRepositoryImpl
 import com.nkot117.core.data.repository.ItemsRepositoryImpl
+import com.nkot117.core.data.repository.LocationRepositoryImpl
 import com.nkot117.core.data.repository.ReminderSettingsRepositoryImpl
 import com.nkot117.core.domain.repository.AutoWeatherSettingsRepository
 import com.nkot117.core.domain.repository.DailyNoteRepository
 import com.nkot117.core.domain.repository.ItemDateRepository
 import com.nkot117.core.domain.repository.ItemsRepository
+import com.nkot117.core.domain.repository.LocationRepository
 import com.nkot117.core.domain.repository.ReminderSettingsRepository
 import dagger.Binds
 import dagger.Module
@@ -42,4 +44,8 @@ abstract class RepositoryModule {
     abstract fun bindAutoWeatherSettingsRepository(
         impl: AutoWeatherSettingRepositoryImpl
     ): AutoWeatherSettingsRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindLocationRepository(impl: LocationRepositoryImpl): LocationRepository
 }
