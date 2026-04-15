@@ -18,6 +18,7 @@ val BorderLine = Color(0xFFE0E7F1)
 
 // Background
 val BackgroundColor = Color(0xFFEEF4FF)
+val LoadingBackgroundColor = Color(0x80FFFFFF)
 
 // Progress
 val ProgressTrack = Color(0xFFE6ECF5)

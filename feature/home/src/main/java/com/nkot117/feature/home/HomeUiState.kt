@@ -11,6 +11,8 @@ import kotlinx.collections.immutable.persistentListOf
  * Home画面のUI状態を表すデータクラス
  */
 data class HomeUiState(
+    val isLoadingWeather: Boolean = false,
+    val weatherErrorMessage: String? = null,
     val date: LocalDate = LocalDate.now(),
     val dayType: DayType = DayType.WORKDAY,
     val weatherType: WeatherType = WeatherType.SUNNY,

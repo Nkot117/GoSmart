@@ -63,6 +63,7 @@ import com.nkot117.core.domain.model.WeatherType
 import com.nkot117.core.navigation.ChecklistScreenTransitionParams
 import com.nkot117.core.navigation.toNav
 import com.nkot117.core.ui.components.AppTopBar
+import com.nkot117.core.ui.components.CenterLoading
 import com.nkot117.core.ui.components.ChecklistPreviewRow
 import com.nkot117.core.ui.components.DatePickerField
 import com.nkot117.core.ui.components.PrimaryButton
@@ -106,10 +107,6 @@ fun HomeScreenRoute(
     }
 
     // 副作用
-    LaunchedEffect(state.dayType, state.weatherType, state.date) {
-        viewModel.getChecklist()
-    }
-
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collect { effect ->
             when (effect) {
@@ -191,6 +188,10 @@ private fun HomeScreen(
                 .widthIn(max = 360.dp)
                 .semantics { contentDescription = "go_to_checklist_button" }
         )
+    }
+
+    if (state.isLoadingWeather) {
+        CenterLoading()
     }
 }
 
