@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@Suppress("TooManyFunctions")
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val getReminderTimeUseCase: GetReminderTimeUseCase,

@@ -12,6 +12,10 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
+private const val REQUEST_TIMEOUT_MILLIS = 15_000L
+private const val CONNECT_TIMEOUT_MILLIS = 15_000L
+private const val SOCKET_TIMEOUT_MILLIS = 15_000L
+
 class KtorHttpClientFactory {
     fun create(): HttpClient = HttpClient(OkHttp) {
         expectSuccess = true
@@ -24,7 +28,6 @@ class KtorHttpClientFactory {
             )
         }
 
-        // TODO: 本番ではLogLevel.NONEにする
         install(Logging) {
             logger = Logger.ANDROID
             level = LogLevel.BODY
@@ -36,9 +39,9 @@ class KtorHttpClientFactory {
         }
 
         install(HttpTimeout) {
-            requestTimeoutMillis = 15_000
-            connectTimeoutMillis = 10_000
-            socketTimeoutMillis = 15_000
+            requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
+            connectTimeoutMillis = CONNECT_TIMEOUT_MILLIS
+            socketTimeoutMillis = SOCKET_TIMEOUT_MILLIS
         }
     }
 }

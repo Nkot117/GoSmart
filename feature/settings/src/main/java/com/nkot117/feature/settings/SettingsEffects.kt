@@ -9,12 +9,14 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 
+@Suppress("CyclomaticComplexMethod")
 @Composable
 fun SettingsEffects(
     viewModel: SettingsViewModel,
@@ -60,25 +62,11 @@ fun SettingsEffects(
                 SettingsUiEffect.OpenLocationSettings -> openLocationSettings(context)
 
                 SettingsUiEffect.RequestPostNotificationsPermission -> {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                        // Android 13未満は通知権限の許諾は不要なため、許可されたものとして扱う
-                        viewModel.onEvent(PermissionEvent.PostNotifications(granted = true))
-                        return@collect
-                    }
-
-                    val hasPermission = ContextCompat.checkSelfPermission(
+                    requestPostNotificationPermission(
                         context,
-                        Manifest.permission.POST_NOTIFICATIONS
-                    ) == PackageManager.PERMISSION_GRANTED
-
-                    if (hasPermission) {
-                        viewModel.onEvent(PermissionEvent.PostNotifications(granted = true))
-                        return@collect
-                    } else {
-                        requestPostNotificationsPermission.launch(
-                            Manifest.permission.POST_NOTIFICATIONS
-                        )
-                    }
+                        viewModel,
+                        requestPostNotificationsPermission
+                    )
                 }
 
                 SettingsUiEffect.RequestExactAlarmPermission -> {
@@ -93,32 +81,66 @@ fun SettingsEffects(
                 SettingsUiEffect.OpenExactAlarmSettings -> openExactAlarmSettings(context)
 
                 SettingsUiEffect.RequestLocationPermission -> {
-                    val hasFineLocationPermission = ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-
-                    val hasCoarseLocationPermission = ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
-
-                    if (hasFineLocationPermission || hasCoarseLocationPermission) {
-                        // すでに位置情報の権限が許可されている場合は、イベントを送信して設定を保存する
-                        viewModel.onEvent(PermissionEvent.Location(granted = true))
-                    } else {
-                        // 位置情報の権限が許可されていない場合は、権限リクエストを開始する
-                        requestLocationPermission.launch(
-                            arrayOf(
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            )
-
-                        )
-                    }
+                    requestLocationPermission(context, viewModel, requestLocationPermission)
                 }
             }
         }
+    }
+}
+
+private fun requestPostNotificationPermission(
+    context: Context,
+    viewModel: SettingsViewModel,
+    requestPostNotificationsPermission: ActivityResultLauncher<String>
+) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        // Android 13未満は通知権限の許諾は不要なため、許可されたものとして扱う
+        viewModel.onEvent(PermissionEvent.PostNotifications(granted = true))
+        return
+    }
+
+    val hasPermission = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.POST_NOTIFICATIONS
+    ) == PackageManager.PERMISSION_GRANTED
+
+    if (hasPermission) {
+        viewModel.onEvent(PermissionEvent.PostNotifications(granted = true))
+        return
+    } else {
+        requestPostNotificationsPermission.launch(
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+    }
+}
+
+private fun requestLocationPermission(
+    context: Context,
+    viewModel: SettingsViewModel,
+    requestLocationPermission: ActivityResultLauncher<Array<String>>
+) {
+    val hasFineLocationPermission = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+
+    val hasCoarseLocationPermission = ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+
+    if (hasFineLocationPermission || hasCoarseLocationPermission) {
+        // すでに位置情報の権限が許可されている場合は、イベントを送信して設定を保存する
+        viewModel.onEvent(PermissionEvent.Location(granted = true))
+    } else {
+        // 位置情報の権限が許可されていない場合は、権限リクエストを開始する
+        requestLocationPermission.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+
+        )
     }
 }
 

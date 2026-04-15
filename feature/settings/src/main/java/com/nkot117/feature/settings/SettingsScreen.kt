@@ -314,8 +314,11 @@ fun SettingsScreenPreview_Remainder_On() {
     Surface {
         SettingsScreen(
             contentPadding = PaddingValues(0.dp),
-            state = SettingsUiState(reminder = Reminder(9, 0, true)),
+            state = SettingsUiState(reminder = Reminder(HOUR, MINUTE, true)),
             onEvent = {}
         )
     }
 }
+
+private const val HOUR = 9
+private const val MINUTE = 0
